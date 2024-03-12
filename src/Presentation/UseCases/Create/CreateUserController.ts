@@ -12,7 +12,17 @@ export class CreateUserController {
   async handle(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
 
+    function getErrorMessage(err: unknown) {
+      if (err instanceof Error) return err.message
+      return String(err)
+    }
+
+    const reportError = ({message}: {message: string}) => {
+
+    }
+
     try {
+      throw new Error('batata')
       await this.createUserUseCase.execute({
         name,
         email,
@@ -22,7 +32,7 @@ export class CreateUserController {
       return response.status(201).send();  
     } catch (err) {
       return response.status(400).json({
-        message: err.message || 'Unexpected error.'
+        reportError({message: getErrorMessage(err)}) 
       })
     }
   }

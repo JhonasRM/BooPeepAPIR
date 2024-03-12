@@ -3,11 +3,11 @@
   
     var serviceAccount = require('./serviceAccountKey.json');
     
-   admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
-
-    const db = admin.firestore();
+    function conn(){
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    } 
   
   
-export {db}
+export {conn}
