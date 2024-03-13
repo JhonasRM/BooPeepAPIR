@@ -1,19 +1,16 @@
-import { Router, Request, Response } from 'express';
-import { User } from '../../../Service/Model/User';
+import { Request, Response } from 'express';
 import { CreateUserUC } from './CreateUserUC';
-import { ICreateUserRequestDTO } from './CreateUserDTO';
-import { UsersRepository } from '../../../Service/Repositories/UsersRepository';
 
 export class CreateUserController {
   constructor(
-    private createUC: CreateUserUC,
+    private createUserUC: CreateUserUC,
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
 
     try {
-      await this.createUC.execute({
+      await this.createUserUC.execute({
         name,
         email,
         password

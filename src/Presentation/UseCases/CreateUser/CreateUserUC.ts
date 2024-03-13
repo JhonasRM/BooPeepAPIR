@@ -10,7 +10,7 @@ export class CreateUserUC {
             throw new Error('O Usuário já existe')
         } 
         const NewUser: User = new User(data)
-        console.log('Cadastrando novo Usuário')
+        console.log('Cadastrando novo Usuário...')
         await this.usersRepository.save(NewUser)
     }
 }

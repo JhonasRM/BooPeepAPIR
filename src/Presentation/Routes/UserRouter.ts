@@ -1,5 +1,5 @@
 import { Router, Request, Response} from 'express';
-import { CreateUserController } from '../UseCases/Create/CreateUserController';
+import { CreateUserController } from '../UseCases/CreateUser/CreateUserController';
 const createUserController = require('../UseCases/Create/CreateUserUC');
 
 const router: Router= Router();
