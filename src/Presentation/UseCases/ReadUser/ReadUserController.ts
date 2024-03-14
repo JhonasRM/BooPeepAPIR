@@ -1,22 +1,21 @@
 import { Request, Response } from 'express';
 import { ReadUserUC } from './ReadUserUC';
 
-export class CreateUserController {
+export class ReadUserController {
   constructor(
     private readUserUC: ReadUserUC,
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const { name, email, password } = request.body;
+    const { email, password } = request.body;
 
     try {
-      await this.readUserUC.execute({
-        name,
+      const wantedUser = await this.readUserUC.execute({
         email,
         password
       })
-  
-      return response.status(201).send();  
+
+      return response.status(200).send().json(wantedUser);  
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Erro: ${error.message}`);

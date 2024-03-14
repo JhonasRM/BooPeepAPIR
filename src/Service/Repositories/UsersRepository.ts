@@ -35,9 +35,10 @@ export class UsersRepository {
             return null;
         }
     }
-    async findByName(name: string): Promise<User | null> {
-        const field = 'name';
-        const value = name;
+    async VerifyWPassword(email: string, password: string): Promise<User | null> {
+        const field = 'email';
+        const value = email;
+        const valuetoverify = password
 
         try {
             const collectionRef = this.db.collection("users");
@@ -45,20 +46,24 @@ export class UsersRepository {
             const querySnapshot = await query.get();
 
             if (querySnapshot.empty) {
-                console.log("No documents found");
+                console.log("Este email de usuário não existe");
                 return null;
             } else {
+                console.log('Usuário Encontrado')
                 let user: User | null = null;
-
                 querySnapshot.forEach((doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    user = doc.data() as User;
+                    const userData = doc.data() as User;
+                    if (userData.password === valuetoverify) {
+                        user = userData;
+                        console.log('Verificação de senha bem sucedida')
+                    } else {
+                        console.log("Senha Incorreta");
+                    }
                 });
-
                 return user;
             }
         } catch (error) {
-            console.error(`Error finding user by email: ${error}`);
+            console.error(`Erro ao buscar o usuário: ${error}`);
             return null;
         }
     }
