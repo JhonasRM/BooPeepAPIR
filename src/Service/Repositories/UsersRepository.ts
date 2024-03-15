@@ -35,7 +35,7 @@ export class UsersRepository {
             return null;
         }
     }
-    async VerifyWPassword(email: string, password: string): Promise<User | null> {
+    async VerifyWPassword(email: string, password: string): Promise<User | null | undefined> {
         const field = 'email';
         const value = email;
         const valuetoverify = password
@@ -46,21 +46,22 @@ export class UsersRepository {
             const querySnapshot = await query.get();
 
             if (querySnapshot.empty) {
-                console.log("Este email de usuário não existe");
+                // console.log("Este email de usuário não existe");
                 return null;
             } else {
-                console.log('Usuário Encontrado')
+                // console.log('Usuário Encontrado')
                 let user: User | null = null;
                 querySnapshot.forEach((doc) => {
                     const userData = doc.data() as User;
                     if (userData.password === valuetoverify) {
                         user = userData;
-                        console.log('Verificação de senha bem sucedida')
+                        // console.log('Verificação de senha bem sucedida')
+                        
                     } else {
-                        console.log("Senha Incorreta");
+                        // console.log("Senha Incorreta");
                     }
+                    return user
                 });
-                return user;
             }
         } catch (error) {
             console.error(`Erro ao buscar o usuário: ${error}`);

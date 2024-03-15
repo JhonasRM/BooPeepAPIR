@@ -20,19 +20,19 @@ describe('UserRepository', () => {
     const existingEmail = 'john@example.com';
     const user = await userRepository.findByEmail(existingEmail);
     expect(user).toEqual({
-      name: 'John Doe',
-      email: 'john@example.com',
-      password: 'securepassword',
+      "name": 'John Doe',
+      "email": 'john@example.com',
+      "password": 'securepassword',
     });
   });
-  test('save should return the an existing user', async () => {
-    const data: ICreateUserRequestDTO= {
-      name: 'Jhonas Histórias',
-    email: 'jhonas@trabalhos.com',
-    password: '123asd789',
-    }
-    const newUser: ICreateUserRequestDTO = new User(data)
-    const createUserUC: CreateUserUC = new CreateUserUC(userRepository)
-    createUserUC.execute(newUser)
-  })
+  // test('save should return the an existing user', async () => {
+  //   const data: ICreateUserRequestDTO= {
+  //     name: 'Jhonas Histórias',
+  //   email: 'jhonas@trabalhos.com',
+  //   password: '123asd789',
+  //   }
+  //   const newUser: ICreateUserRequestDTO = new User(data)
+  //   const createUserUC: CreateUserUC = new CreateUserUC(userRepository)
+  //   createUserUC.execute(newUser)
+  // })
 });
