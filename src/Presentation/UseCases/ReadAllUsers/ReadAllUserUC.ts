@@ -1,7 +1,7 @@
 
 import { User } from "../../../Service/Model/User";
 import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
-import { IReadUserRequestDTO } from "./ReadAllUserDTO";
+import { IReadAllUserRequestDTO } from "./ReadAllUserDTO";
 export class ReadUserUC {
     constructor(private usersRepository: UsersRepository) { }
     async execute() {

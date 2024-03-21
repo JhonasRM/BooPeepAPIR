@@ -1,7 +1,8 @@
 //Data Transfer Object
 
-export interface IReadUserRequestDTO{
-    // name?: string;
+export interface IReadAllUserRequestDTO{
+
+    name: string;
     email: string;
     password: string;
 }
