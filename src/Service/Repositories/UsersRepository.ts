@@ -4,28 +4,30 @@ import { conn } from "../../Data Access/DAO/conn";
 
 export class UsersRepository {
     private db: Firestore
+    private collectionPath: string
     constructor(){
         conn()
         this.db = getFirestore()
+        this.collectionPath = 'users'
     }
     async findByEmail(email: string): Promise<User | null> {
         const field = 'email';
         const value = email;
 
         try {
-            const collectionRef = this.db.collection("users");
+            const collectionRef = this.db.collection(this.collectionPath);
             const query = collectionRef.where(field, "==", value);
             const querySnapshot = await query.get();
-
+            
             if (querySnapshot.empty) {
                 console.log("No documents found");
                 return null;
             } else {
                 let user: User | null = null;
 
-                querySnapshot.forEach((doc) => {
+                querySnapshot.forEach(async (doc) => {
                     console.log(doc.id, "=>", doc.data());
-                    user = doc.data() as User;
+                    user = await doc.data() as User;
                 });
 
                 return user;
@@ -35,43 +37,30 @@ export class UsersRepository {
             return null;
         }
     }
-    async VerifyWPassword(email: string, password: string): Promise<User | null | undefined> {
-        const field = 'email';
-        const value = email;
-        const valuetoverify = password
-
+    async getAllUsers(): Promise<User[] | null>{
         try {
-            const collectionRef = this.db.collection("users");
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
-
-            if (querySnapshot.empty) {
-                // console.log("Este email de usuário não existe");
-                return null;
-            } else {
-                // console.log('Usuário Encontrado')
-                let user: User | null = null;
-                querySnapshot.forEach((doc) => {
-                    const userData = doc.data() as User;
-                    if (userData.password === valuetoverify) {
-                        user = userData;
-                        // console.log('Verificação de senha bem sucedida')
-                        
-                    } else {
-                        // console.log("Senha Incorreta");
-                    }
-                    return user
-                });
+            const collectionRef = this.db.collection(this.collectionPath);
+            const querySnapshot = await collectionRef.get();
+            const users: User[] = [];
+            querySnapshot.forEach((doc) => {
+                const userData = doc.data() as User;
+                users.push(userData);
+            });
+            if(users[1] === null){
+                console.log('Nenhum Usuário encontrado')
+                return null
             }
+            return users;
         } catch (error) {
-            console.error(`Erro ao buscar o usuário: ${error}`);
+            console.error(`Error fetching users: ${error}`);
             return null;
         }
     }
+    
+    
     async save(user: User): Promise<void> {
         try {
-            const collectionPath: string = 'users';
-            const docRef: DocumentData = await this.db.collection(collectionPath).add(user);
+            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(user);
             console.log('Usuário cadastrado com sucesso');
             console.log(user)
         } catch (error) {

@@ -2,8 +2,8 @@ import { Router, Request, Response} from 'express';
 import { CreateUserUC } from '../UseCases/CreateUser/CreateUserUC';
 import { UsersRepository } from '../../Service/Repositories/UsersRepository';
 import { CreateUserController } from '../UseCases/CreateUser/CreateUserController';
-import { ReadUserUC } from '../UseCases/ReadUser/ReadUserUC';
-import { ReadUserController } from '../UseCases/ReadUser/ReadUserController';
+import { ReadUserUC } from '../UseCases/ReadAllUsers/ReadAllUserUC';
+import { ReadUserController } from '../UseCases/ReadAllUsers/ReadAllUserController';
 
 //Create User
 const router: Router= Router();
@@ -15,15 +15,15 @@ const createUserController: CreateUserController = new CreateUserController(crea
 router
     .route("/user")
     .post((req: Request ,res: Response) => createUserController.handle(req, res))
+    
 
+// //Read User
+// const readUserUC: ReadUserUC = new ReadUserUC(usersRepository)
+// const readUserController: ReadUserController = new ReadUserController(readUserUC)
 
-//Read User
-const readUserUC: ReadUserUC = new ReadUserUC(usersRepository)
-const readUserController: ReadUserController = new ReadUserController(readUserUC)
-
-router
-    .route("/users")
-    .get((req: Request ,res: Response) => readUserController.handle(req, res))
+// router
+//     .route("/users")
+//     .get((req: Request ,res: Response) => readUserController.handle(req, res))
     
 // router
 //     .route("/user")
