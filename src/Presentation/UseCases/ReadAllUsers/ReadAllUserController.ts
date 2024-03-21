@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
-import { ReadUserUC } from './ReadAllUserUC';
+import { ReadAllUsersUC } from './ReadAllUserUC';
 import { User } from '../../../Service/Model/User';
 
-export class ReadUserController {
+export class ReadAllUsersController {
   constructor(
-    private readUserUC: ReadUserUC,
+    private readAllUsersUC: ReadAllUsersUC,
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
 
     try {
-      const Users: User[] = await this.readUserUC.execute()
+      const Users: User[] = await this.readAllUsersUC.execute()
 
       return response.status(200).send().json(Users);  
     } catch (error: unknown) {
