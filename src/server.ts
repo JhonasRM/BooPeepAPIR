@@ -1,7 +1,7 @@
 import express from "express";
 import router from "./Presentation/Routes/router";
 
-const port = 4200
+const port = 3000
 const app = express()
 
 app.use(express.json)
