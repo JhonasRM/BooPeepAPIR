@@ -67,4 +67,17 @@ export class UsersRepository {
             console.error(`Erro ao cadastrar o usuário: ${error}`);
         }
     }
+
+    async delete(email: string): Promise<void> {
+        try {
+            const collectionPath: string = 'users';
+            const userRef = this.db.collection(collectionPath).doc(email);
+            await userRef.delete();
+            console.log('Usuário excluído com sucesso');
+          //  console.log('ID do usuário excluído:', user);
+        } catch (error) {
+            console.error(`Erro ao excluir o usuário: ${error}`);
+        }
+    }
+    
 }
