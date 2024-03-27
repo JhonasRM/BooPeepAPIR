@@ -130,5 +130,27 @@ export class PostRepository {
             console.error('Erro ao atualizar campo:', error);
         }
     }
+    async DeletePost(postId: string): Promise<void | string> {
+        try {
+            const postRef = this.db.collection(this.collectionPath).doc(postId);
 
+            const postSnapshot = await postRef.get();
+
+            if (!postSnapshot.exists) {
+                console.error('Documento não encontrado.');
+                throw new Error('Post Não Encontrado');
+            }
+            
+            await postRef.delete();
+            return
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error('Erro ao deletar documento:', error);
+                return 'Erro ao deletar documento: ' + error.message; // Retorna uma mensagem de erro
+            } else {
+                console.error('Erro ao deletar documento:', error);
+                return 'Erro ao deletar documento: ' + String(error); // Retorna uma mensagem de erro
+            }
+    }
+    }
 }
