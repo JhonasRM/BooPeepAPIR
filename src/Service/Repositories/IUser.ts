@@ -17,7 +17,7 @@ export class IUsersRepository {
             // Iterate through the documents and print their data
             querySnapshot.forEach((doc: DocumentData) => {
                 console.log(doc.id, "=>", doc.data())
-                const user:User = doc.data()
+                const user: User = doc.data()
                 return user
             })
 
@@ -38,4 +38,23 @@ export class IUsersRepository {
             console.log(`Erro ao cadastrar o usuário: ${error}`);
         }
     }
+    async delete(user: User): Promise<void> {
+        try {
+            const collectionPath: string = 'users';
+            const querySnapshot = await this.db.collection(collectionPath).where('email', '==', user.email).get();
+
+            if (querySnapshot.empty) {
+                console.log('Nenhum usuário encontrado com o e-mail fornecido:', user.email);
+                return;
+            }
+
+            querySnapshot.forEach(async (doc) => {
+                await doc.ref.delete();
+                console.log('Usuário excluído com sucesso');
+            });
+        } catch (error) {
+            console.error(`Erro ao excluir o usuário: ${error}`);
+        }
+    }
+
 }
