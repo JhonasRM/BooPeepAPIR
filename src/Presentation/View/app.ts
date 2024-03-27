@@ -1,4 +1,4 @@
-import router from "../Routes/router"
+import router from "./router"
 
 import express from 'express'
 
