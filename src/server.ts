@@ -5,7 +5,7 @@ import app from "./Presentation/View/app";
 const port = 3000
 
 
-app.use(express.json)
+app.use(express.json())
 app.use(router)
 
 app.listen(port, () => {

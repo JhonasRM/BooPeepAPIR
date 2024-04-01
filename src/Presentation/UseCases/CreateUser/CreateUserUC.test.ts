@@ -1,3 +1,4 @@
+import { conn } from "../../../Data Access/DAO/conn";
 import { UsersRepository as UserRepository } from "../../../Service/Repositories/UsersRepository";
 
 describe('UserRepository', () => {

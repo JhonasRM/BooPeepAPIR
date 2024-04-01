@@ -6,7 +6,7 @@ export class UsersRepository {
     private db: Firestore
     private collectionPath: string
     constructor(){
-        conn()
+        conn();
         this.db = getFirestore()
         this.collectionPath = 'users'
     }

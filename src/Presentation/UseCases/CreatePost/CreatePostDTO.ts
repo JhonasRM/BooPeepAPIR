@@ -1,7 +1,7 @@
 export interface ICreatePostRequestDTO {
     description: string;
     //   image : SVGAElement;
-    data: Date;
+    createdAt: number;
     local: string;
     status: number;
     UserID: string;
