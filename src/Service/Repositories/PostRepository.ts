@@ -11,33 +11,7 @@ export class PostRepository {
         this.db = getFirestore()
         this.collectionPath = 'posts'
     }
-    async findUser(id: string): Promise<User | null> {
-        const field = 'id';
-        const value = id;
-
-        try {
-            const collectionRef = this.db.collection('users');
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
-
-            if (querySnapshot.empty) {
-                console.log("No documents found");
-                return null;
-            } else {
-                let user: User | null = null;
-
-                querySnapshot.forEach(async (doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    user = await doc.data() as User;
-                });
-
-                return user;
-            }
-        } catch (error) {
-            console.error(`Error finding user by email: ${error}`);
-            return null;
-        }
-    }
+    
     async findByID(id: string): Promise<Post | null> {
         const field = 'id';
         const value = id;
@@ -87,12 +61,19 @@ export class PostRepository {
 
 
     async save(post: Post): Promise<void> {
+        const NewPost: FirebaseFirestore.DocumentData = {
+            description: post.description,
+            createdAt: post.createdAt,
+            local: post.local,
+            status: post.status,
+            // UserID: post.UserID
+        }
         try {
-            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(post);
-            console.log('Usuário cadastrado com sucesso');
+            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(NewPost);
+            console.log('Postagem criada com sucesso');
             console.log(post)
         } catch (error) {
-            console.error(`Erro ao cadastrar o usuário: ${error}`);
+            console.error(`Erro ao criar a postagem: ${error}`);
         }
     }
     

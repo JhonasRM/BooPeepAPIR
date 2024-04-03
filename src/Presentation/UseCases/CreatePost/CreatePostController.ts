@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { CreatePostUC } from './CreatePostUC';
+import { ICreatePostRequestDTO } from './CreatePostDTO';
 
 export class CreatePostController {
     constructor(
@@ -9,20 +10,22 @@ export class CreatePostController {
     async handle(request: Request, response: Response): Promise<Response> {
         const {
             description,
-            data,
+            createdAt,
+            local,
+            status,
+            email
+        } = request.body;
+
+        const UserID = ''
+        const PostData: ICreatePostRequestDTO = {
+        description,
+            createdAt,
             local,
             status,
             UserID
-        } = request.body;
-
+        }
         try {
-            await this.createPostUC.execute({
-                description,
-                data,
-                local,
-                status,
-                UserID
-            })
+            await this.createPostUC.execute(PostData,  email)
 
             return response.status(201).send();
         } catch (error: unknown) {

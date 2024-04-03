@@ -59,8 +59,14 @@ export class UsersRepository {
     
     
     async save(user: User): Promise<void> {
+        const NewUser: FirebaseFirestore.DocumentData = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password: user.password
+        }
         try {
-            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(user);
+            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(NewUser);
             console.log('Usuário cadastrado com sucesso');
             console.log(user)
         } catch (error) {
