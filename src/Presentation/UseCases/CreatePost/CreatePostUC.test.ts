@@ -14,32 +14,32 @@ describe('UserRepository', () => {
     // conn()
   });
 
-  // test('Create Post without user verification should return by console.log the post data', async () => {
-  //       const PostData: Post = new  Post({
-  //           'description': 'NewPost',
-  //           'local': 'Etec Zona Leste',
-  //           'status': 0,
-  //           // 'UserID': user?.id,
-  //           'createdAt': Date.now()
-  //       })
-  //       const NewPost = await postRepository.save(PostData)
-  //   expect(NewPost).not.toBeNull()
-  // }, 100000);
+  test('Create Post without user verification should return by console.log the post data', async () => {
+        const PostData: Post = new  Post({
+            'description': 'NewPost',
+            'local': 'Etec Zona Leste',
+            'status': 0,
+            // 'UserID': user?.id,
+            'createdAt': Date.now()
+        })
+        const NewPost = await postRepository.save(PostData)
+    expect(NewPost).not.toBeNull()
+  }, 100000);
 
-  //   test('Find Non existing Post By ID returning error', async () => {
-  //     const nonExistingID = '1'
-  //     const WantedPost = await postRepository.findByID(nonExistingID)
-  // expect(WantedPost).toBeNull()
-  // }, 100000);
+    test('Find Non existing Post By ID returning error', async () => {
+      const nonExistingID = '1'
+      const WantedPost = await postRepository.findByID(nonExistingID)
+  expect(WantedPost).toBeNull()
+  }, 100000);
   test('Find  existing Post By ID returning error', async () => {
-    const ExistingID = '2T8AoUkIWh8MOk2rJaTH'
+    const ExistingID = 'bCMJQB7oaUmlZjAqMV2f'
     const WantedPost = await postRepository.findByID(ExistingID)
     expect(WantedPost).toEqual({
-      'UserID': '/ users / jk9IXHXv0EL8wVUHAm8B',
-      'createdAt': '3 de abril de 2024 às 16: 28:09 UTC - 3',
-      'description': "aksdasad",
-      'local': "Etec Zona Leste",
-      'status': 0
+      'description': 'NewPost',
+            'local': 'Etec Zona Leste',
+            'status': 0,
+            // 'UserID': user?.id,
+            'createdAt': 1712187060932
     })
   }, 100000);
 });

@@ -1,3 +1,4 @@
+import { User } from "../../../Service/Model/User";
 import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
 import { IReadUserRequestDTO } from "./ReadUserDTO";
 
@@ -40,18 +41,6 @@ describe('UserRepository', () => {
         console.log('Senha Incorreta')
     }
 
-      expect(user).toBeNull();
+      expect(user).toEqual( {"email": "john@example.com", "name": "John Doe", "password": "securepassword"})
     }, 50000)
-
-    // test('VerifyWPassword should return User for correct email and password', async () => {
-    //   const ExistingEmail = 'john@example.com';
-    //   const CorrectPassword  = 'securepassword'
-    //   const user = await userRepository.VerifyWPassword(ExistingEmail, CorrectPassword)
-    //   expect(user).toEqual({
-    //     "name": 'John Doe',
-    //     "email": 'john@example.com',
-    //     "password": 'securepassword',
-    //   });
-    // })
-
   })

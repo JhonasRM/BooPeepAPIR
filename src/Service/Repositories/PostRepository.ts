@@ -13,28 +13,21 @@ export class PostRepository {
     }
     
     async findByID(id: string): Promise<Post | null> {
-        const field = 'id';
-        const value = id;
 
         try {
-            const collectionRef = this.db.collection(this.collectionPath);
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
+            const docRef = this.db.collection("posts").doc(id);
+        const docSnapshot = await docRef.get();
 
-            if (querySnapshot.empty) {
-                console.log("No documents found");
-                return null;
-            } else {
-                let post: Post | null = null;
-
-                querySnapshot.forEach(async (doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    post = await doc.data() as Post;
-                });
-
-                return post;
-            }
-        } catch (error) {
+        if (!docSnapshot.exists) {
+            console.log(`Nenhum post foi encontrado o ID: ${id}`);
+            return null;
+        } else {
+            console.log("Post encontrado:");
+            console.log(docSnapshot.id, "=>", docSnapshot.data());
+            return docSnapshot.data() as Post;
+        }
+            
+        } catch (error: any) {
             console.error(`Error finding post by userID: ${error}`);
             return null;
         }

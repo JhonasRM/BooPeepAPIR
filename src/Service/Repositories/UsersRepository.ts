@@ -25,12 +25,13 @@ export class UsersRepository {
             } else {
                 let user: User | null = null;
 
-                querySnapshot.forEach(async (doc) => {
+                querySnapshot.forEach((doc) => {
                     console.log(doc.id, "=>", doc.data());
-                    user = await doc.data() as User;
+                    user = doc.data() as User;
                 });
+                
+                return user
 
-                return user;
             }
         } catch (error) {
             console.error(`Error finding user by email: ${error}`);
