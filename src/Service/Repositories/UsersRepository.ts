@@ -5,7 +5,7 @@ import { conn } from "../../Data Access/DAO/conn";
 export class UsersRepository {
     private db: Firestore
     private collectionPath: string
-    constructor(){
+    constructor() {
         conn()
         this.db = getFirestore()
         this.collectionPath = 'users'
@@ -18,7 +18,7 @@ export class UsersRepository {
             const collectionRef = this.db.collection(this.collectionPath);
             const query = collectionRef.where(field, "==", value);
             const querySnapshot = await query.get();
-            
+
             if (querySnapshot.empty) {
                 console.log("No documents found");
                 return null;
@@ -37,7 +37,7 @@ export class UsersRepository {
             return null;
         }
     }
-    async getAllUsers(): Promise<User[] | null>{
+    async getAllUsers(): Promise<User[] | null> {
         try {
             const collectionRef = this.db.collection(this.collectionPath);
             const querySnapshot = await collectionRef.get();
@@ -46,7 +46,7 @@ export class UsersRepository {
                 const userData = doc.data() as User;
                 users.push(userData);
             });
-            if(users[1] === null){
+            if (users[1] === null) {
                 console.log('Nenhum Usuário encontrado')
                 return null
             }
@@ -56,8 +56,8 @@ export class UsersRepository {
             return null;
         }
     }
-    
-    
+
+
     async save(user: User): Promise<void> {
         try {
             const docRef: DocumentData = await this.db.collection(this.collectionPath).add(user);
@@ -68,16 +68,50 @@ export class UsersRepository {
         }
     }
 
-    async delete(email: string): Promise<void> {
+    async delete(user: User): Promise<void> {
         try {
-            const collectionPath: string = 'users';
-            const userRef = this.db.collection(collectionPath).doc(email);
-            await userRef.delete();
-            console.log('Usuário excluído com sucesso');
-          //  console.log('ID do usuário excluído:', user);
+            const userQuerySnapshot = await this.db.collection(this.collectionPath)
+                .where('email', '==', user.email)
+                .get();
+
+            if (userQuerySnapshot.empty) {
+                console.log('Nenhum usuário encontrado com este e-mail.');
+                return;
+            }
+            userQuerySnapshot.forEach(async doc => {
+                await doc.ref.delete();
+                console.log('Usuário deletado com sucesso');
+                console.log(user);
+            });
         } catch (error) {
-            console.error(`Erro ao excluir o usuário: ${error}`);
+            console.error(`Erro ao deletar o usuário: ${error}`);
+        }
+    }
+
+    async update(user: User): Promise<void> {
+        try {
+            const userQuerySnapshot = await this.db.collection(this.collectionPath)
+                .where('email', '==', user.email)
+                .get();
+    
+            if (userQuerySnapshot.empty) {
+                console.log('Nenhum usuário encontrado com este e-mail.');
+                return;
+            }
+    
+            userQuerySnapshot.forEach(async doc => {
+                await doc.ref.update({
+                    name: user.name,
+                    password: user.password
+                    //outras propriedades ...
+                });
+                console.log('Usuário atualizado com sucesso');
+                console.log(user);
+            });
+        } catch (error) {
+            console.error(`Erro ao atualizar o usuário: ${error}`);
         }
     }
     
+
 }
