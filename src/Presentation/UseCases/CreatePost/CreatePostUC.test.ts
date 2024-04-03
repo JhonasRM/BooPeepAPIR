@@ -12,7 +12,7 @@ describe('UserRepository', () => {
     userRepository = new UserRepository()
     postRepository = new PostRepository()
     // conn()
-});
+  });
 
   // test('Create Post without user verification should return by console.log the post data', async () => {
   //       const PostData: Post = new  Post({
@@ -26,9 +26,20 @@ describe('UserRepository', () => {
   //   expect(NewPost).not.toBeNull()
   // }, 100000);
 
-  test('Find Non existing Post By ID returning error', async () => {
-    const nonExistingID = '1'
-    const WantedPost = await postRepository.findByID(nonExistingID)
-expect(WantedPost).toBeNull()
-}, 100000);
+  //   test('Find Non existing Post By ID returning error', async () => {
+  //     const nonExistingID = '1'
+  //     const WantedPost = await postRepository.findByID(nonExistingID)
+  // expect(WantedPost).toBeNull()
+  // }, 100000);
+  test('Find  existing Post By ID returning error', async () => {
+    const ExistingID = '2T8AoUkIWh8MOk2rJaTH'
+    const WantedPost = await postRepository.findByID(ExistingID)
+    expect(WantedPost).toEqual({
+      'UserID': '/ users / jk9IXHXv0EL8wVUHAm8B',
+      'createdAt': '3 de abril de 2024 às 16: 28:09 UTC - 3',
+      'description': "aksdasad",
+      'local': "Etec Zona Leste",
+      'status': 0
+    })
+  }, 100000);
 });
