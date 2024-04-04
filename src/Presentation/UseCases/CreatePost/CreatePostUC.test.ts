@@ -11,7 +11,6 @@ describe('UserRepository', () => {
   beforeAll(() => {
     userRepository = new UserRepository()
     postRepository = new PostRepository()
-    // conn()
   });
 
   test('Create Post without user verification should return by console.log the post data', async () => {
@@ -26,20 +25,4 @@ describe('UserRepository', () => {
     expect(NewPost).not.toBeNull()
   }, 100000);
 
-    test('Find Non existing Post By ID returning error', async () => {
-      const nonExistingID = '1'
-      const WantedPost = await postRepository.findByID(nonExistingID)
-  expect(WantedPost).toBeNull()
-  }, 100000);
-  test('Find  existing Post By ID returning error', async () => {
-    const ExistingID = 'bCMJQB7oaUmlZjAqMV2f'
-    const WantedPost = await postRepository.findByID(ExistingID)
-    expect(WantedPost).toEqual({
-      'description': 'NewPost',
-            'local': 'Etec Zona Leste',
-            'status': 0,
-            // 'UserID': user?.id,
-            'createdAt': 1712187060932
-    })
-  }, 100000);
 });

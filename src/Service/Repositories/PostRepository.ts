@@ -7,7 +7,7 @@ export class PostRepository {
     private db: Firestore
     private collectionPath: string
     constructor() {
-        // conn()
+        conn();
         this.db = getFirestore()
         this.collectionPath = 'posts'
     }
@@ -91,7 +91,7 @@ export class PostRepository {
             const previousValue = postData[fieldToUpdate];
             if (typeof previousValue !== typeof newValue) {
                 console.error(`O tipo do valor anterior '${previousValue}' não corresponde ao tipo do novo valor '${newValue}'.`);
-                return 'O tipo do valor anterior do campo requerido não corresponde ao tipo do novo valor ';
+                return 'O tipo do valor anterior do campo requerido não corresponde ao tipo do novo valor';
             }
     
             await postRef.update({
