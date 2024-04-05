@@ -10,6 +10,7 @@ const jestConfig: JestConfigWithTsJest = {
     './src/Presentation/UseCases/CreatePost/CreatePostUC.test.ts',
     './src/Presentation/UseCases/ReadPost/ReadPostUC.test.ts',
     './src/Presentation/UseCases/ReadAllPost/ReadAllPostUC.test.ts',
+    './src/Presentation/UseCases/UpdatePost/UpdatePostUC.test.ts',
     './src/Presentation/UseCases/DeletePost/DeletePostUC.test.ts'
   ],
 };

@@ -74,4 +74,49 @@ export class UsersRepository {
             console.error(`Erro ao cadastrar o usuário: ${error}`);
         }
     }
+    async delete(user: User): Promise<void> {
+        try {
+            const userQuerySnapshot = await this.db.collection(this.collectionPath)
+                .where('email', '==', user.email)
+                .get();
+
+            if (userQuerySnapshot.empty) {
+                console.log('Nenhum usuário encontrado com este e-mail.');
+                return;
+            }
+            userQuerySnapshot.forEach(async doc => {
+                await doc.ref.delete();
+                console.log('Usuário deletado com sucesso');
+                console.log(user);
+            });
+        } catch (error) {
+            console.error(`Erro ao deletar o usuário: ${error}`);
+        }
+    }
+
+    async update(user: User): Promise<void> {
+        try {
+            const userQuerySnapshot = await this.db.collection(this.collectionPath)
+                .where('email', '==', user.email)
+                .get();
+    
+            if (userQuerySnapshot.empty) {
+                console.log('Nenhum usuário encontrado com este e-mail.');
+                return;
+            }
+    
+            userQuerySnapshot.forEach(async doc => {
+                await doc.ref.update({
+                    name: user.name,
+                    password: user.password
+                    //outras propriedades ...
+                });
+                console.log('Usuário atualizado com sucesso');
+                console.log(user);
+            });
+        } catch (error) {
+            console.error(`Erro ao atualizar o usuário: ${error}`);
+        }
+    }
+    
 }

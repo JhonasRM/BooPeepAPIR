@@ -1,4 +1,5 @@
 import { conn } from "../../../Data Access/DAO/conn";
+import { User } from "../../../Service/Model/User";
 import { UsersRepository as UserRepository } from "../../../Service/Repositories/UsersRepository";
 
 describe('UserRepository', () => {
@@ -12,7 +13,7 @@ describe('UserRepository', () => {
     const nonExistingEmail = 'nonexisting@example.com';
     const user = await userRepository.findByEmail(nonExistingEmail);
     expect(user).toBeNull();
-  });
+  }, 1000000);
 
   test('findByEmail should return the user for existing email', async () => {
     const existingEmail = 'john@example.com';
@@ -22,15 +23,15 @@ describe('UserRepository', () => {
       "email": 'john@example.com',
       "password": 'securepassword',
     });
-  });
-  // test('save should return the an existing user', async () => {
-  //   const data: ICreateUserRequestDTO= {
-  //     name: 'Jhonas Histórias',
-  //   email: 'jhonas@trabalhos.com',
-  //   password: '123asd789',
-  //   }
-  //   const newUser: ICreateUserRequestDTO = new User(data)
-  //   const createUserUC: CreateUserUC = new CreateUserUC(userRepository)
-  //   createUserUC.execute(newUser)
-  // })
+  }, 1000000);
+  
+  test('Create Post without user verification should return by console.log the post data', async () => {
+    const UserData: User = new  User({
+        'name': 'Jhonas Histórias',
+        'email': 'jhonas@trabalhos',
+        'password': '123asd789'
+    })
+    const NewUser = await userRepository.save(UserData)
+expect(NewUser).not.toBeNull()
+}, 100000);
 });

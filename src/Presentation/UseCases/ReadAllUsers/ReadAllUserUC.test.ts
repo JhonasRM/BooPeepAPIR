@@ -10,6 +10,7 @@ describe('UserRepository function getAllUsers to return a Array List of Users fr
 
     test('getAllUsers should return an Array of type Users', async () => {
         const Users = await userRepository.getAllUsers();
+        console.log(Users)
         expect(Users).toBeInstanceOf(Array);
         expect(Users?.length).toBeGreaterThan(0);
     }, 10000);
