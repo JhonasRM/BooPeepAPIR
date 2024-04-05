@@ -82,12 +82,11 @@ export class UsersRepository {
 
             if (userQuerySnapshot.empty) {
                 console.log('Nenhum usuário encontrado com este e-mail.');
-                return;
+                throw new Error('Nenhum usuário encontrado');
             }
             userQuerySnapshot.forEach(async doc => {
                 await doc.ref.delete();
                 console.log('Usuário deletado com sucesso');
-                console.log(user);
             });
         } catch (error) {
             console.error(`Erro ao deletar o usuário: ${error}`);
@@ -102,6 +101,7 @@ export class UsersRepository {
     
             if (userQuerySnapshot.empty) {
                 console.log('Nenhum usuário encontrado com este e-mail.');
+                throw new Error('Nenhum usuário encontrado com este e-mail.')
                 return;
             }
     
