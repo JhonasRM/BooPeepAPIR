@@ -1,13 +1,12 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
 import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
-
+import * as admin from 'firebase-admin';
 export class UsersRepository {
     private db: Firestore
     private collectionPath: string
     constructor(){
-        // conn(); //conexão para testes
-        this.db = getFirestore()
+        this.db = conn.firestore()
         this.collectionPath = 'users'
     }
     async findByEmail(email: string): Promise<User | null> {
