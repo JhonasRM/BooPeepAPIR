@@ -6,7 +6,7 @@ export class UsersRepository {
     private db: Firestore
     private collectionPath: string
     constructor(){
-        conn();
+        // conn(); //conexão para testes
         this.db = getFirestore()
         this.collectionPath = 'users'
     }
@@ -93,7 +93,7 @@ export class UsersRepository {
         }
     }
 
-    async update(user: User): Promise<void> {
+    async update(user: User): Promise<void | User> {
         try {
             const userQuerySnapshot = await this.db.collection(this.collectionPath)
                 .where('email', '==', user.email)
@@ -105,14 +105,15 @@ export class UsersRepository {
                 return;
             }
     
-            userQuerySnapshot.forEach(async doc => {
+            const UpdatedUser = await userQuerySnapshot.forEach(async doc => {
                 await doc.ref.update({
                     name: user.name,
                     password: user.password
                     //outras propriedades ...
                 });
                 console.log('Usuário atualizado com sucesso');
-                console.log(user);
+                console.log(UpdatedUser)
+                return UpdatedUser
             });
         } catch (error) {
             console.error(`Erro ao atualizar o usuário: ${error}`);

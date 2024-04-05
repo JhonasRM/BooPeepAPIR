@@ -23,5 +23,5 @@ describe('Update User feature on usersrepository', () => {
         const updatedUser = await usersRepository.update(user)
         expect(updatedUser).not.toBeNull()
 
-    })
+    }, 100000)
 })

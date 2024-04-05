@@ -7,7 +7,7 @@ export class PostRepository {
     private db: Firestore
     private collectionPath: string
     constructor() {
-        conn();
+        // conn(); //conexão para testes
         this.db = getFirestore()
         this.collectionPath = 'posts'
     }
