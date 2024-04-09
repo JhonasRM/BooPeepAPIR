@@ -5,11 +5,9 @@ import { PostRepository } from "../../../Service/Repositories/PostRepository";
 import { UsersRepository as UserRepository } from "../../../Service/Repositories/UsersRepository";
 
 describe('UserRepository', () => {
-  let userRepository: UserRepository;
   let postRepository: PostRepository;
 
   beforeAll(() => {
-    userRepository = new UserRepository()
     postRepository = new PostRepository()
   });
 
@@ -19,7 +17,7 @@ describe('UserRepository', () => {
             'local': 'Etec Zona Leste',
             'status': 0,
             // 'UserID': user?.id,
-            'createdAt': Date.now()
+            'createdAt': 0
         })
         const NewPost = await postRepository.save(PostData)
     expect(NewPost).not.toBeNull()
