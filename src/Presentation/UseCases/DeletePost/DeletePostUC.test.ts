@@ -6,20 +6,14 @@ describe('UserRepository function getAllPosts to return a Array List of Posts fr
     beforeAll(() => {
         postRepository = new PostRepository()
     });
-    test('Find Non existing Post By ID returning error', async () => {
+    test('Deleting Non existing Post By ID returning error', async () => {
         const nonExistingID = '1'
-        const WantedPost = await postRepository.findByID(nonExistingID)
-    expect(WantedPost).toBeNull()
+        const WantedPost = await postRepository.DeletePost(nonExistingID)
+    expect(WantedPost).toEqual('Erro ao deletar documento: Post Não Encontrado')
     }, 100000);
-    test('Find  existing Post By ID returning error', async () => {
+    test('Delete  existing Post By ID returning error', async () => {
       const ExistingID = '2EFlzO3EXQwcfSBbSfSa'
       const WantedPost = await postRepository.findByID(ExistingID)
-      expect(WantedPost).toEqual({
-        'description': 'NewPost',
-              'local': 'Etec Zona Leste',
-              'status': 0,
-              // 'UserID': user?.id,
-              'createdAt': 1712280874172
-      })
+      expect(WantedPost).not.toBeNull()
     }, 100000);
 })

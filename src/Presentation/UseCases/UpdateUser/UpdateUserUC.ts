@@ -1,11 +1,11 @@
 import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
-import { IUserRequestDTO } from "./UpdateUserDTO";
+import { IUpdateUserRequestDTO } from "./UpdateUserDTO";
 
 
 export class UpdateUserUC {
     constructor(private usersRepository: UsersRepository) { }
 
-    async update(data: IUserRequestDTO): Promise<void> {
+    async update(data: IUpdateUserRequestDTO): Promise<void> {
         const userToUpdate = await this.usersRepository.findByEmail(data.email);
 
         if (!userToUpdate) {

@@ -1,4 +1,4 @@
-export interface IUserRequestDTO{
+export interface IUpdateUserRequestDTO{
     name: string;
     email: string;
     password: string;

@@ -8,13 +8,15 @@ import { ReadAllPostUC } from '../UseCases/ReadAllPost/ReadAllPostUC';
 import { ReadAllPostController } from '../UseCases/ReadAllPost/ReadAllPostController';
 import { UpdatePostUC } from '../UseCases/UpdatePost/UpdatePostUC';
 import { UpdatePostController } from '../UseCases/UpdatePost/UpdatePostController';
+import { UsersRepository } from '../../Service/Repositories/UsersRepository';
 
 
 //Create Post
 const router: Router= Router();
 
+const userRepository: UsersRepository = new UsersRepository()
 const postRepository: PostRepository = new PostRepository()
-const createPostUC: CreatePostUC = new CreatePostUC(postRepository)
+const createPostUC: CreatePostUC = new CreatePostUC(postRepository, userRepository)
 const createPostController: CreatePostController = new CreatePostController(createPostUC)
 
 //Read Post

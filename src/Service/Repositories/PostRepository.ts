@@ -2,65 +2,31 @@ import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore"
 import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
 import { Post } from "../Model/Post";
-
+import * as admin from 'firebase-admin';
 export class PostRepository {
     private db: Firestore
     private collectionPath: string
     constructor() {
-        conn()
-        this.db = getFirestore()
+        this.db = conn.firestore()
         this.collectionPath = 'posts'
     }
-    async findUser(id: string): Promise<User | null> {
-        const field = 'id';
-        const value = id;
-
-        try {
-            const collectionRef = this.db.collection('users');
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
-
-            if (querySnapshot.empty) {
-                console.log("No documents found");
-                return null;
-            } else {
-                let user: User | null = null;
-
-                querySnapshot.forEach(async (doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    user = await doc.data() as User;
-                });
-
-                return user;
-            }
-        } catch (error) {
-            console.error(`Error finding user by email: ${error}`);
-            return null;
-        }
-    }
+    
     async findByID(id: string): Promise<Post | null> {
-        const field = 'id';
-        const value = id;
 
         try {
-            const collectionRef = this.db.collection(this.collectionPath);
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
+            const docRef = this.db.collection("posts").doc(id);
+        const docSnapshot = await docRef.get();
 
-            if (querySnapshot.empty) {
-                console.log("No documents found");
-                return null;
-            } else {
-                let post: Post | null = null;
-
-                querySnapshot.forEach(async (doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    post = await doc.data() as Post;
-                });
-
-                return post;
-            }
-        } catch (error) {
+        if (!docSnapshot.exists) {
+            console.log(`Nenhum post foi encontrado o ID: ${id}`);
+            return null;
+        } else {
+            console.log("Post encontrado:");
+            console.log(docSnapshot.id, "=>", docSnapshot.data());
+            return docSnapshot.data() as Post;
+        }
+            
+        } catch (error: any) {
             console.error(`Error finding post by userID: ${error}`);
             return null;
         }
@@ -87,12 +53,19 @@ export class PostRepository {
 
 
     async save(post: Post): Promise<void> {
+        const NewPost: FirebaseFirestore.DocumentData = {
+            description: post.description,
+            createdAt: post.createdAt,
+            local: post.local,
+            status: post.status,
+            // UserID: post.UserID
+        }
         try {
-            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(post);
-            console.log('Usuário cadastrado com sucesso');
+            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(NewPost);
+            console.log('Postagem criada com sucesso');
             console.log(post)
         } catch (error) {
-            console.error(`Erro ao cadastrar o usuário: ${error}`);
+            console.error(`Erro ao criar a postagem: ${error}`);
         }
     }
     
@@ -117,7 +90,7 @@ export class PostRepository {
             const previousValue = postData[fieldToUpdate];
             if (typeof previousValue !== typeof newValue) {
                 console.error(`O tipo do valor anterior '${previousValue}' não corresponde ao tipo do novo valor '${newValue}'.`);
-                return 'O tipo do valor anterior do campo requerido não corresponde ao tipo do novo valor ';
+                return 'O tipo do valor anterior do campo requerido não corresponde ao tipo do novo valor';
             }
     
             await postRef.update({
@@ -130,5 +103,27 @@ export class PostRepository {
             console.error('Erro ao atualizar campo:', error);
         }
     }
+    async DeletePost(postId: string): Promise<void | string> {
+        try {
+            const postRef = this.db.collection(this.collectionPath).doc(postId);
 
+            const postSnapshot = await postRef.get();
+
+            if (!postSnapshot.exists) {
+                console.error('Documento não encontrado.');
+                throw new Error('Post Não Encontrado');
+            }
+            
+            await postRef.delete();
+            return
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error('Erro ao deletar documento:', error);
+                return 'Erro ao deletar documento: ' + error.message; // Retorna uma mensagem de erro
+            } else {
+                console.error('Erro ao deletar documento:', error);
+                return 'Erro ao deletar documento: ' + String(error); // Retorna uma mensagem de erro
+            }
+    }
+    }
 }

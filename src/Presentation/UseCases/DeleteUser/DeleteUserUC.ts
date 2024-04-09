@@ -1,9 +1,9 @@
 import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
-import { IUserRequestDTO } from "./DeleteUserDTO";
+import { IDeleteUserRequestDTO } from "./DeleteUserDTO";
 
 export class DeleteUserUC {
     constructor(private usersRepository: UsersRepository) { }
-    async delete(data: IUserRequestDTO) {
+    async delete(data: IDeleteUserRequestDTO) {
         const userToDelete = await this.usersRepository.findByEmail(data.email);
 
         if (!userToDelete ) {

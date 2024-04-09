@@ -1,8 +1,8 @@
 import { Router } from "express";
 const router = Router()
 
-const UserRouter = require('./UserRouter')
-const PostRouter = require('./PostRouter')
+const UserRouter = require('../Routes/UserRouter')
+const PostRouter = require('../Routes/PostRouter')
 
 router.use('/', UserRouter)
 router.use('/', PostRouter)
