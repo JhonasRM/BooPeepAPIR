@@ -17,7 +17,7 @@ export class UsersRepository {
             const collectionRef = this.db.collection(this.collectionPath);
             const query = collectionRef.where(field, "==", value);
             const querySnapshot = await query.get();
-            
+
             if (querySnapshot.empty) {
                 console.log("No documents found");
                 return null;
@@ -37,7 +37,7 @@ export class UsersRepository {
             return null;
         }
     }
-    async getAllUsers(): Promise<User[] | null>{
+    async getAllUsers(): Promise<User[] | null> {
         try {
             const collectionRef = this.db.collection(this.collectionPath);
             const querySnapshot = await collectionRef.get();
@@ -46,7 +46,7 @@ export class UsersRepository {
                 const userData = doc.data() as User;
                 users.push(userData);
             });
-            if(users[1] === null){
+            if (users[1] === null) {
                 console.log('Nenhum Usuário encontrado')
                 return null
             }
@@ -56,8 +56,8 @@ export class UsersRepository {
             return null;
         }
     }
-    
-    
+
+
     async save(user: User): Promise<void> {
         const NewUser: FirebaseFirestore.DocumentData = {
             id: user.id,
@@ -92,7 +92,7 @@ export class UsersRepository {
         }
     }
 
-    async update(user: User): Promise<void | User> {
+    async update(user: User): Promise<void> {
         try {
             const userQuerySnapshot = await this.db.collection(this.collectionPath)
                 .where('email', '==', user.email)
@@ -104,7 +104,7 @@ export class UsersRepository {
                 return;
             }
     
-            const UpdatedUser = await userQuerySnapshot.forEach(async doc => {
+            const UpdatedUser: any = await userQuerySnapshot.forEach(async doc => {
                 await doc.ref.update({
                     name: user.name,
                     password: user.password
