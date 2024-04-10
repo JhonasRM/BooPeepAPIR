@@ -2,14 +2,19 @@ import express, { Request, Response } from 'express';
 import router from "./Presentation/View/router";
 import app from "./Presentation/View/app";
 import * as dotenv from 'dotenv';
-import { serviceAccount } from './Data Access/DAO/serviceAccountKey';
+
 dotenv.config();
 
+const path = require('path');
 const port = 3000
 
 app.use(express.json())
 app.use(router)
+app.use(express.static(path.join(__dirname, 'src/Presentation/View')));
 
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, 'src/Presentation/View/index.html'));
+});
 // app.get('/usuarios', async (req: Request, res: Response) => {
 //   try {
 //     const collectionRef = admin.firestore().collection('users');
@@ -29,9 +34,6 @@ app.use(router)
 // }
 //   });
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('<h1>Hello World!</h1>')
-})
 app.listen(port, () => {
     console.log(`O servidor está online na porta ${port}`)
 })
