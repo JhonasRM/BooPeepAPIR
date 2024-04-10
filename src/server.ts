@@ -10,10 +10,10 @@ const port = 3000
 
 app.use(express.json())
 app.use(router)
-app.use(express.static(path.join(__dirname, 'src/Presentation/View')));
+app.use(express.static(path.join(__dirname, './Presentation/View')));
 
 app.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, 'src/Presentation/View/index.html'));
+    res.sendFile(path.join(__dirname, './Presentation/View/index.html'));
 });
 // app.get('/usuarios', async (req: Request, res: Response) => {
 //   try {
