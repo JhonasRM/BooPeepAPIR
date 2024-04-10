@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express';
 import router from "./Presentation/View/router";
 import app from "./Presentation/View/app";
-import * as admin from 'firebase-admin';
+import * as dotenv from 'dotenv';
+import { serviceAccount } from './Data Access/DAO/serviceAccountKey';
+dotenv.config();
 
 const port = 3000
 
