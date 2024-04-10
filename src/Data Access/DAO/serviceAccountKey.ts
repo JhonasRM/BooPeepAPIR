@@ -15,6 +15,5 @@ const serviceAccount = {
   "universe_domain": process.env.FIREBASE_CONFIG_UNIVERSEDOMAIN,
 }
 
-console.log(serviceAccount)
 
 export{serviceAccount}
