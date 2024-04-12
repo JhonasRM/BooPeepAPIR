@@ -7,20 +7,16 @@ export class DeleteUserController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const { email } = request.body;
-
+    const {email} = request.body;
     try {
-      await this.createUserUC.delete(email);
+      await this.createUserUC.delete({email});
   
       return response.status(200).send('Usuário excluído com sucesso');  
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(`Erro: ${error.message}`);
-        return response.status(400).send('Erro: ' + error.message);
-      } else {
-        console.error(`Erro desconhecido: ${error}`);
-        return response.status(500).send('Erro desconhecido');
-      }
+    } catch (error) {
+      console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
+      const statusCode = error instanceof Error ? 400 : 500;
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      return response.status(statusCode).send(`Erro: ${errorMessage}`);
     }
   }
 }

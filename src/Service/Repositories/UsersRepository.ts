@@ -28,7 +28,7 @@ export class UsersRepository {
                     console.log(doc.id, "=>", doc.data());
                     user = doc.data() as User;
                 });
-                
+                console.log(user)
                 return user
 
             }

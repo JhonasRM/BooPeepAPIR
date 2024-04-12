@@ -17,14 +17,11 @@ export class UpdateUserController {
       });
   
       return response.status(200).send('Usuário atualizado com sucesso');  
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(`Erro: ${error.message}`);
-        return response.status(400).send('Erro: ' + error.message);
-      } else {
-        console.error(`Erro desconhecido: ${error}`);
-        return response.status(500).send('Erro desconhecido');
-      }
+    } catch (error) {
+      console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
+      const statusCode = error instanceof Error ? 400 : 500;
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      return response.status(statusCode).send(`Erro: ${errorMessage}`);
     }
   }
 }

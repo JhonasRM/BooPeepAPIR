@@ -9,6 +9,8 @@ import { ReadAllPostController } from '../UseCases/ReadAllPost/ReadAllPostContro
 import { UpdatePostUC } from '../UseCases/UpdatePost/UpdatePostUC';
 import { UpdatePostController } from '../UseCases/UpdatePost/UpdatePostController';
 import { UsersRepository } from '../../Service/Repositories/UsersRepository';
+import { DeletePostUC } from '../UseCases/DeletePost/DeletePostUC';
+import { DeletePostController } from '../UseCases/DeletePost/DeletePostController';
 
 
 //Create Post
@@ -28,11 +30,15 @@ const readPostController:ReadPostController = new ReadPostController(readPostUC)
 const updatePostUC: UpdatePostUC = new UpdatePostUC(postRepository)
 const updatePostController: UpdatePostController = new UpdatePostController(updatePostUC)
 
+const deletePostUC: DeletePostUC = new DeletePostUC(postRepository)
+const deletePostController: DeletePostController = new DeletePostController(deletePostUC)
+
 router
     .route("/post")
     .post((req: Request ,res: Response) => createPostController.handle(req, res))
     .get((req: Request, res: Response) => readPostController.handle(req, res))
     .put((req: Request, res: Response)=> updatePostController.handle(req,res))
+    .delete((req: Request ,res: Response) => deletePostController.handle(req, res))
 
 //Read All Users
 
@@ -42,11 +48,5 @@ const readAllPostController: ReadAllPostController = new ReadAllPostController(r
 router
     .route("/posts")
     .get((req: Request ,res: Response) => readAllPostController.handle(req, res))
-
-
-
-//  router
-//     .route("/user")
-//     .delete((req: Request ,res: Response) => UserController.delete(req, res))
 
 module.exports = router;

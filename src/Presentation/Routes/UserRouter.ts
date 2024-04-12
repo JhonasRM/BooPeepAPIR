@@ -6,6 +6,10 @@ import { ReadAllUsersUC } from '../UseCases/ReadAllUsers/ReadAllUserUC';
 import { ReadAllUsersController } from '../UseCases/ReadAllUsers/ReadAllUserController';
 import { ReadUserUC } from '../UseCases/ReadUser/ReadUserUC';
 import { ReadUserController } from '../UseCases/ReadUser/ReadUserController';
+import { UpdateUserUC } from '../UseCases/UpdateUser/UpdateUserUC';
+import { UpdateUserController } from '../UseCases/UpdateUser/UpdateUserController';
+import { DeleteUserUC } from '../UseCases/DeleteUser/DeleteUserUC';
+import { DeleteUserController } from '../UseCases/DeleteUser/DeleteUserController';
 
 //Create User
 const router: Router= Router();
@@ -18,10 +22,23 @@ const createUserController: CreateUserController = new CreateUserController(crea
 const readUserUC: ReadUserUC = new ReadUserUC(usersRepository)
 const readUserController: ReadUserController = new ReadUserController(readUserUC)
 
+//UpdateUser
+
+const updateUserUC: UpdateUserUC = new UpdateUserUC(usersRepository)
+const updateUserController: UpdateUserController = new UpdateUserController(updateUserUC)
+
+//Delete User
+
+const deleteUserUC: DeleteUserUC = new DeleteUserUC(usersRepository)
+const deleteUserController: DeleteUserController = new DeleteUserController(deleteUserUC)
+
+
 router
     .route("/user")
     .post((req: Request ,res: Response) => createUserController.handle(req, res))
     .get((req: Request, res: Response) => readUserController.handle(req, res))
+    .put((req: Request, res: Response)=> updateUserController.handle(req,res))
+    .delete((req: Request ,res: Response) => deleteUserController.handle(req, res))
 
 //Read All Users
 
@@ -42,5 +59,5 @@ router
 
 // router
 //     .route("/user")
-//     .put((req: Request, res: Response)=> UserController.update(req,res))
+//     
 module.exports = router;
