@@ -8,14 +8,14 @@ export class UpdatePostController {
 
     async handle(request: Request, response: Response): Promise<Response> {
         const {
-            postID,
+            postId,
             fieldToUpdate,
             newValue,
         } = request.body;
 
         try {
             const updatedPost = await this.updatePostUC.execute({
-                postID,
+                postId,
                 fieldToUpdate,
                 newValue
             })

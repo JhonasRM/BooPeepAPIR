@@ -1,8 +1,6 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
-import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
 import { Post } from "../Model/Post";
-import * as admin from 'firebase-admin';
 export class PostRepository {
     private db: Firestore
     private collectionPath: string
@@ -52,21 +50,41 @@ export class PostRepository {
     }
 
 
-    async save(post: Post): Promise<void> {
+    async save(post: Post): Promise<void | any> {
         const NewPost: FirebaseFirestore.DocumentData = {
             description: post.description,
             createdAt: post.createdAt,
             local: post.local,
             status: post.status,
-            // UserID: post.UserID
+            UserID: post.UserID
         }
         try {
-            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(NewPost);
+            const docRef = await this.db.collection(this.collectionPath).doc()
+            const postId = docRef.id; // Obtém o ID gerado automaticamente do novo documento
+            await docRef.set({ ...NewPost, postId });
+            // Adiciona o ID da postagem ao array de postagens do usuário
+            const userRef = this.db.collection('users').doc(post.UserID);
+            const userDoc = await userRef.get(); // Obtém o documento do usuário
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                if (userData && Array.isArray(userData.posts)) {
+                    userData.posts.push(postId); // Adiciona o ID da nova postagem ao array de postagens do usuário
+                    await userRef.update({ posts: userData.posts }); // Atualiza o documento do usuário com o novo array de postagens
+                } else {
+                    // Se o campo de postagens não existir ou não for um array, inicializa o array com o ID da nova postagem
+                    await userRef.update({ posts: [postId] });
+                }
+            } else {
+                throw new Error(`Usuário com ID ${post.UserID} não encontrado.`);
+            }
+        
             console.log('Postagem criada com sucesso');
-            console.log(post)
+            console.log(post);
         } catch (error) {
             console.error(`Erro ao criar a postagem: ${error}`);
+            return error
         }
+        
     }
     
 

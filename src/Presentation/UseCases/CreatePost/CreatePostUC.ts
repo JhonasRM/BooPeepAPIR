@@ -10,7 +10,7 @@ export class CreatePostUC {
         if (user === null) {
             throw new Error('O Usuário não foi encontrado')
         } 
-        const NewPost: Post = new Post(data)
+        const NewPost: Post = new Post(data,user)
         console.log('Criando Novo Post...')
         await this.postRepository.save(NewPost)
     }

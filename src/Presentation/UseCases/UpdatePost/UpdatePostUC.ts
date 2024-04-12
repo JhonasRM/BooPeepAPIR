@@ -4,7 +4,7 @@ import { IUpdatePostRequestDTO } from "./UpdatePostDTO";
 export class UpdatePostUC {
     constructor(private postRepository: PostRepository) { }
     async execute(data: IUpdatePostRequestDTO) {
-        const updatedPost = await this.postRepository.updatePostField(data.postID, data.fieldToUpdate, data.newValue)
+        const updatedPost = await this.postRepository.updatePostField(data.postId, data.fieldToUpdate, data.newValue)
 
         if (updatedPost === 'Documento não encontrado') {
             console.error('O documento especificado não foi encontrado.');

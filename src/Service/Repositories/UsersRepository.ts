@@ -57,22 +57,24 @@ export class UsersRepository {
         }
     }
 
-
     async save(user: User): Promise<void> {
         const NewUser: FirebaseFirestore.DocumentData = {
-            id: user.id,
+
             name: user.name,
             email: user.email,
-            password: user.password
+            password: user.password,
+            posts: [] // Adiciona um array vazio para armazenar as postagens do usuário
         }
         try {
-            const docRef: DocumentData = await this.db.collection(this.collectionPath).add(NewUser);
-            console.log('Usuário cadastrado com sucesso');
-            console.log(user)
+            const docRef: FirebaseFirestore.DocumentReference = this.db.collection(this.collectionPath).doc(); // Criar uma referência para um novo documento com ID automático
+            const uid = docRef.id; // Obtém o ID gerado automaticamente
+            await docRef.set({ ...NewUser, uid });
+            console.log('Usuário cadastrado com sucesso')
         } catch (error) {
             console.error(`Erro ao cadastrar o usuário: ${error}`);
         }
     }
+    
     async delete(user: User): Promise<void> {
         try {
             const userQuerySnapshot = await this.db.collection(this.collectionPath)

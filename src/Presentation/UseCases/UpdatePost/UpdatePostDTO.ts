@@ -1,5 +1,5 @@
 export interface IUpdatePostRequestDTO{
-    postID: string,
+    postId: string,
     fieldToUpdate: string,
     newValue: any,   
 }

@@ -7,20 +7,20 @@ export class ReadAllUsersController {
     private readAllUsersUC: ReadAllUsersUC,
   ) {}
 
-  async handle(request: Request, response: Response): Promise<Response> {
-
+  async handle(request: Request, response: Response): Promise<void> {
     try {
-      const Users: User[] = await this.readAllUsersUC.execute()
-
-      return response.status(200).send().json(Users);  
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(`Erro: ${error.message}`);
-        return response.status(400).send('Erro: ' + error.message);
-      } else {
-        console.error(`Erro desconhecido: ${error}`);
-        return response.status(500).send('Erro desconhecido');
+      const users: User[] = await this.readAllUsersUC.execute();
+      
+      if (!users || users.length === 0) {
+        throw new Error('Nenhum usuário encontrado');
       }
+      
+      response.status(200).json(users);
+    } catch (error) {
+      console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
+      const statusCode = error instanceof Error ? 400 : 500;
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      response.status(statusCode).send(`Erro: ${errorMessage}`);
     }
   }
 }

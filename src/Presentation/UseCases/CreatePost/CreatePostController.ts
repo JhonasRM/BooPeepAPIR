@@ -10,7 +10,6 @@ export class CreatePostController {
     async handle(request: Request, response: Response): Promise<Response> {
         const {
             description,
-            createdAt,
             local,
             status,
             email
@@ -19,7 +18,6 @@ export class CreatePostController {
         const UserID = ''
         const PostData: ICreatePostRequestDTO = {
         description,
-            createdAt,
             local,
             status,
             UserID
