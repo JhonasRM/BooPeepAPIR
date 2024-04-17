@@ -1,13 +1,19 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
 import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
-import * as admin from 'firebase-admin';
+import {  } from "firebase-auth";
+import { Auth } from "firebase-admin/lib/auth/auth";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
 export class UsersRepository {
     private db: Firestore
     private collectionPath: string
+    private auth: Auth
+    
     constructor(){
         this.db = conn.firestore()
+        this.auth = conn.auth()
         this.collectionPath = 'users'
+        this.google  = 
     }
     async findByEmail(email: string): Promise<User | null> {
         const field = 'email';
@@ -57,6 +63,14 @@ export class UsersRepository {
         }
     }
 
+    async loginEmail(email:string){
+        this.auth.getUserByEmail(email)
+        .then((UserRecord) =>{
+            console.log(`Login realizado com sucesso. Dados do Usuário sendo enviados...`)
+            return UserRecord.toJSON()
+        })
+        .catch((error) => )
+    }
     async save(user: User): Promise<void> {
         const NewUser: FirebaseFirestore.DocumentData = {
 
