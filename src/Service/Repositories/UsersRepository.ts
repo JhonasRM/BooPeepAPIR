@@ -1,19 +1,19 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
 import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
-import {  } from "firebase-auth";
+import { GoogleAuthProvider } from "firebase/auth";
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 export class UsersRepository {
     private db: Firestore
     private collectionPath: string
     private auth: Auth
-    
+    private provider: GoogleAuthProvider
     constructor(){
         this.db = conn.firestore()
         this.auth = conn.auth()
         this.collectionPath = 'users'
-        this.google  = 
+        this.provider = new GoogleAuthProvider();
     }
     async findByEmail(email: string): Promise<User | null> {
         const field = 'email';
@@ -63,14 +63,21 @@ export class UsersRepository {
         }
     }
 
+    async loginGoogle(){
+        this.provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+    }
+
     async loginEmail(email:string){
         this.auth.getUserByEmail(email)
         .then((UserRecord) =>{
             console.log(`Login realizado com sucesso. Dados do Usuário sendo enviados...`)
             return UserRecord.toJSON()
         })
-        .catch((error) => )
+        .catch((error) => {
+            console.log(`Erro ao realizar o login ${error.message}`)
+        })
     }
+    
     async save(user: User): Promise<void> {
         const NewUser: FirebaseFirestore.DocumentData = {
 
