@@ -11,7 +11,7 @@ app.use(express.json())
 app.use(router)
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header("Access-Control-Allow-Origin", "https://cautious-spork-44wx6qxpjw727rwq-8081.app.github.dev");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
