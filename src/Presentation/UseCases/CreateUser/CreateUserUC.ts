@@ -11,6 +11,7 @@ export class CreateUserUC {
         } 
         const NewUser: User = new User(data)
         console.log('Cadastrando novo Usuário...')
-        await this.usersRepository.save(NewUser)
+        const createUser = await this.usersRepository.save(NewUser)
+        return createUser
     }
 }

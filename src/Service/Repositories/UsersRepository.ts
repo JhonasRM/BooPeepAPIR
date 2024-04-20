@@ -57,7 +57,7 @@ export class UsersRepository {
         }
     }
 
-    async save(user: User): Promise<void> {
+    async save(user: User): Promise<void | User> {
         const NewUser: FirebaseFirestore.DocumentData = {
 
             name: user.name,
@@ -70,6 +70,7 @@ export class UsersRepository {
             const uid = docRef.id; // Obtém o ID gerado automaticamente
             await docRef.set({ ...NewUser, uid });
             console.log('Usuário cadastrado com sucesso')
+            return user
         } catch (error) {
             console.error(`Erro ao cadastrar o usuário: ${error}`);
         }
