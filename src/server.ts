@@ -11,8 +11,7 @@ const cors = require('cors')
 app.use(express.json())
 app.use(router)
 app.use(cors({
-  origin: '*',
-  allowedHeaders: ['Content-Type', 'Authorization'] // Cabeçalhos permitidos
+  origin: '*'
 }))
 
 app.get('/', (req: Request, res: Response) => {
