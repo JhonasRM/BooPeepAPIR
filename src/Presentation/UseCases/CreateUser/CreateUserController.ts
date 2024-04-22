@@ -9,13 +9,12 @@ export class CreateUserController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
-    
     try {
       console.log(name, email, password)
       const createdUser = await this.createUserUC.execute({
-        name: String(name),
-        email: String(email),
-        password: String(password)
+        name: name,
+        email: email,
+        password: password
       })
       if(createdUser  instanceof Error){
         throw new Error(createdUser.message)
