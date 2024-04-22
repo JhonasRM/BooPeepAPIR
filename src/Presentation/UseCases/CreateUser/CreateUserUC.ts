@@ -10,7 +10,12 @@ export class CreateUserUC {
             throw new Error('O Usuário já existe')
         }
         console.log(`${typeof data.name} ${typeof data.email} ${typeof data.password}`)
-        const NewUser: User = new User(data)
+        const NewUser: User = new User({
+            name: data.name,
+            email: data.email,
+            password: data.password
+        }
+        )
         console.log('Cadastrando novo Usuário...')
         const createUser = await this.usersRepository.save(NewUser)
         return createUser
