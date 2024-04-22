@@ -57,7 +57,7 @@ export class UsersRepository {
         }
     }
 
-    async save(user: User): Promise<void | User> {
+    async save(user: User): Promise<User | Error> {
         console.log('Entrou em save do UsersRepository')
         const NewUser: FirebaseFirestore.DocumentData = {
             name: user.name,
@@ -73,6 +73,7 @@ export class UsersRepository {
             return user
         } catch (error) {
             console.error(`Erro ao cadastrar o usuário: ${error}`);
+            return error as Error
         }
     }
     

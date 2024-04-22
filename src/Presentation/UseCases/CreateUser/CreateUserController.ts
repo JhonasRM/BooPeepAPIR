@@ -9,15 +9,17 @@ export class CreateUserController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
-    const DTO: ICreateUserRequestDTO = {
-      name: String(name),
-      email: String(email),
-      password: String(password)
-    }
+    
     try {
       console.log(name, email, password)
-      const createdUser = await this.createUserUC.execute(DTO)
-  
+      const createdUser = await this.createUserUC.execute({
+        name: String(name),
+        email: String(email),
+        password: String(password)
+      })
+      if(createdUser  instanceof Error){
+        throw new Error(createdUser.message)
+      }
       return response.status(201).json(createdUser);  
     } catch (error: unknown) {
       if (error instanceof Error) {
