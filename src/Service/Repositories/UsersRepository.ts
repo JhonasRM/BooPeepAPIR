@@ -65,6 +65,7 @@ export class UsersRepository {
             password: user.password,
             posts: []
         }
+        console.log(`${typeof user.name} ${typeof user.email} ${typeof user.password}`)
         try {
             const docRef: FirebaseFirestore.DocumentReference = this.db.collection(this.collectionPath).doc();
             const uid = docRef.id;

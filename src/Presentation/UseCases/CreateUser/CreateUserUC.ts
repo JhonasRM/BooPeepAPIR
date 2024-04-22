@@ -9,7 +9,7 @@ export class CreateUserUC {
         if (userAlreadyExists instanceof User) {
             throw new Error('O Usuário já existe')
         }
-        console.log(`${typeof data.name} ${typeof data.email} ${typeof data.password}`)
+        
         const NewUser: User = new User({
             name: data.name,
             email: data.email,
