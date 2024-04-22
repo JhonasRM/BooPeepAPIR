@@ -34,7 +34,6 @@ export class UsersRepository {
             }
         } catch (error) {
             // console.error(`Error finding user by email: ${error}`);
-            console.log('Usuário não encontrado, saindo do findByEmail')
             return null;
         }
     }
@@ -61,7 +60,6 @@ export class UsersRepository {
     async save(user: User): Promise<void | User> {
         console.log('Entrou em save do UsersRepository')
         const NewUser: FirebaseFirestore.DocumentData = {
-
             name: user.name,
             email: user.email,
             password: user.password,

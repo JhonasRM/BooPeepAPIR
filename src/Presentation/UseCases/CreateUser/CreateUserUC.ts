@@ -6,10 +6,10 @@ export class CreateUserUC {
     async execute(data: ICreateUserRequestDTO) {
         console.log('entrou em CreateUserUC')
         const userAlreadyExists = await this.usersRepository.findByEmail(data.email)
-
         if (userAlreadyExists instanceof User) {
             throw new Error('O Usuário já existe')
         }
+        console.log(`${typeof data.name} ${typeof data.email} ${typeof data.password}`)
         const NewUser: User = new User(data)
         console.log('Cadastrando novo Usuário...')
         const createUser = await this.usersRepository.save(NewUser)
