@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { CreateUserUC } from './CreateUserUC';
+import { ICreateUserRequestDTO } from './CreateUserDTO';
 
 export class CreateUserController {
   constructor(
@@ -8,13 +9,14 @@ export class CreateUserController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
-
+    const DTO: ICreateUserRequestDTO = {
+      name,
+      email,
+      password
+    }
     try {
-      const createdUser = await this.createUserUC.execute({
-        name,
-        email,
-        password
-      })
+      console.log(name, email, password)
+      const createdUser = await this.createUserUC.execute(DTO)
   
       return response.status(201).json(createdUser);  
     } catch (error: unknown) {
