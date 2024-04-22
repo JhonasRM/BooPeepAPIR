@@ -10,9 +10,9 @@ export class CreateUserController {
   async handle(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
     const DTO: ICreateUserRequestDTO = {
-      name,
-      email,
-      password
+      name: String(name),
+      email: String(email),
+      password: String(password)
     }
     try {
       console.log(name, email, password)
