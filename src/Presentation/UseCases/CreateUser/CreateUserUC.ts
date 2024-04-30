@@ -6,7 +6,7 @@ export class CreateUserUC {
     async execute(data: ICreateUserRequestDTO) {
         const userAlreadyExists = await this.usersRepository.findByEmail(data.email)
 
-        if (userAlreadyExists !== null) {
+        if (userAlreadyExists instanceof object) {
             throw new Error('O Usuário já existe')
         } 
         const NewUser: User = new User(data)

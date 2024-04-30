@@ -11,12 +11,12 @@ describe('UserRepository', () => {
 
   test('Create Post without user verification should return by console.log the post data', async () => {
     const UserData: User = new  User({
-        'name': 'Jhonas Histórias',
-        'email': 'jhonas@trabalhos.com',
+        'name': 'Jonathan Histórias',
+        'email': 'jonathan@trabalhos.com',
         'password': '123asd789'
     })
     const NewUser = await userRepository.save(UserData)
-expect(NewUser).not.toBeNull()
+expect(NewUser).toEqual(expect.objectContaining({ DisplayName: expect.any(Object) }));
 }, 100000);
 
   });
