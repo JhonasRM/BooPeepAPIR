@@ -1,7 +1,7 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
 import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
-import { GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider, getAuth } from "firebase/auth";
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 export class UsersRepository {
@@ -15,33 +15,15 @@ export class UsersRepository {
         this.collectionPath = 'users'
         this.provider = new GoogleAuthProvider();
     }
-    async findByEmail(email: string): Promise<User | null> {
-        const field = 'email';
-        const value = email;
-
-        try {
-            const collectionRef = this.db.collection(this.collectionPath);
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
-
-            if (querySnapshot.empty) {
-                console.log("No documents found");
-                return null;
-            } else {
-                let user: User | null = null;
-
-                querySnapshot.forEach((doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    user = doc.data() as User;
-                });
-                console.log(user)
-                return user
-
-            }
-        } catch (error) {
-            console.error(`Error finding user by email: ${error}`);
-            return null;
-        }
+    async findByEmail(email: string): Promise<void> {
+        this.auth.getUserByEmail(email)
+        .then((userRecord: UserRecord) => {
+            const uid = userRecord.uid
+            return uid
+        })
+        .catch((error) =>{
+            return error
+        })
     }
     async getAllUsers(): Promise<User[] | null> {
         try {
@@ -62,38 +44,23 @@ export class UsersRepository {
             return null;
         }
     }
-
-    async loginGoogle(){
-        this.provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-    }
-
-    async loginEmail(email:string){
-        this.auth.getUserByEmail(email)
-        .then((UserRecord) =>{
-            console.log(`Login realizado com sucesso. Dados do Usuário sendo enviados...`)
-            return UserRecord.toJSON()
-        })
-        .catch((error) => {
-            console.log(`Erro ao realizar o login ${error.message}`)
-        })
-    }
     
     async save(user: User): Promise<void> {
-        const NewUser: FirebaseFirestore.DocumentData = {
 
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            posts: [] // Adiciona um array vazio para armazenar as postagens do usuário
-        }
-        try {
-            const docRef: FirebaseFirestore.DocumentReference = this.db.collection(this.collectionPath).doc(); // Criar uma referência para um novo documento com ID automático
-            const uid = docRef.id; // Obtém o ID gerado automaticamente
-            await docRef.set({ ...NewUser, uid });
-            console.log('Usuário cadastrado com sucesso')
-        } catch (error) {
-            console.error(`Erro ao cadastrar o usuário: ${error}`);
-        }
+            this.auth.createUser({
+                email: user.email,
+                emailVerified: false,
+                password: user.password,
+                displayName: user.name,
+                photoURL: '',
+                disabled: false,
+            }).then((userRecord: UserRecord)=> {
+                return userRecord.toJSON()
+            })
+            .catch((error) => {
+                return error
+            })
+        
     }
     
     async delete(user: User): Promise<void> {
