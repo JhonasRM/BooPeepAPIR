@@ -10,7 +10,7 @@ export class CreateUserController {
     const { name, email, password } = request.body;
 
     try {
-      await this.createUserUC.execute({
+      const createUser = await this.createUserUC.execute({
         name,
         email,
         password
