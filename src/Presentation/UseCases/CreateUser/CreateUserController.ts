@@ -22,7 +22,7 @@ export class CreateUserController {
       }
       const createUser = await this.createUserUC.execute(newUser)
       if(createUser.valido === true){
-        response.json(createUser.data)
+        response.status(201).json(createUser.data)
       }
       if(createUser.valido === false){
         throw new Error(createUser.erro)

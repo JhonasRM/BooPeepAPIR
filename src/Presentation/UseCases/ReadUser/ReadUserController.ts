@@ -6,7 +6,7 @@ export class ReadUserController {
     private readUserUC: ReadUserUC,
   ) {}
 
-  async handle(request: Request, response: Response): Promise<Response> {
+  async handle(request: Request, response: Response): Promise<void> {
     const { email, password } = request.body;
 
     try {
@@ -14,14 +14,25 @@ export class ReadUserController {
         email,
         password
       })
-
-      return response.status(200).json(wantedUser);  
-    }catch (error) {
-      console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
-      const statusCode = error instanceof Error ? 400 : 500;
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      return response.status(statusCode).send(`Erro: ${errorMessage}`);
+      if(wantedUser.valido === true){
+        response.status(200).json(wantedUser.data)
+      }
+      if(wantedUser.valido === false){
+        throw new Error(wantedUser.erro)
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if(error.message === 'Not Found'){
+          response.status(404).send('Erro: este email nao existe ' + error.message);
+        } else if(error.message === 'Unauthorized'){
+          response.status(401).send('Erro: senha incorreta. ' + error.message);
+        } else if(error.message === 'Internal Server Error'){
+          response.status(500).send('Erro: erro interno do servidor. ' + error.message);
+        }
+      } else {
+        console.error(`Erro desconhecido: ${error}`);
+        response.status(503).send('Erro desconhecido');
+      }
     }
-    
   }
 }
