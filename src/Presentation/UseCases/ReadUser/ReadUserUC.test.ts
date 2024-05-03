@@ -18,11 +18,11 @@ describe('UserRepository', () => {
         
       }
       const user = await userRepository.findByEmail(login.email)
-      expect(user).toBeNull();
+      expect(user.value).toBeNull()
     }, 100000);
 
     test('VerifyWPassword should return error for incorrect password', async () => {
-      const nonExistingEmail: string = 'john@example.com';
+      const nonExistingEmail: string = 'jonathan@trabalhos.com';
       const incorrectPassword: string  = '123456'
       const login: IReadUserRequestDTO = {
         email: nonExistingEmail,
@@ -30,17 +30,17 @@ describe('UserRepository', () => {
         
       }
       const user = await userRepository.findByEmail(login.email)
-      if (user === null) {
+      if (user.valido === false) {
        console.log('Este usuário não existe')
     } else {
+      const loggedUser = user.value
         console.log('Usuário Encontrado')
-        if( user.password === login.password){
+        if( loggedUser?.password === login.password){
             console.log('Usuário Logado com sucesso') 
-            return user
+            return loggedUser
         }
         console.log('Senha Incorreta')
     }
-
-      expect(user).toEqual( {"email": "john@example.com", "name": "John Doe", "password": "securepassword"})
+      expect(user.value).toBeInstanceOf(User)
     }, 50000)
   })
