@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { UsersRepository } from '../../../Service/Repositories/UsersRepository';
 import { ICreateUserRequestDTO } from './CreateUserDTO';
 import { CreateUserUC } from './CreateUserUC';
 

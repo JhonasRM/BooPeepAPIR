@@ -6,7 +6,7 @@ import { IUpdateUserRequestDTO } from "./UpdateUserDTO";
 export class UpdateUserUC {
     constructor(private usersRepository: UsersRepository) { }
 
-    async update(data: IUpdateUserRequestDTO): Promise<{ valido: boolean; value?: number; erro?: string; data?: User }> {
+    async execute(data: IUpdateUserRequestDTO): Promise<{ valido: boolean; value?: number; erro?: string; data?: User }> {
         try {
             const userToUpdate = await this.usersRepository.findByEmail(data.email);
             if (userToUpdate.valido === false) {
@@ -14,7 +14,8 @@ export class UpdateUserUC {
             }
                 const user = userToUpdate.value 
             if(user?.uid !== undefined){
-                const updatedUser =  await this.usersRepository.update(user?.uid, data as User)
+                const updatedUser =  await this.usersRepository.update(user?.uid, data as User
+                )
                 if(updatedUser.valido === false){
                     return { valido: false, value: 400, erro: "Bad Request" };
                 }
