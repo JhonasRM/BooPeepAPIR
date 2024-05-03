@@ -15,13 +15,18 @@ export class UsersRepository {
         this.collectionPath = 'users'
         this.provider = new GoogleAuthProvider();
     }
-    async findByEmail(email: string): Promise<object | unknown> {
+    async findByEmail(email: string): Promise<{valido: boolean, value?: User, erro?: string }> {
         try {
             const userRecord = await this.auth.getUserByEmail(email)
             const user = userRecord.toJSON()
-            return user
+            return { valido: true, value: user as User, erro: undefined };
         } catch (error) {
-            return error
+            if (error instanceof Error) {
+                const mensagemErro = error.message; 
+                return { valido: false, erro: mensagemErro };
+              } else {
+                return { valido: false, erro: 'Erro desconhecido ao validar o texto' };
+              }
         }
     }
     async getAllUsers(): Promise<void> {
@@ -32,24 +37,27 @@ export class UsersRepository {
             });
         })
         .catch((error) => {
-            return error
+            if (error instanceof Error) {
+                const mensagemErro = error.message; 
+                return { valido: false, erro: mensagemErro };
+              } else {
+                return { valido: false, erro: 'Erro desconhecido ao validar o texto' };
+              }
         })
     }
 
-    async save(user: User): Promise<object | unknown> {
+    async save(user: User): Promise<{valido: boolean, value?: User, erro?: string }> {
         try{
-        const userRecord = await this.auth.createUser({
-            email: user.email,
-            emailVerified: false,
-            password: user.password,
-            displayName: user.name,
-            disabled: false,
-        })
-            console.log(userRecord.toJSON())
-            return userRecord.toJSON()
+        const userRecord = await this.auth.createUser(user)
+            const createdUser = userRecord.toJSON()
+            return { valido: true, value: createdUser as User, erro: undefined };
     }catch(error){
-        console.log(error)
-        return error
+        if (error instanceof Error) {
+            const mensagemErro = error.message; 
+            return { valido: false, erro: mensagemErro };
+          } else {
+            return { valido: false, erro: 'Erro desconhecido ao validar o texto' };
+          }
     }
     }
 
@@ -86,7 +94,6 @@ export class UsersRepository {
 
             const UpdatedUser: any = await userQuerySnapshot.forEach(async doc => {
                 await doc.ref.update({
-                    name: user.name,
                     password: user.password
                     //outras propriedades ...
                 });

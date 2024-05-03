@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { UsersRepository } from '../../../Service/Repositories/UsersRepository';
+import { ICreateUserRequestDTO } from './CreateUserDTO';
 import { CreateUserUC } from './CreateUserUC';
 
 export class CreateUserController {
@@ -6,24 +8,37 @@ export class CreateUserController {
     private createUserUC: CreateUserUC,
   ) {}
 
-  async handle(request: Request, response: Response): Promise<Response> {
+  async handle(request: Request, response: Response): Promise<void> {
     const { name, email, password } = request.body;
 
     try {
-      const createUser = await this.createUserUC.execute({
-        name,
-        email,
-        password
-      })
-  
-      return response.status(201).send();  
+      const newUser: ICreateUserRequestDTO = {
+        displayName: name,
+        email: email,
+        password: password,
+        emailVerified: false,
+        // photoURL: string,
+        disabled: false,
+      }
+      const createUser = await this.createUserUC.execute(newUser)
+      if(createUser.valido === true){
+        response.json(createUser.data)
+      }
+      if(createUser.valido === false){
+        throw new Error(createUser.erro)
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Erro: ${error.message}`);
-        return response.status(400).send('Erro: ' + error.message);
+        if(error.message === 'Unauthorized'){
+          response.status(401).send('Erro: o email já existe. ' + error.message);
+        } else if(error.message === 'Bad Request'){
+          response.status(400).send('Erro: firebase error. ' + error.message);
+        } else if(error.message === 'Internal Server Error'){
+          response.status(500).send('Erro: erro interno do servidor. ' + error.message);
+        }
       } else {
         console.error(`Erro desconhecido: ${error}`);
-        return response.status(500).send('Erro desconhecido');
+        response.status(503).send('Erro desconhecido');
       }
     }
   }

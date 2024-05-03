@@ -1,7 +1,10 @@
 //Data Transfer Object
 
 export interface ICreateUserRequestDTO{
-    name: string;
+    displayName: string;
     email: string;
     password: string;
+    emailVerified: boolean;
+    // photoURL: string;
+    disabled: boolean
 }

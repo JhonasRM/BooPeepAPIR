@@ -5,8 +5,8 @@ export class ReadUserUC {
     constructor(private usersRepository: UsersRepository) { }
     async execute(data: IReadUserRequestDTO) {
         const wantedUser = await this.usersRepository.findByEmail(data.email)
-        if (wantedUser === null) {
-            throw new Error('Este usuário não existe')
+        if (wantedUser.valido === false) {
+            throw new Error(wantedUser.erro)
         } else {
             console.log('Usuário Encontrado')
             if( wantedUser.password === data.password){
