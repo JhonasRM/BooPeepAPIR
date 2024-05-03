@@ -74,24 +74,18 @@ export class UsersRepository {
   }
 
 
-  async delete(user: User): Promise<void> {
+  async delete(user: User): Promise<{ valido: boolean; value?: string; erro?: string }> {
     try {
-      const userQuerySnapshot = await this.db
-        .collection(this.collectionPath)
-        .where("email", "==", user.email)
-        .get();
-
-      if (userQuerySnapshot.empty) {
-        console.log("Nenhum usuário encontrado com este e-mail.");
-        throw new Error("Nenhum usuário encontrado");
-      }
-      userQuerySnapshot.forEach(async (doc) => {
-        await doc.ref.delete();
-        console.log("Usuário deletado com sucesso");
-      });
-    } catch (error) {
-      console.error(`Erro ao deletar o usuário: ${error}`);
-    }
+      const deletedUser = await this.auth.deleteUser(user.uid)
+      return { valido: true, value: 'Usuario deletado com sucesso', erro: undefined };
+    }  catch (error) {
+      if (error instanceof Error) {
+          const mensagemErro = error.message;
+          return { valido: false, erro: mensagemErro };
+        } else {
+          return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+        }
+  }
   }
 
   async update(uid: string,
