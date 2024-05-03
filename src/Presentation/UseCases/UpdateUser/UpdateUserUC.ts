@@ -19,7 +19,7 @@ export class UpdateUserUC {
                 if(updatedUser.valido === false){
                     return { valido: false, value: 400, erro: "Bad Request" };
                 }
-                return { valido: true, value: 201, data: updatedUser.value as User };
+                return { valido: true, value: 200, data: updatedUser.value as User };
             }
             return { valido: false, value: 404, erro: "Not Found" };
     } catch(error){

@@ -9,18 +9,25 @@ export class ReadAllUsersController {
 
   async handle(request: Request, response: Response): Promise<void> {
     try {
-      const users: User[] = await this.readAllUsersUC.execute();
-      
-      if (!users || users.length === 0) {
-        throw new Error('Nenhum usuário encontrado');
+      const wantedUser = await this.readAllUsersUC.execute();
+      if(wantedUser.valido === true){
+        const users = wantedUser.data
+        response.status(200).json(users)
       }
-      
-      response.status(200).json(users);
+      if(wantedUser.valido === false){
+        throw new Error(wantedUser.erro)
+      }
     } catch (error) {
-      console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
-      const statusCode = error instanceof Error ? 400 : 500;
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      response.status(statusCode).send(`Erro: ${errorMessage}`);
+      if (error instanceof Error) {
+        if(error.message === 'Not Found'){
+          response.status(404).send('Erro: este email nao existe ' + error.message);
+        }else if(error.message === 'Internal Server Error'){
+          response.status(500).send('Erro: erro interno do servidor. ' + error.message);
+        }
+      } else {
+        console.error(`Erro desconhecido: ${error}`);
+        response.status(503).send('Erro desconhecido');
+      }
     }
   }
 }

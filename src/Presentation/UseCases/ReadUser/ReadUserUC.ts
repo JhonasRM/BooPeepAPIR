@@ -16,7 +16,7 @@ export class ReadUserUC {
       if (data.password !== user?.password) {
         return { valido: false, value: 401, erro: "Unauthorized" };
       }
-      return { valido: true, value: 201, data: user as User };
+      return { valido: true, value: 200, data: user as User };
     } catch (error) {
       return { valido: false, value: 500, erro: "Internal Server Error" };
     }

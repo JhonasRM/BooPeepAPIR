@@ -14,7 +14,7 @@ export class DeleteUserUC {
             if(deletedUser.valido === false){
                 return { valido: false, value: 400, erro: "Bad Request" };
             }
-            return { valido: true, value: 201, data: deletedUser.value};   
+            return { valido: true, value: 200, data: deletedUser.value};   
         } catch (error) {
             return { valido: false, value: 500, erro: "Internal Server Error" };
         }

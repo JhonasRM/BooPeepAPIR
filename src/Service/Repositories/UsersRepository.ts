@@ -35,25 +35,25 @@ export class UsersRepository {
       }
     }
   }
-  async getAllUsers(): Promise<void> {
-    this.auth
-      .listUsers()
-      .then((listUsersResult) => {
-        listUsersResult.users.forEach((userRecord: UserRecord) => {
-          console.log("user", userRecord.toJSON());
-        });
+  async getAllUsers(): Promise<{ valido: boolean; value?: User[]; erro?: string }> {
+    try {
+      const listUsersResult = await this.auth.listUsers()
+      const users: User[] = []
+      listUsersResult.users.forEach((userRecord: UserRecord) => {
+        users.push(userRecord.toJSON() as User)
       })
-      .catch((error) => {
-        if (error instanceof Error) {
-          const mensagemErro = error.message;
-          return { valido: false, erro: mensagemErro };
-        } else {
-          return {
-            valido: false,
-            erro: "Erro desconhecido ao validar o texto",
-          };
-        }
-      });
+      console.log(users)
+      return { valido: true, value: users }
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return {
+          valido: false, erro: "Erro desconhecido ao validar o texto",
+        };
+      }
+    }
   }
 
   async save(
@@ -78,30 +78,30 @@ export class UsersRepository {
     try {
       const deletedUser = await this.auth.deleteUser(user.uid)
       return { valido: true, value: 'Usuario deletado com sucesso', erro: undefined };
-    }  catch (error) {
+    } catch (error) {
       if (error instanceof Error) {
-          const mensagemErro = error.message;
-          return { valido: false, erro: mensagemErro };
-        } else {
-          return { valido: false, erro: "Erro desconhecido ao validar o texto" };
-        }
-  }
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
+    }
   }
 
   async update(uid: string,
     user: User
   ): Promise<{ valido: boolean; value?: User; erro?: string }> {
     try {
-     const userRecord = await this.auth.updateUser(user.uid, user);
+      const userRecord = await this.auth.updateUser(user.uid, user);
       const updatedUser = userRecord.toJSON()
       return { valido: true, value: updatedUser as User, erro: undefined };
     } catch (error) {
-        if (error instanceof Error) {
-            const mensagemErro = error.message;
-            return { valido: false, erro: mensagemErro };
-          } else {
-            return { valido: false, erro: "Erro desconhecido ao validar o texto" };
-          }
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
     }
   }
 }

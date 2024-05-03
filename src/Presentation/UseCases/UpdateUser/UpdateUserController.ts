@@ -20,7 +20,7 @@ export class UpdateUserController {
     }
     const updatedUser = await this.updateUserUC.execute(updateUser)
     if(updatedUser.valido === true){
-      response.status(201).json(updatedUser.data)
+      response.status(200).json(updatedUser.data)
     }
     if(updatedUser.valido === false){
       throw new Error(updatedUser.erro)
