@@ -11,12 +11,46 @@ describe('UserRepository', () => {
 
   test('Create Post without user verification should return by console.log the post data', async () => {
     const UserData: User = new  User({
-        'name': 'Jonathan Histórias',
-        'email': 'jonathan@trabalhos.com',
-        'password': '123asd789'
+        displayName: 'Jhons Histórias',
+        email: 'jhons@trabalhos.com',
+        password: '123asd789',
+        emailVerified: false,
+        disabled: false
     })
     const NewUser = await userRepository.save(UserData)
-expect(NewUser).toEqual(expect.objectContaining({ DisplayName: expect.any(Object) }));
-}, 100000);
+    expect(NewUser).toEqual(expect.objectContaining({
+      erro: undefined,
+      valido: true,
+      value: {
+        customClaims: undefined,
+        disabled: false,
+        displayName: 'Jhons Histórias',
+        email: 'jhons@trabalhos.com',
+        emailVerified: false,
+        metadata: {
+          creationTime: expect.any(String),
+          lastRefreshTime: null,
+          lastSignInTime: null,
+        },
+        passwordHash: undefined,
+        passwordSalt: undefined,
+        phoneNumber: undefined,
+        photoURL: undefined,
+        providerData: [
+          {
+            displayName: 'Jhons Histórias',
+            email: 'jhons@trabalhos.com',
+            phoneNumber: undefined,
+            photoURL: undefined,
+            providerId: 'password',
+            uid: 'jhons@trabalhos.com',
+          },
+        ],
+        tenantId: undefined,
+        tokensValidAfterTime: expect.any(String),
+        uid: expect.any(String),
+      },
+    }));
+  }, 10000)
 
   });

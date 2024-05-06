@@ -12,7 +12,8 @@ export class ReadUserUC {
         return { valido: false, value: 404, erro: "Not Found" };
       }
       console.log("Usuario encontrado");
-      const user = wantedUser.value;
+      const user: User = wantedUser.value as User;
+      console.log(user)
       if (data.password !== user?.password) {
         return { valido: false, value: 401, erro: "Unauthorized" };
       }

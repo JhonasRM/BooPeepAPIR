@@ -1,4 +1,3 @@
-
 export class User{
     public readonly uid!: string;
 

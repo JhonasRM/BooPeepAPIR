@@ -35,6 +35,7 @@ export class UsersRepository {
       }
     }
   }
+
   async getAllUsers(): Promise<{ valido: boolean; value?: User[]; erro?: string }> {
     try {
       const listUsersResult = await this.auth.listUsers()
