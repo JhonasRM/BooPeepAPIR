@@ -10,9 +10,7 @@ const cors = require('cors')
 
 app.use(express.json())
 app.use(router)
-app.use(cors({
-  origin: '*'
-}))
+app.use(cors())
 
 app.get('/', (req: Request, res: Response) => {
   res.send("<h1>Bem-vindo à API BOOPEEP</h1>")
