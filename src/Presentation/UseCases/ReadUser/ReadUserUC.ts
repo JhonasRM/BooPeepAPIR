@@ -12,11 +12,12 @@ export class ReadUserUC {
         return { valido: false, value: 404, erro: "Not Found" };
       }
       console.log("Usuario encontrado");
-      const user: User = wantedUser.value as User;
+      // const loginUser = await this.usersRepository.login(data.email, data.password)
+      // if (loginUser.valido === false) {
+      //   return { valido: false, value: 401, erro: "Unauthorized" };
+      // }
+      const user = wantedUser.value
       console.log(user)
-      if (data.password !== user?.password) {
-        return { valido: false, value: 401, erro: "Unauthorized" };
-      }
       return { valido: true, value: 200, data: user as User };
     } catch (error) {
       return { valido: false, value: 500, erro: "Internal Server Error" };
