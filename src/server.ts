@@ -6,11 +6,16 @@ import { NextFunction } from 'express-serve-static-core';
 dotenv.config();
 
 const port = 3000
-const cors = require('cors')
 
 app.use(express.json())
 app.use(router)
-app.use(cors())
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+})
 
 app.get('/', (req: Request, res: Response) => {
   res.send("<h1>Bem-vindo à API BOOPEEP</h1>")
