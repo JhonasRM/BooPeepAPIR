@@ -33,7 +33,7 @@ export class UsersRepository {
 
             }
         } catch (error) {
-            console.error(`Error finding user by email: ${error}`);
+            // console.error(`Error finding user by email: ${error}`);
             return null;
         }
     }
@@ -57,21 +57,23 @@ export class UsersRepository {
         }
     }
 
-    async save(user: User): Promise<void> {
+    async save(user: User): Promise<User | Error> {
+        console.log('Entrou em save do UsersRepository')
         const NewUser: FirebaseFirestore.DocumentData = {
-
             name: user.name,
             email: user.email,
             password: user.password,
-            posts: [] // Adiciona um array vazio para armazenar as postagens do usuário
+            posts: []
         }
         try {
-            const docRef: FirebaseFirestore.DocumentReference = this.db.collection(this.collectionPath).doc(); // Criar uma referência para um novo documento com ID automático
-            const uid = docRef.id; // Obtém o ID gerado automaticamente
+            const docRef: FirebaseFirestore.DocumentReference = this.db.collection(this.collectionPath).doc();
+            const uid = docRef.id;
             await docRef.set({ ...NewUser, uid });
             console.log('Usuário cadastrado com sucesso')
+            return user
         } catch (error) {
             console.error(`Erro ao cadastrar o usuário: ${error}`);
+            return error as Error
         }
     }
     
