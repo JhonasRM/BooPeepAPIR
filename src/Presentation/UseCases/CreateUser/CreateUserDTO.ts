@@ -1,5 +1,3 @@
-//Data Transfer Object
-
 export interface ICreateUserRequestDTO{
     displayName: string;
     email: string;
@@ -7,4 +5,5 @@ export interface ICreateUserRequestDTO{
     emailVerified: boolean;
     // photoURL: string;
     disabled: boolean
+
 }
