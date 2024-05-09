@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ICreateUserRequestDTO } from './CreateUserDTO';
 import { CreateUserUC } from './CreateUserUC';
 import { ICreateUserRequestDTO } from './CreateUserDTO';
 
@@ -7,7 +8,7 @@ export class CreateUserController {
     private createUserUC: CreateUserUC,
   ) {}
 
-  async handle(request: Request, response: Response): Promise<Response> {
+  async handle(request: Request, response: Response): Promise<void> {
     const { name, email, password } = request.body;
     
     // Verifica se os campos estão preenchidos
@@ -16,34 +17,33 @@ export class CreateUserController {
     }
     
     try {
-      console.log(name, email, password);
-      
-      // Verifica se os campos não estão vazios
-      const isNameEmpty = name.trim() === '';
-      const isEmailEmpty = email.trim() === '';
-      const isPasswordEmpty = password.trim() === '';
-      if (isNameEmpty || isEmailEmpty || isPasswordEmpty) {
-        return response.status(400).send('Erro: Campos obrigatórios não preenchidos');
-      }
-      
-      const createdUser = await this.createUserUC.execute({
-        name: name,
+      const newUser: ICreateUserRequestDTO = {
+        displayName: name,
         email: email,
-        password: password
-      });
-      
-      if (createdUser instanceof Error) {
-        throw new Error(createdUser.message);
+        password: password,
+        emailVerified: false,
+        // photoURL: string,
+        disabled: false,
       }
-      
-      return response.status(201).json(createdUser);  
+      const createUser = await this.createUserUC.execute(newUser)
+      if(createUser.valido === true){
+        response.status(201).json(createUser.data)
+      }
+      if(createUser.valido === false){
+        throw new Error(createUser.erro)
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Erro: ${error.message}`);
-        return response.status(400).send('Erro: ' + error.message);
+        if(error.message === 'Unauthorized'){
+          response.status(401).send('Erro: o email já existe. ' + error.message);
+        } else if(error.message === 'Bad Request'){
+          response.status(400).send('Erro: firebase error. ' + error.message);
+        } else if(error.message === 'Internal Server Error'){
+          response.status(500).send('Erro: erro interno do servidor. ' + error.message);
+        }
       } else {
         console.error(`Erro desconhecido: ${error}`);
-        return response.status(500).send('Erro desconhecido');
+        response.status(503).send('Erro desconhecido');
       }
     }
   }

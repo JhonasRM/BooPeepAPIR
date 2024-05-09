@@ -3,28 +3,23 @@ import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
 import { ICreateUserRequestDTO } from "./CreateUserDTO";
 export class CreateUserUC {
     constructor(private usersRepository: UsersRepository) { }
-    async execute(data: ICreateUserRequestDTO): Promise<User | Error> {
-        console.log('entrou em CreateUserUC')
-        try {  
-        const userAlreadyExists = await this.usersRepository.findByEmail(data.email)
-        if (userAlreadyExists instanceof User) {
-            throw new Error('O Usuário já existe')
-        }
-        const NewUser: User = new User({
-            name: data.name,
-            email: data.email,
-            password: data.password
-        }
-        )
+    async execute(data: ICreateUserRequestDTO): Promise<{valido: boolean, value?:  number, erro?: string, data?: User }> {
+        try {
+            const userAlreadyExists = await this.usersRepository.findByEmail(data.email)
+
+        if (userAlreadyExists.valido === false) {
+            return { valido: false, value: 401, erro: 'Unauthorized'}
+        } 
+        const NewUser: User = new User(data)
         console.log('Cadastrando novo Usuário...')
-        const createUser = await this.usersRepository.save(NewUser)
-        if(createUser instanceof Error){
-            throw new Error(createUser.message)
-        }
-        return createUser
+        const createdUser = await this.usersRepository.save(NewUser)
+        if(createdUser.valido === false){
+            return { valido: false, value: 400, erro: 'Bad Request'}
+        } 
+        return { valido: true, value: 201, data: createdUser.value as User }
         } catch (error) {
-         return error as Error
+            return { valido: false, value: 500, erro: 'Internal Server Error'}
         }
-        
+       
     }
 }

@@ -1,126 +1,142 @@
-import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
+import {
+  Firestore,
+} from "firebase-admin/firestore";
 import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
-import * as admin from 'firebase-admin';
+import {
+  GoogleAuthProvider,
+  getAuth,
+} from "firebase/auth";
+import { Auth } from "firebase-admin/lib/auth/auth";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
 export class UsersRepository {
-    private db: Firestore
-    private collectionPath: string
-    constructor(){
-        this.db = conn.firestore()
-        this.collectionPath = 'users'
+  private db: Firestore;
+  private collectionPath: string;
+  private auth: Auth;
+  private provider: GoogleAuthProvider;
+  constructor() {
+    this.db = conn.firestore();
+    this.auth = conn.auth();
+    this.collectionPath = "users";
+    this.provider = new GoogleAuthProvider();
+  }
+  async findByEmail(
+    email: string
+  ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+    try {
+      const userRecord = await this.auth.getUserByEmail(email);
+      const user = userRecord.toJSON();
+      return { valido: true, value: user as User, erro: undefined };
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
     }
-    async findByEmail(email: string): Promise<User | null> {
-        const field = 'email';
-        const value = email;
+  }
 
-        try {
-            const collectionRef = this.db.collection(this.collectionPath);
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
-
-            if (querySnapshot.empty) {
-                console.log("No documents found");
-                return null;
-            } else {
-                let user: User | null = null;
-
-                querySnapshot.forEach((doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    user = doc.data() as User;
-                });
-                console.log(user)
-                return user
-
-            }
-        } catch (error) {
-            // console.error(`Error finding user by email: ${error}`);
-            return null;
-        }
+  async getAllUsers(): Promise<{
+    valido: boolean;
+    value?: User[];
+    erro?: string;
+  }> {
+    try {
+      const listUsersResult = await this.auth.listUsers();
+      const users: User[] = [];
+      listUsersResult.users.forEach((userRecord: UserRecord) => {
+        users.push(userRecord.toJSON() as User);
+      });
+      console.log(users);
+      return { valido: true, value: users };
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return {
+          valido: false,
+          erro: "Erro desconhecido ao validar o texto",
+        };
+      }
     }
-    async getAllUsers(): Promise<User[] | null> {
-        try {
-            const collectionRef = this.db.collection(this.collectionPath);
-            const querySnapshot = await collectionRef.get();
-            const users: User[] = [];
-            querySnapshot.forEach((doc) => {
-                const userData = doc.data() as User;
-                users.push(userData);
-            });
-            if (users[1] === null) {
-                console.log('Nenhum Usuário encontrado')
-                return null
-            }
-            return users;
-        } catch (error) {
-            console.error(`Error fetching users: ${error}`);
-            return null;
-        }
-    }
+  }
+  
+  // async login(
+  //   email: string,
+  //   password: string
+  // ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+  
+  //   try {
+  //     const login = await this.auth.signInWithEmailAndPassword(email, password);
+  //     if (login.user === undefined) {
+  //       throw new Error();
+  //     }
+  //     const user = login.user;
+  //     return { valido: true, value: user as unknown as User };
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       const mensagemErro = error.message;
+  //       return { valido: false, erro: mensagemErro };
+  //     } else {
+  //       return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+  //     }
+  //   }
+  // }
 
-    async save(user: User): Promise<User | Error> {
-        console.log('Entrou em save do UsersRepository')
-        const NewUser: FirebaseFirestore.DocumentData = {
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            posts: []
-        }
-        try {
-            const docRef: FirebaseFirestore.DocumentReference = this.db.collection(this.collectionPath).doc();
-            const uid = docRef.id;
-            await docRef.set({ ...NewUser, uid });
-            console.log('Usuário cadastrado com sucesso')
-            return user
-        } catch (error) {
-            console.error(`Erro ao cadastrar o usuário: ${error}`);
-            return error as Error
-        }
+  async save(
+    user: User
+  ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+    try {
+      const userRecord = await this.auth.createUser(user);
+      const createdUser = userRecord.toJSON();
+      return { valido: true, value: createdUser as User, erro: undefined };
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
     }
-    
-    async delete(user: User): Promise<void> {
-        try {
-            const userQuerySnapshot = await this.db.collection(this.collectionPath)
-                .where('email', '==', user.email)
-                .get();
+  }
 
-            if (userQuerySnapshot.empty) {
-                console.log('Nenhum usuário encontrado com este e-mail.');
-                throw new Error('Nenhum usuário encontrado');
-            }
-            userQuerySnapshot.forEach(async doc => {
-                await doc.ref.delete();
-                console.log('Usuário deletado com sucesso');
-            });
-        } catch (error) {
-            console.error(`Erro ao deletar o usuário: ${error}`);
-        }
+  async delete(
+    user: User
+  ): Promise<{ valido: boolean; value?: string; erro?: string }> {
+    try {
+      const deletedUser = await this.auth.deleteUser(user.uid);
+      return {
+        valido: true,
+        value: "Usuario deletado com sucesso",
+        erro: undefined,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
     }
+  }
 
-    async update(user: User): Promise<void> {
-        try {
-            const userQuerySnapshot = await this.db.collection(this.collectionPath)
-                .where('email', '==', user.email)
-                .get();
-    
-            if (userQuerySnapshot.empty) {
-                console.log('Nenhum usuário encontrado com este e-mail.');
-                throw new Error('Nenhum usuário encontrado com este e-mail.')
-                return;
-            }
-    
-            const UpdatedUser: any = await userQuerySnapshot.forEach(async doc => {
-                await doc.ref.update({
-                    name: user.name,
-                    password: user.password
-                    //outras propriedades ...
-                });
-                console.log('Usuário atualizado com sucesso');
-                console.log(UpdatedUser)
-                return UpdatedUser
-            });
-        } catch (error) {
-            console.error(`Erro ao atualizar o usuário: ${error}`);
-        }
+  async update(
+    uid: string,
+    user: User
+  ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+    try {
+      const userRecord = await this.auth.updateUser(uid, user);
+      const updatedUser = userRecord.toJSON();
+      return { valido: true, value: updatedUser as User, erro: undefined };
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
     }
-    
+  }
 }

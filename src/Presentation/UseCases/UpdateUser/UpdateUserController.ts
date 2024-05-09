@@ -1,27 +1,42 @@
-import { Request, Response } from 'express';
+import { Request, Response, response } from 'express';
 import { UpdateUserUC } from './UpdateUserUC';
+import { IUpdateUserRequestDTO } from './UpdateUserDTO';
 
 export class UpdateUserController {
   constructor(
     private updateUserUC: UpdateUserUC,
   ) {}
 
-  async handle(request: Request, response: Response): Promise<Response> {
-    const { name, email, password } = request.body;
+  async handle(request: Request, response: Response): Promise<void> {
+    const { name, email, password} = request.body
 
-    try {
-      await this.updateUserUC.update({
-        name,
-        email,
-        password
-      });
-  
-      return response.status(200).send('Usuário atualizado com sucesso');  
-    } catch (error) {
-      console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
-      const statusCode = error instanceof Error ? 400 : 500;
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      return response.status(statusCode).send(`Erro: ${errorMessage}`);
+    const updateUser: IUpdateUserRequestDTO = {
+      displayName: name,
+      email: email,
+      password: password,
+      emailVerified: false,
+      // photoURL: string,
+      disabled: false,
+    }
+    const updatedUser = await this.updateUserUC.execute(updateUser)
+    if(updatedUser.valido === true){
+      response.status(200).json(updatedUser.data)
+    }
+    if(updatedUser.valido === false){
+      throw new Error(updatedUser.erro)
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      if(error.message === 'Not Found'){
+        response.status(401).send('Erro: email nao enconrtado. ' + error.message);
+      } else if(error.message === 'Bad Request'){
+        response.status(400).send('Erro: erro de requisiçao. ' + error.message);
+      } else if(error.message === 'Internal Server Error'){
+        response.status(500).send('Erro: erro interno do servidor. ' + error.message);
+      }
+    } else {
+      console.error(`Erro desconhecido: ${error}`);
+      response.status(503).send('Erro desconhecido');
     }
   }
 }

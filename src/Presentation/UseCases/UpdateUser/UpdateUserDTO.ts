@@ -1,5 +1,8 @@
 export interface IUpdateUserRequestDTO{
-    name: string;
+    displayName: string;
     email: string;
     password: string;
+    emailVerified: boolean;
+    // photoURL: string;
+    disabled: boolean
 }
