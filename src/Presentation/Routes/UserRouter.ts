@@ -1,6 +1,5 @@
 import { Router, Request, Response} from 'express';
 import { CreateUserUC } from '../UseCases/CreateUser/CreateUserUC';
-import { UsersRepository } from '../../Service/Repositories/UsersAuthRepository';
 import { CreateUserController } from '../UseCases/CreateUser/CreateUserController';
 import { ReadAllUsersUC } from '../UseCases/ReadAllUsers/ReadAllUserUC';
 import { ReadAllUsersController } from '../UseCases/ReadAllUsers/ReadAllUserController';
@@ -10,26 +9,31 @@ import { UpdateUserUC } from '../UseCases/UpdateUser/UpdateUserUC';
 import { UpdateUserController } from '../UseCases/UpdateUser/UpdateUserController';
 import { DeleteUserUC } from '../UseCases/DeleteUser/DeleteUserUC';
 import { DeleteUserController } from '../UseCases/DeleteUser/DeleteUserController';
+import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
+import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
+
+const router: Router= Router();
+const userARep = new UsersAuthRepository()
+const userFRep =  new UsersFireStoreRepository()
+
 
 //Create User
-const router: Router= Router();
 
-const usersRepository: UsersRepository = new UsersRepository()
-const createUserUC: CreateUserUC = new CreateUserUC(usersRepository)
+const createUserUC: CreateUserUC = new CreateUserUC(userARep, userFRep)
 const createUserController: CreateUserController = new CreateUserController(createUserUC)
 
 //Read User
-const readUserUC: ReadUserUC = new ReadUserUC(usersRepository)
+const readUserUC: ReadUserUC = new ReadUserUC(userARep, userFRep)
 const readUserController: ReadUserController = new ReadUserController(readUserUC)
 
 //UpdateUser
 
-const updateUserUC: UpdateUserUC = new UpdateUserUC(usersRepository)
+const updateUserUC: UpdateUserUC = new UpdateUserUC(userARep, userFRep)
 const updateUserController: UpdateUserController = new UpdateUserController(updateUserUC)
 
 //Delete User
 
-const deleteUserUC: DeleteUserUC = new DeleteUserUC(usersRepository)
+const deleteUserUC: DeleteUserUC = new DeleteUserUC(userARep, userFRep)
 const deleteUserController: DeleteUserController = new DeleteUserController(deleteUserUC)
 
 
@@ -42,22 +46,11 @@ router
 
 //Read All Users
 
-const readAllUserUC: ReadAllUsersUC = new ReadAllUsersUC(usersRepository)
+const readAllUserUC: ReadAllUsersUC = new ReadAllUsersUC(userARep, userFRep)
 const readAllUsersContrller: ReadAllUsersController = new ReadAllUsersController(readAllUserUC)
 
 router
     .route("/users")
     .get((req: Request ,res: Response) => readAllUsersContrller.handle(req, res))
-
-// router
-//     .route("/user")
-//     .get((req: Request ,res: Response) => UserController.get(req, res))
-
-//  router
-//     .route("/user")
-//     .delete((req: Request ,res: Response) => UserController.delete(req, res))
-
-// router
-//     .route("/user")
-//     
+    
 module.exports = router;

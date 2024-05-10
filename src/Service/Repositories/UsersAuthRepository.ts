@@ -1,25 +1,19 @@
-import {
-  Firestore,
-} from "firebase-admin/firestore";
+import { Firestore } from "firebase-admin/firestore";
 import { conn } from "../../Data Access/DAO/conn";
-import {
-  GoogleAuthProvider,
-  UserCredential,
-} from "firebase/auth";
+import { GoogleAuthProvider, User, UserCredential } from "firebase/auth";
 
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
 import { UserOnAuth } from "../Model/UserOnAuth";
 
-
 export class UsersAuthRepository {
-  private usersFireStoreReposiroty: UsersFireStoreRepository
+  private usersFireStoreReposiroty: UsersFireStoreRepository;
   private collectionPath: string;
   private auth: Auth;
   private provider: GoogleAuthProvider;
   constructor() {
-    this.usersFireStoreReposiroty = new UsersFireStoreRepository()
+    this.usersFireStoreReposiroty = new UsersFireStoreRepository();
     this.auth = conn.auth();
     this.collectionPath = "users";
     this.provider = new GoogleAuthProvider();
@@ -67,18 +61,24 @@ export class UsersAuthRepository {
     }
   }
 
- 
   async saveOnAuth(
     user: UserOnAuth
   ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
     try {
       const userRecord = await this.auth.createUser(user);
       const createdUser = userRecord.toJSON();
-      const SaveOnFireStore = await  this.usersFireStoreReposiroty.saveOnFireStore(user)
-            if(SaveOnFireStore.valido === false){
-        throw new Error(`Erro de Criação do Usuário no FireStore: ${SaveOnFireStore.erro}`)
+      const SaveOnFireStore =
+        await this.usersFireStoreReposiroty.saveOnFireStore(user);
+      if (SaveOnFireStore.valido === false) {
+        throw new Error(
+          `Erro de Criação do Usuário no FireStore: ${SaveOnFireStore.erro}`
+        );
       }
-      return { valido: true, value: createdUser as User, erro: undefined };
+      return {
+        valido: true,
+        value: createdUser as UserOnAuth,
+        erro: undefined,
+      };
     } catch (error) {
       if (error instanceof Error) {
         const mensagemErro = error.message;
@@ -111,12 +111,30 @@ export class UsersAuthRepository {
 
   async update(
     uid: string,
-    user: UserOnAuth
-  ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
+    fieldToUpdate: string,
+    newValue: any
+  ): Promise<{ valido: boolean; value?: string; erro?: string }> {
     try {
-      const userRecord = await this.auth.updateUser(uid, user);
-      const updatedUser = userRecord.toJSON();
-      return { valido: true, value: updatedUser as UserOnAuth, erro: undefined };
+      const userRecord = await this.auth.getUser(uid);
+      if (fieldToUpdate in userRecord) {
+        const customClaims = userRecord.customClaims as { [key: string]: any };
+        customClaims[fieldToUpdate] = newValue;
+
+        // Atualiza o usuário com os novos claims
+        await this.auth.setCustomUserClaims(uid, customClaims);
+        console.log(
+          `Campo ${fieldToUpdate} do usuário ${uid} atualizado para ${newValue}`
+        );
+
+        const updatedUser = await this.auth.getUser(uid)
+
+        return {
+          valido: true,
+          value: 'Usuário Alterado com sucesso',
+          erro: undefined,
+        };
+      }
+      throw new Error(`O campo ${fieldToUpdate} não existe no usuário ${uid}`);
     } catch (error) {
       if (error instanceof Error) {
         const mensagemErro = error.message;

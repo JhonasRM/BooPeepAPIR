@@ -3,6 +3,7 @@ import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
 import * as admin from 'firebase-admin';
 import { UserOnFirestore } from "../Model/UserOnFireStore";
+import { UserOnAuth } from "../Model/UserOnAuth";
 export class UsersFireStoreRepository {
     private db: Firestore
     private collectionPath: string
@@ -98,7 +99,7 @@ export class UsersFireStoreRepository {
     }
 
     async saveOnFireStore(
-        user: User
+        user: UserOnAuth
       ): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }> {
         const Newuser: UserOnFirestore = new UserOnFirestore({
           uid: user.uid,
@@ -123,7 +124,7 @@ export class UsersFireStoreRepository {
       }
       
     
-    async delete(user: User): Promise<{ valido: boolean; value?: string; erro?: string }> {
+    async delete(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }> {
         try {
             const userQuerySnapshot = await this.db.collection(this.collectionPath)
                 .where('email', '==', user.email)
@@ -146,27 +147,31 @@ export class UsersFireStoreRepository {
           }
     }
 
-    async update(user: UserOnFirestore): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }>{
+    async update(uid: string, fieldToUpdate: string, newValue: any): Promise<{ valido: boolean; value?: string; erro?: string }>{
         try {
-            const userQuerySnapshot = await this.db.collection(this.collectionPath)
-                .where('email', '==', user.email)
-                .get();
-    
-            if (userQuerySnapshot.empty) {
-                throw new Error('Nenhum usuário encontrado com este e-mail.')
-            }
-    
-            userQuerySnapshot.forEach(async (doc) => {
-                await doc.ref.update({
-                    email: user.email,
-                    password: user.password,
-                    age: user.password
-                });
-                const updatedUser = doc.data as unknown as UserOnFirestore
-                console.log('Usuário atualizado com sucesso');
-               return { valido: true, value: updatedUser as UserOnFirestore}
-            });
-            throw new Error('Erro na busca do Usuário')
+          const postRef = this.db.collection(this.collectionPath).doc(uid);
+
+          const postSnapshot = await postRef.get();
+
+          if (!postSnapshot.exists) {
+              throw new Error('Documento não encontrado.')
+          }
+  
+          const postData = postSnapshot.data();
+          if (!postData || !postData.hasOwnProperty(fieldToUpdate)) {
+              throw new Error(`O campo '${fieldToUpdate}' não existe no documento.`);
+          }
+  
+          const previousValue = postData[fieldToUpdate];
+          if (typeof previousValue !== typeof newValue) {
+              throw new Error(`O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`)
+          }
+  
+          await postRef.update({
+              [fieldToUpdate]: newValue
+          });
+  
+            return { valido: true, value: 'Usuário atualizado com sucesso'}
         } catch (error) {
             if (error instanceof Error) {
               const mensagemErro = error.message;

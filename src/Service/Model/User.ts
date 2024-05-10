@@ -24,4 +24,20 @@ export class User{
         this.age = userOnFireStore.age,
         this.posts = userOnFireStore.posts
     }
+
+    destructuring(){
+        const userOnAuth: UserOnAuth = new UserOnAuth({
+          displayName: this.displayName,
+          email: this.email,
+          emailVerified: this.emailVerified,
+          password: this.password,
+          disabled: this.disabled
+        }, this.uid)
+        const userOnData: UserOnFirestore = new UserOnFirestore({
+            uid: this.uid,
+            email: this.email,
+            password: this.password,
+        }, this.posts, this.age)
+        return {userOnAuth, userOnData}
+    }
 }

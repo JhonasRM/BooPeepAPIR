@@ -8,19 +8,16 @@ export class UpdateUserController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<void> {
-    const { name, email, password} = request.body
+    const { email, fieldToUpdate, newValue} = request.body
 
     const updateUser: IUpdateUserRequestDTO = {
-      displayName: name,
       email: email,
-      password: password,
-      emailVerified: false,
-      // photoURL: string,
-      disabled: false,
+      fieldToUpdate: fieldToUpdate,
+      newValue: newValue
     }
     const updatedUser = await this.updateUserUC.execute(updateUser)
     if(updatedUser.valido === true){
-      response.status(200).json(updatedUser.data)
+      response.status(200).send('Usuário alterado com sucesso')
     }
     if(updatedUser.valido === false){
       throw new Error(updatedUser.erro)

@@ -1,8 +1,7 @@
+import { Post } from "../../../Service/Model/Post";
+
 export interface IUpdateUserRequestDTO{
-    displayName: string;
-    email: string;
-    password: string;
-    emailVerified: boolean;
-    // photoURL: string;
-    disabled: boolean
+    email: string,
+    fieldToUpdate: string,
+    newValue: any
 }
