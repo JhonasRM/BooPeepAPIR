@@ -1,32 +1,36 @@
 import {
   Firestore,
 } from "firebase-admin/firestore";
-import { User } from "../Model/User";
 import { conn } from "../../Data Access/DAO/conn";
 import {
   GoogleAuthProvider,
-  getAuth,
+  UserCredential,
 } from "firebase/auth";
+
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
-export class UsersRepository {
-  private db: Firestore;
+import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
+import { UserOnAuth } from "../Model/UserOnAuth";
+
+
+export class UsersAuthRepository {
+  private usersFireStoreReposiroty: UsersFireStoreRepository
   private collectionPath: string;
   private auth: Auth;
   private provider: GoogleAuthProvider;
   constructor() {
-    this.db = conn.firestore();
+    this.usersFireStoreReposiroty = new UsersFireStoreRepository()
     this.auth = conn.auth();
     this.collectionPath = "users";
     this.provider = new GoogleAuthProvider();
   }
   async findByEmail(
     email: string
-  ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+  ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
     try {
       const userRecord = await this.auth.getUserByEmail(email);
       const user = userRecord.toJSON();
-      return { valido: true, value: user as User, erro: undefined };
+      return { valido: true, value: user as UserOnAuth, erro: undefined };
     } catch (error) {
       if (error instanceof Error) {
         const mensagemErro = error.message;
@@ -39,14 +43,14 @@ export class UsersRepository {
 
   async getAllUsers(): Promise<{
     valido: boolean;
-    value?: User[];
+    value?: UserOnAuth[];
     erro?: string;
   }> {
     try {
       const listUsersResult = await this.auth.listUsers();
-      const users: User[] = [];
+      const users: UserOnAuth[] = [];
       listUsersResult.users.forEach((userRecord: UserRecord) => {
-        users.push(userRecord.toJSON() as User);
+        users.push(userRecord.toJSON() as UserOnAuth);
       });
       console.log(users);
       return { valido: true, value: users };
@@ -63,34 +67,17 @@ export class UsersRepository {
     }
   }
 
-  // async login(
-  //   email: string,
-  //   password: string
-  // ): Promise<{ valido: boolean; value?: User; erro?: string }> {
-  
-  //   try {
-  //     const login = await this.auth.signInWithEmailAndPassword(email, password);
-  //     if (login.user === undefined) {
-  //       throw new Error();
-  //     }
-  //     const user = login.user;
-  //     return { valido: true, value: user as unknown as User };
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       const mensagemErro = error.message;
-  //       return { valido: false, erro: mensagemErro };
-  //     } else {
-  //       return { valido: false, erro: "Erro desconhecido ao validar o texto" };
-  //     }
-  //   }
-  // }
-
-  async save(
-    user: User
-  ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+ 
+  async saveOnAuth(
+    user: UserOnAuth
+  ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
     try {
       const userRecord = await this.auth.createUser(user);
       const createdUser = userRecord.toJSON();
+      const SaveOnFireStore = await  this.usersFireStoreReposiroty.saveOnFireStore(user)
+            if(SaveOnFireStore.valido === false){
+        throw new Error(`Erro de Criação do Usuário no FireStore: ${SaveOnFireStore.erro}`)
+      }
       return { valido: true, value: createdUser as User, erro: undefined };
     } catch (error) {
       if (error instanceof Error) {
@@ -103,7 +90,7 @@ export class UsersRepository {
   }
 
   async delete(
-    user: User
+    user: UserOnAuth
   ): Promise<{ valido: boolean; value?: string; erro?: string }> {
     try {
       const deletedUser = await this.auth.deleteUser(user.uid);
@@ -124,12 +111,12 @@ export class UsersRepository {
 
   async update(
     uid: string,
-    user: User
-  ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+    user: UserOnAuth
+  ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
     try {
       const userRecord = await this.auth.updateUser(uid, user);
       const updatedUser = userRecord.toJSON();
-      return { valido: true, value: updatedUser as User, erro: undefined };
+      return { valido: true, value: updatedUser as UserOnAuth, erro: undefined };
     } catch (error) {
       if (error instanceof Error) {
         const mensagemErro = error.message;

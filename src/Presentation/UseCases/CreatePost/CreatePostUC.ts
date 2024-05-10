@@ -1,6 +1,6 @@
 import { Post } from "../../../Service/Model/Post";
 import { PostRepository } from "../../../Service/Repositories/PostRepository";
-import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
+import { UsersRepository } from "../../../Service/Repositories/UsersAuthRepository";
 import { ICreatePostRequestDTO } from "./CreatePostDTO";
 export class CreatePostUC {
     constructor(private postRepository: PostRepository, private userRepository: UsersRepository) { }

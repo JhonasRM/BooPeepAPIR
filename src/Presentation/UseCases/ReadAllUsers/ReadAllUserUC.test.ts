@@ -1,5 +1,5 @@
 import { User } from "../../../Service/Model/User"
-import { UsersRepository } from "../../../Service/Repositories/UsersRepository"
+import { UsersRepository } from "../../../Service/Repositories/UsersAuthRepository"
 
 describe('UserRepository function getAllUsers to return a Array List of Users from Firebase', () => {
     let userRepository: UsersRepository

@@ -1,5 +1,5 @@
 import { User } from "../../../Service/Model/User"
-import { UsersRepository } from "../../../Service/Repositories/UsersRepository"
+import { UsersRepository } from "../../../Service/Repositories/UsersAuthRepository"
 import { UpdateUserUC } from "./UpdateUserUC"
 
 describe('Update User feature on usersrepository', () => {

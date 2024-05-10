@@ -1,6 +1,6 @@
 import { Router, Request, Response} from 'express';
 import { CreateUserUC } from '../UseCases/CreateUser/CreateUserUC';
-import { UsersRepository } from '../../Service/Repositories/UsersRepository';
+import { UsersRepository } from '../../Service/Repositories/UsersAuthRepository';
 import { CreateUserController } from '../UseCases/CreateUser/CreateUserController';
 import { ReadAllUsersUC } from '../UseCases/ReadAllUsers/ReadAllUserUC';
 import { ReadAllUsersController } from '../UseCases/ReadAllUsers/ReadAllUserController';

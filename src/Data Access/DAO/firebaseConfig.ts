@@ -1,15 +1,18 @@
+import { FirebaseApp } from "@firebase/app";
+import { initializeApp } from "firebase-admin";
+import { getAuth } from "firebase/auth";
+
 const dotenv = require('dotenv') 
 dotenv.config();
 
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_AUTH_APIKEY,
-    authDomain: process.env.FIREBASE_AUTH_AUTHDOMAIN,
-    projectId: process.env.FIREBASE_AUTH_PROJECTID,
-    storageBucket: process.env.FIREBASE_AUTH_STORAGEBUCKET,
-    messagingSenderId: process.env.FIREBASE_AUTH_MESSAGINGSENDERID,
-    appId: process.env.FIREBASE_AUTH_APPID,
-    measurementId: process.env.FIREBASE_AUTH_MEASUREMENTID
-  };
+  apiKey: "AIzaSyCWRSX8D_aONfY-MrLJp76Srcn2lBILCxo",
+  authDomain: "apirestoop.firebaseapp.com",
+  projectId: "apirestoop",
+  storageBucket: "apirestoop.appspot.com",
+  messagingSenderId: "40114630052",
+  appId: "1:40114630052:web:5668b0f1321a118c57a531",
+  measurementId: "G-1DQZRW0F8S"
+};
 
-export {firebaseConfig}
-  
+export { firebaseConfig }

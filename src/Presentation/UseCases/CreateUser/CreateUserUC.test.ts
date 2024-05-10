@@ -1,6 +1,6 @@
 import { conn } from "../../../Data Access/DAO/conn";
 import { User } from "../../../Service/Model/User";
-import { UsersRepository as UserRepository } from "../../../Service/Repositories/UsersRepository";
+import { UsersRepository as UserRepository } from "../../../Service/Repositories/UsersAuthRepository";
 
 describe('UserRepository', () => {
   let userRepository: UserRepository;

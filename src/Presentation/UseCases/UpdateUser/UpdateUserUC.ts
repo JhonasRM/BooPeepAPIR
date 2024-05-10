@@ -1,10 +1,10 @@
 import { User } from "../../../Service/Model/User";
-import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
+import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository";
 import { IUpdateUserRequestDTO } from "./UpdateUserDTO";
 
 
 export class UpdateUserUC {
-    constructor(private usersRepository: UsersRepository) { }
+    constructor(private usersRepository: UsersAuthRepository) { }
 
     async execute(data: IUpdateUserRequestDTO): Promise<{ valido: boolean; value?: number; erro?: string; data?: User }> {
         try {

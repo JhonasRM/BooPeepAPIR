@@ -8,7 +8,7 @@ import { ReadAllPostUC } from '../UseCases/ReadAllPost/ReadAllPostUC';
 import { ReadAllPostController } from '../UseCases/ReadAllPost/ReadAllPostController';
 import { UpdatePostUC } from '../UseCases/UpdatePost/UpdatePostUC';
 import { UpdatePostController } from '../UseCases/UpdatePost/UpdatePostController';
-import { UsersRepository } from '../../Service/Repositories/UsersRepository';
+import { UsersRepository } from '../../Service/Repositories/UsersAuthRepository';
 import { DeletePostUC } from '../UseCases/DeletePost/DeletePostUC';
 import { DeletePostController } from '../UseCases/DeletePost/DeletePostController';
 

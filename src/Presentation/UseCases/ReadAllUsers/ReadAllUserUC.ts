@@ -1,8 +1,8 @@
 
 import { User } from "../../../Service/Model/User";
-import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
+import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository";
 export class ReadAllUsersUC {
-    constructor(private usersRepository: UsersRepository) { }
+    constructor(private usersRepository: UsersAuthRepository) { }
     async execute(): Promise<{ valido: boolean; value?: number; erro?: string; data?: User[] }>  {
         try {
             const wantedUsers = await this.usersRepository.getAllUsers()

@@ -3,7 +3,7 @@ import { conn } from "../../../Data Access/DAO/conn";
 import { Post } from "../../../Service/Model/Post";
 import { User } from "../../../Service/Model/User";
 import { PostRepository } from "../../../Service/Repositories/PostRepository";
-import { UsersRepository } from "../../../Service/Repositories/UsersRepository";
+import { UsersRepository } from "../../../Service/Repositories/UsersAuthRepository";
 
 describe('PostRepository', () => {
   let postRepository: PostRepository;
