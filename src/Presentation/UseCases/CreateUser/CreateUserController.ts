@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ICreateUserRequestDTO } from './CreateUserDTO';
 import { CreateUserUC } from './CreateUserUC';
+import { ICreateUserRequestDTO } from './CreateUserDTO';
 
 export class CreateUserController {
   constructor(
@@ -9,7 +10,12 @@ export class CreateUserController {
 
   async handle(request: Request, response: Response): Promise<void> {
     const { name, email, password } = request.body;
-
+    
+    // Verifica se os campos estão preenchidos
+    if (!name || !email || !password) {
+      return response.status(400).send('Erro: Campos obrigatórios não preenchidos');
+    }
+    
     try {
       const newUser: ICreateUserRequestDTO = {
         displayName: name,
