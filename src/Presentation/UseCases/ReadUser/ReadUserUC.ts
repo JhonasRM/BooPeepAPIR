@@ -1,4 +1,6 @@
 import { User } from "../../../Service/Model/User";
+import { UserOnAuth } from "../../../Service/Model/UserOnAuth";
+import { UserOnFirestore } from "../../../Service/Model/UserOnFireStore";
 import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository";
 import { UsersFireStoreRepository } from "../../../Service/Repositories/UsersFireStoreRepository";
 import { IReadUserRequestDTO } from "./ReadUserDTO";
@@ -12,15 +14,15 @@ export class ReadUserUC {
       if (wantedUser.valido === false) {
         return { valido: false, value: 404, erro: "Not Found" };
       }
-      console.log("Usuario encontrado");
+      const userAuth = wantedUser.value as UserOnAuth
       const loginUser = await this.usersFireStoreRepository.login(data.email, data.password)
       if (loginUser.valido === false) {
         console.log(loginUser.erro)
         return { valido: false, value: 401, erro: 'Unauthorized' };
       }
-      const user = wantedUser.value
-      console.log(user)
-      return { valido: true, value: 200, data: user as User };
+      const userData = loginUser.value as UserOnFirestore
+      const FoundUser = new User(userAuth, userData)
+      return { valido: true, value: 200, data: FoundUser};
     } catch (error) {
       console.log(error)
       return { valido: false, value: 500, erro: "Internal Server Error" };

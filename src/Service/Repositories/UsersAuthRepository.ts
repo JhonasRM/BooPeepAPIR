@@ -67,13 +67,6 @@ export class UsersAuthRepository {
     try {
       const userRecord = await this.auth.createUser(user);
       const createdUser = userRecord.toJSON();
-      const SaveOnFireStore =
-        await this.usersFireStoreReposiroty.saveOnFireStore(user);
-      if (SaveOnFireStore.valido === false) {
-        throw new Error(
-          `Erro de Criação do Usuário no FireStore: ${SaveOnFireStore.erro}`
-        );
-      }
       return {
         valido: true,
         value: createdUser as UserOnAuth,
@@ -90,10 +83,10 @@ export class UsersAuthRepository {
   }
 
   async delete(
-    user: UserOnAuth
+    uid: string
   ): Promise<{ valido: boolean; value?: string; erro?: string }> {
     try {
-      const deletedUser = await this.auth.deleteUser(user.uid);
+      const deletedUser = await this.auth.deleteUser(uid);
       return {
         valido: true,
         value: "Usuario deletado com sucesso",

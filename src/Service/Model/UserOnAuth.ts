@@ -1,23 +1,32 @@
 
 export class UserOnAuth{
-    public readonly uid!: string;
+    public uid?: string;
 
     public displayName: string;
     public email: string;
     public password: string;
     public emailVerified: boolean;
-    // public photoURL: string;
     public disabled: boolean;
 
-    constructor(props: Omit<UserOnAuth, 'uid'>, uid?: string){
-        this.displayName = props.displayName;
-        this.email = props.email;
-        this.password = props.password;
+    constructor(displayName: string, email: string, password: string, emailVerified?: boolean, disabled?:boolean, uid?: string){
+        this.displayName = displayName;
+        this.email = email;
+        this.password = password;
         this.emailVerified = false;
         // this.photoURL = '';
         this.disabled = false;
         if(uid){
             this.uid = uid
         }
+        if(emailVerified){
+            this.emailVerified = emailVerified
+        }
+        if(disabled){
+            this.disabled = disabled
+        }
+    }
+
+    conectData(uid: string){
+        this.uid = uid
     }
 }

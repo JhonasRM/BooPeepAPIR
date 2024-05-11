@@ -12,7 +12,7 @@ export class DeleteUserUC {
             if(userToDelete.valido === false){
             return { valido: false, value: 404, erro: "Not Found" };  
             }
-            const deletedUserOnAuth = await this.usersAuthRepository.delete(userToDelete.value as User);
+            const deletedUserOnAuth = await this.usersAuthRepository.delete(userToDelete.value?.uid as string);
             if(deletedUserOnAuth.valido === false){
                 return { valido: false, value: 400, erro: "Bad Request" };
             }

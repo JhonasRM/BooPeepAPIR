@@ -17,20 +17,13 @@ export class UsersFireStoreRepository {
 
         try {
             const collectionRef = this.db.collection(this.collectionPath);
-            const query = collectionRef.where(field, "==", value);
-            const querySnapshot = await query.get();
-
-            if (querySnapshot.empty) {
+            const query = await collectionRef.where(field, "==", value).get();
+            if (query.empty) {
                 throw new Error('No documents found')
-            } else {
-                let user: User | null = null;
-
-                querySnapshot.forEach((doc) => {
-                    console.log(doc.id, "=>", doc.data());
-                    user = doc.data() as User;
-                });
+            } 
+                const user = query.docs[0].data()
                 return { valido: true, value: user as unknown as UserOnFirestore }
-            }
+            
         } catch (error) {
                 if (error instanceof Error) {
                   const mensagemErro = error.message;
@@ -45,29 +38,22 @@ export class UsersFireStoreRepository {
           email: string,
           password: string
         ): Promise<{ valido: boolean; value?: User; erro?: string }> {
-          console.log(`Entrou no login. Dados: 
-          email: ${email}
-          password: ${password}`)
-      
+         
           try {
             const login = await this.findByEmail(email)
             if(login.valido === false){
               throw new Error(login.erro)
             }
-            const user = login.value
-            if(password === user?.password){
-      
-            console.log('Usuário encontrado:', user);
-            return { valido: true, value: user as unknown as User};
+            const user = login.value as User
+            if(password === user.password){
+            return { valido: true, value: user as User};
             }
             throw new Error('A senha está incorreta')
           } catch (error: unknown) {
             if (error instanceof Error) {
-              console.error('Erro durante o login:', error);
               const mensagemErro = error.message;
               return { valido: false, erro: mensagemErro };
             } else {
-              console.error('Erro desconhecido durante o login:', error);
               return { valido: false, erro: "Erro desconhecido ao realizar o login" };
             }
           }
@@ -99,22 +85,24 @@ export class UsersFireStoreRepository {
     }
 
     async saveOnFireStore(
-        user: UserOnAuth
+        user: UserOnFirestore
       ): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }> {
         const Newuser: UserOnFirestore = new UserOnFirestore({
-          uid: user.uid,
           email: user.email,
           password: user.password
         })
         const NewUserData: FirebaseFirestore.DocumentData = Newuser
       try {
+        console.log('criando usuário no database')
           const docRef = await this.db.collection(this.collectionPath).doc()
           const uid = docRef.id; // Obtém o ID gerado automaticamente do novo documento
           const data = { ...NewUserData, uid }
           const createdUser = await docRef.set(data);
+          console.log(`usuário criado. ${createdUser.writeTime}`)
           return { valido: true, value:data as UserOnFirestore , erro: undefined };
         } catch (error) {
           if (error instanceof Error) {
+            console.log(error)
             const mensagemErro = error.message;
             return { valido: false, erro: mensagemErro };
           } else {

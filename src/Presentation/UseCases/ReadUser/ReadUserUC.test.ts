@@ -3,20 +3,17 @@ import { User } from "../../../Service/Model/User";
 import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository";
 import { IReadUserRequestDTO } from "./ReadUserDTO";
 import { ReadUserUC } from "./ReadUserUC";
-import { initializeApp } from "firebase-admin/app";
-import { firebaseConfig } from "../../../Data Access/DAO/firebaseConfig";
-import { Initialize } from "../../../Data Access/DAO/conn";
-
+import { UsersFireStoreRepository } from "../../../Service/Repositories/UsersFireStoreRepository";
 describe('UserRepository', () => {
     let usersAuthRepository: UsersAuthRepository;
+    let userFireStore: UsersFireStoreRepository
     let readUserUC: ReadUserUC;
-    let app;
     let authLoginApp: any
 
     beforeAll(() => {
       usersAuthRepository = new UsersAuthRepository();
-      readUserUC = new ReadUserUC(usersAuthRepository) 
-      authLoginApp = admin.auth(Initialize)
+      userFireStore = new UsersFireStoreRepository()
+      readUserUC = new ReadUserUC(usersAuthRepository, userFireStore) 
     });
   
     test('VerifyWPassword should return null for non-existing email', async () => {
@@ -27,33 +24,33 @@ describe('UserRepository', () => {
         password:  incorrectPassword,
         
       }
-      const user = await readUserUC.execute(authLoginApp, login)
+      const user = await readUserUC.execute(login)
       expect(user).toEqual({
         valido: false, value: 404, erro: "Not Found"
       })
     }, 100000);
 
     test('ReadUser(login) should return error for incorrect password', async () => {
-      const ExistingEmail: string = 'jhonas@trabalhos.com';
+      const ExistingEmail: string = 'jhons@trabalhos.com';
       const incorrectPassword: string  = '123456'
       const login: IReadUserRequestDTO = {
         email: ExistingEmail,
         password:  incorrectPassword,
         
       }
-      const user = await readUserUC.execute(authLoginApp, login)
+      const user = await readUserUC.execute(login)
       expect(user).toEqual({ valido: false, value: 401, erro: "Unauthorized" })
     }, 50000)
 
     test('ReadUser(login) should return an existing user', async () => {
-      const ExistingEmail: string = 'jhonas@trabalhos.com';
+      const ExistingEmail: string = 'jhons@trabalhos.com';
       const CorrectPassword: string  = '123asd789'
       const login: IReadUserRequestDTO = {
         email: ExistingEmail,
         password:  CorrectPassword,
         
       }
-      const user = await readUserUC.execute(authLoginApp, login)
+      const user = await readUserUC.execute(login)
       expect(user).toEqual({ valido: true, value: 200, data: user.data})
     })
 
