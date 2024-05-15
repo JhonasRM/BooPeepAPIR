@@ -1,6 +1,6 @@
 import { Firestore } from "firebase-admin/firestore";
 import { conn } from "../../Data Access/DAO/conn";
-import { GoogleAuthProvider, User, UserCredential } from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
 
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
@@ -22,6 +22,7 @@ export class UsersAuthRepository {
     email: string
   ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
     try {
+      console.log(`entrou o email: ${email}`)
       const userRecord = await this.auth.getUserByEmail(email);
       const user = userRecord.toJSON();
       return { valido: true, value: user as UserOnAuth, erro: undefined };
@@ -106,35 +107,35 @@ export class UsersAuthRepository {
     uid: string,
     fieldToUpdate: string,
     newValue: any
-  ): Promise<{ valido: boolean; value?: string; erro?: string }> {
-    try {
-      const userRecord = await this.auth.getUser(uid);
-      if (fieldToUpdate in userRecord) {
-        const customClaims = userRecord.customClaims as { [key: string]: any };
-        customClaims[fieldToUpdate] = newValue;
-
-        // Atualiza o usuário com os novos claims
-        await this.auth.setCustomUserClaims(uid, customClaims);
-        console.log(
-          `Campo ${fieldToUpdate} do usuário ${uid} atualizado para ${newValue}`
-        );
+  ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
+      try {    
+        // Atualize o campo desejado
+        switch (fieldToUpdate) {
+          case 'displayName':
+            await this.auth.updateUser(uid, { displayName: newValue });
+            break;
+          case 'email':
+            await this.auth.updateUser(uid, { email: newValue });
+            break;
+          case 'phoneNumber':
+            await this.auth.updateUser(uid, { phoneNumber: newValue });
+            break;
+         
+          default:
+            throw new Error(`Campo '${fieldToUpdate}' não é suportado para atualização.`);
+        }
+        console.log(`Campo '${fieldToUpdate}' atualizado com sucesso para '${newValue}'.`);
 
         const updatedUser = await this.auth.getUser(uid)
-
-        return {
-          valido: true,
-          value: 'Usuário Alterado com sucesso',
-          erro: undefined,
-        };
+        const user = new UserOnAuth(updatedUser.displayName as string, updatedUser.email as string, '', updatedUser.emailVerified, updatedUser.disabled, updatedUser.uid)
+        return { valido: true, value: user };
+      } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+        if(error instanceof Error){
+        return { valido: false, erro: error.message };
       }
-      throw new Error(`O campo ${fieldToUpdate} não existe no usuário ${uid}`);
-    } catch (error) {
-      if (error instanceof Error) {
-        const mensagemErro = error.message;
-        return { valido: false, erro: mensagemErro };
-      } else {
-        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      return { valido: false, erro: 'Erro Interno do Servidor'}
       }
-    }
+    
   }
 }

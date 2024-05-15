@@ -11,29 +11,33 @@ export class UpdateUserUC {
 
     async execute(data: IUpdateUserRequestDTO): Promise<{ valido: boolean; value?: number; erro?: string }> {
         try {
+            console.log('entrou')
+            console.log(data)
             const userToUpdate = await this.usersAuthRepository.findByEmail(data.email);
-            if (userToUpdate.valido === false) {
-              return { valido: false, value: 404, erro: "Not Found" };
-            }
-             const user = userToUpdate.value as UserOnAuth 
-            if(data.fieldToUpdate in user){
-                if(user?.uid !== undefined){
-                    const updatedUserAuth =  await this.usersAuthRepository.update(user.uid, data.fieldToUpdate, data.newValue)
+            const userDataToUpdate = await this.usersFireStoreRepository.findByEmail(data.email)
+            if (userToUpdate.valido === false || userDataToUpdate.valido === false) {
+                return { valido: false, value: 404, erro: "Not Found" };
+              }
+            console.log('Found')
+            const user = userToUpdate.value as UserOnAuth
+            const userData = userDataToUpdate.value as UserOnFirestore
+            if(data.fieldToUpdate in user || data.fieldToUpdate in userData){
+                    const updatedUserAuth =  await this.usersAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
                     if(updatedUserAuth.valido === false){
                         console.log(updatedUserAuth.erro)
                         return { valido: false, value: 400, erro: "Bad Request" };
                     }
+                    const updatedUserData = await this.usersFireStoreRepository.update(userData.uid as unknown as string, data.fieldToUpdate, data.newValue)
+                    if(updatedUserData.valido === false){
+                        console.log(updatedUserData.erro)
+                        return { valido: false, value: 400, erro: 'Bad Request'}
+                    }
+                    const updatedUser = new User(updatedUserAuth.value as UserOnAuth, updatedUserData.value as UserOnFirestore)
+                        return { valido: true, value: 200 };
+                    }
                     throw new Error()
-            }
-            const updatedUserData = await this.usersFireStoreRepository.update(user.uid, data.fieldToUpdate, data.newValue)
-            if(updatedUserData.valido === false){
-                console.log(updatedUserData.erro)
-                return { valido: false, value: 400, erro: 'Bad Request'}
-            }
-                return { valido: true, value: 200 };
-            }
-            return { valido: false, value: 400, erro: "Bad Request" };
-    } catch(error){
+            }catch(error){
+        console.log(error)
         return { valido: false, value: 500, erro: "Internal Server Error" };
     }
 }

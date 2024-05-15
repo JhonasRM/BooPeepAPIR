@@ -16,12 +16,15 @@ export class UsersFireStoreRepository {
         const value = email;
 
         try {
+            console.log(`entrou o email: ${email}`)
             const collectionRef = this.db.collection(this.collectionPath);
             const query = await collectionRef.where(field, "==", value).get();
             if (query.empty) {
                 throw new Error('No documents found')
             } 
                 const user = query.docs[0].data()
+
+            console.log(user)
                 return { valido: true, value: user as unknown as UserOnFirestore }
             
         } catch (error) {
@@ -135,17 +138,17 @@ export class UsersFireStoreRepository {
           }
     }
 
-    async update(uid: string, fieldToUpdate: string, newValue: any): Promise<{ valido: boolean; value?: string; erro?: string }>{
+    async update(uid: string, fieldToUpdate: string, newValue: any): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }>{
         try {
-          const postRef = this.db.collection(this.collectionPath).doc(uid);
+          const userRef = this.db.collection(this.collectionPath).doc(uid);
 
-          const postSnapshot = await postRef.get();
+          const userSnapshot = await userRef.get();
 
-          if (!postSnapshot.exists) {
+          if (!userSnapshot.exists) {
               throw new Error('Documento não encontrado.')
           }
   
-          const postData = postSnapshot.data();
+          const postData = userSnapshot.data();
           if (!postData || !postData.hasOwnProperty(fieldToUpdate)) {
               throw new Error(`O campo '${fieldToUpdate}' não existe no documento.`);
           }
@@ -155,11 +158,13 @@ export class UsersFireStoreRepository {
               throw new Error(`O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`)
           }
   
-          await postRef.update({
+          await userRef.update({
               [fieldToUpdate]: newValue
           });
-  
-            return { valido: true, value: 'Usuário atualizado com sucesso'}
+
+          const updatedUser = await this.db.collection(this.collectionPath).doc(uid).get();
+          const user: UserOnFirestore = UserOnFirestore.fromDocumentSnapshot(updatedUser)
+            return { valido: true, value: user}
         } catch (error) {
             if (error instanceof Error) {
               const mensagemErro = error.message;
