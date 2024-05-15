@@ -1,34 +1,34 @@
 import { User } from "../../../Service/Model/User"
-import { UsersRepository } from "../../../Service/Repositories/UsersAuthRepository"
+import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository";
+import { UsersFireStoreRepository } from "../../../Service/Repositories/UsersFireStoreRepository";
 import { IDeleteUserRequestDTO } from "./DeleteUserDTO";
 import { DeleteUserUC } from "./DeleteUserUC";
 
 describe('UsersRepository delete feature test', () => {
-    let usersRepository: UsersRepository
+    let userA: UsersAuthRepository
+    let userF: UsersFireStoreRepository
     let deleteUserUC: DeleteUserUC
-    let user : User
+    let realuserToDel : IDeleteUserRequestDTO
+    let notrealuserToDel : IDeleteUserRequestDTO
 
     beforeAll(()=> {
-        usersRepository = new UsersRepository()
-        deleteUserUC = new DeleteUserUC(usersRepository)
-        user = new User({
-            displayName: 'Jhonas Histórias',
-            email: 'jonathan@gmail.com',
-            password: '123asd789',
-            emailVerified: false,
-            disabled: false
-        })
-    })
-    test('DeleteUser with a non existing id -> Testing DeleteUserUC method', async () => {
-        const wantedUser = user as IDeleteUserRequestDTO;
-        const deletedUser = await deleteUserUC.delete(wantedUser)
+        userA = new UsersAuthRepository()
+        userF = new UsersFireStoreRepository()
+        deleteUserUC = new DeleteUserUC(userA, userF)
+        notrealuserToDel = {
+            email: 'jonathan@trabalhos.com'
+        }
+        realuserToDel = {
+            email: 'Aroldo@trabalhos.com'
+        }
+    test('DeleteUser with a non existing email', async () => {
+        const deletedUser = await deleteUserUC.delete(notrealuserToDel)
         expect(deletedUser).toEqual({
              valido: false, value: 404, erro: "Not Found" 
         })
     })
-    test('Delete User with an existing id -> Testing UsersRepositorys method', async () => {
-        const wantedUser = await usersRepository.findByEmail('igor@gmail.com')
-            const deletedUser = await usersRepository.delete(wantedUser.value as User)        
+    test('Delete User with an existing id', async () => {
+            const deletedUser = await deleteUserUC.delete(realuserToDel)        
         expect(deletedUser).toEqual({
              valido: true, value: 'Usuario deletado com sucesso', erro: undefined 
         })
