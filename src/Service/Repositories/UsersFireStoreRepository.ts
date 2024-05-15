@@ -16,7 +16,6 @@ export class UsersFireStoreRepository {
         const value = email;
 
         try {
-            console.log(`entrou o email: ${email}`)
             const collectionRef = this.db.collection(this.collectionPath);
             const query = await collectionRef.where(field, "==", value).get();
             if (query.empty) {
@@ -98,7 +97,7 @@ export class UsersFireStoreRepository {
       try {
         console.log('criando usuário no database')
           const docRef = await this.db.collection(this.collectionPath).doc()
-          const uid = docRef.id; // Obtém o ID gerado automaticamente do novo documento
+          const uid = docRef.id; 
           const data = { ...NewUserData, uid }
           const createdUser = await docRef.set(data);
           console.log(`usuário criado. ${createdUser.writeTime}`)
@@ -125,7 +124,6 @@ export class UsersFireStoreRepository {
             }
             userQuerySnapshot.forEach(async doc => {
                 await doc.ref.delete();
-                console.log('Usuário deletado com sucesso');
             });
             return { valido: true, value: 'Usuário deletado com sucesso'}
         } catch (error) {

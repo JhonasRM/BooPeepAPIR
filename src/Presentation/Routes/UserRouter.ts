@@ -1,16 +1,16 @@
 import { Router, Request, Response} from 'express';
-import { CreateUserUC } from '../UseCases/CreateUser/CreateUserUC';
-import { CreateUserController } from '../UseCases/CreateUser/CreateUserController';
-import { ReadAllUsersUC } from '../UseCases/ReadAllUsers/ReadAllUserUC';
-import { ReadAllUsersController } from '../UseCases/ReadAllUsers/ReadAllUserController';
-import { ReadUserUC } from '../UseCases/ReadUser/ReadUserUC';
-import { ReadUserController } from '../UseCases/ReadUser/ReadUserController';
-import { UpdateUserUC } from '../UseCases/UpdateUser/UpdateUserUC';
-import { UpdateUserController } from '../UseCases/UpdateUser/UpdateUserController';
-import { DeleteUserUC } from '../UseCases/DeleteUser/DeleteUserUC';
-import { DeleteUserController } from '../UseCases/DeleteUser/DeleteUserController';
+import { CreateUserUC } from '../UseCases/Users/CreateUser/CreateUserUC';
+import { CreateUserController } from '../UseCases/Users/CreateUser/CreateUserController';
 import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
 import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
+import { ReadUserUC } from '../UseCases/Users/ReadUser/ReadUserUC';
+import { ReadUserController } from '../UseCases/Users/ReadUser/ReadUserController';
+import { UpdateUserController } from '../UseCases/Users/UpdateUser/UpdateUserController';
+import { UpdateUserUC } from '../UseCases/Users/UpdateUser/UpdateUserUC';
+import { DeleteUserUC } from '../UseCases/Users/DeleteUser/DeleteUserUC';
+import { DeleteUserController } from '../UseCases/Users/DeleteUser/DeleteUserController';
+import { ReadAllUsersUC } from '../UseCases/Users/ReadAllUsers/ReadAllUserUC';
+import { ReadAllUsersController } from '../UseCases/Users/ReadAllUsers/ReadAllUserController';
 
 const router: Router= Router();
 const userARep = new UsersAuthRepository()
