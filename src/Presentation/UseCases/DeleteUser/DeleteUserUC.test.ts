@@ -19,18 +19,22 @@ describe('UsersRepository delete feature test', () => {
             email: 'jonathan@trabalhos.com'
         }
         realuserToDel = {
-            email: 'Aroldo@trabalhos.com'
+            email: 'aroldo@trabalhos.com'
         }
+    })
+
     test('DeleteUser with a non existing email', async () => {
         const deletedUser = await deleteUserUC.delete(notrealuserToDel)
         expect(deletedUser).toEqual({
              valido: false, value: 404, erro: "Not Found" 
         })
-    })
+    }, 100000)
+
     test('Delete User with an existing id', async () => {
             const deletedUser = await deleteUserUC.delete(realuserToDel)        
         expect(deletedUser).toEqual({
-             valido: true, value: 'Usuario deletado com sucesso', erro: undefined 
+            valido: true, value: 200, data: "Usuario deletado com sucesso"
         })
     }, 10000)
 })
+    

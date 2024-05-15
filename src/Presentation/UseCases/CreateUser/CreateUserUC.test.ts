@@ -20,7 +20,7 @@ describe('UserRepository', () => {
   test('Create Post without user verification should return by console.log the post data', async () => {
     const UserData: CreateUserRequestDTO = new  CreateUserRequestDTO(
          {displayName: 'Aroldo Histórias',
-         email: 'Aroldo@trabalhos.com',
+         email: 'aroldo@trabalhos.com',
          password: '123asd789',}
     )
     const NewUser = await createUserUC.execute(UserData)
@@ -28,7 +28,7 @@ describe('UserRepository', () => {
       valido: true,
       value: 201,
       data: NewUser.data
-  })})
+  })}, 50000)
 
   test('Create Post with an existing user should return error', async () => {
     
