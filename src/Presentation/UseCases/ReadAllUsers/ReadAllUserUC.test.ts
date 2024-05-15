@@ -1,17 +1,25 @@
 import { User } from "../../../Service/Model/User"
-import { UsersRepository } from "../../../Service/Repositories/UsersAuthRepository"
+import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository";
+import { UsersFireStoreRepository } from "../../../Service/Repositories/UsersFireStoreRepository";
+import { ReadAllUsersUC } from "./ReadAllUserUC";
 
 describe('UserRepository function getAllUsers to return a Array List of Users from Firebase', () => {
-    let userRepository: UsersRepository
+    let userA: UsersAuthRepository;
+    let userF: UsersFireStoreRepository;
+    let readalluseruc: ReadAllUsersUC;
 
     beforeAll(() => {
-        userRepository = new UsersRepository();
+        userA = new UsersAuthRepository();
+        userF = new UsersFireStoreRepository();
+        readalluseruc = new ReadAllUsersUC(userA, userF)
+
     });
 
     test('getAllUsers should return an Array of type Users', async () => {
-        const Users = await userRepository.getAllUsers();
-        console.log(Users)
-        expect(Users).toBeInstanceOf(Array);
-        expect(Users?.length).toBeGreaterThan(0);
+        const readall = await readalluseruc.execute()
+        const users = readall.data
+        console.log(users)
+        expect(users).toBeInstanceOf(Array);
+        expect(users?.length).toBeGreaterThan(0);
     }, 10000);
 })
