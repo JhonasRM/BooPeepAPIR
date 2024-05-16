@@ -3,14 +3,16 @@ import { CreateUserUC } from '../UseCases/Users/CreateUser/CreateUserUC';
 import { CreateUserController } from '../UseCases/Users/CreateUser/CreateUserController';
 import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
 import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
-import { ReadUserUC } from '../UseCases/Users/ReadUser/ReadUserUC';
-import { ReadUserController } from '../UseCases/Users/ReadUser/ReadUserController';
+import { LoginUserUC } from '../UseCases/Users/LoginUser/LoginUserUC';
+import { LoginUserController } from '../UseCases/Users/LoginUser/LoginUserController';
 import { UpdateUserController } from '../UseCases/Users/UpdateUser/UpdateUserController';
 import { UpdateUserUC } from '../UseCases/Users/UpdateUser/UpdateUserUC';
 import { DeleteUserUC } from '../UseCases/Users/DeleteUser/DeleteUserUC';
 import { DeleteUserController } from '../UseCases/Users/DeleteUser/DeleteUserController';
 import { ReadAllUsersUC } from '../UseCases/Users/ReadAllUsers/ReadAllUserUC';
 import { ReadAllUsersController } from '../UseCases/Users/ReadAllUsers/ReadAllUserController';
+import { ReadUserUC } from '../UseCases/Users/ReadUser/ReadUserUC';
+import { ReadUserController } from '../UseCases/Users/ReadUser/ReadUserController';
 
 const router: Router= Router();
 const userARep = new UsersAuthRepository()
@@ -52,5 +54,12 @@ const readAllUsersContrller: ReadAllUsersController = new ReadAllUsersController
 router
     .route("/users")
     .get((req: Request ,res: Response) => readAllUsersContrller.handle(req, res))
-    
+
+//Login User
+const loginUserUC: LoginUserUC = new LoginUserUC(userARep, userFRep)
+const loginUserController: LoginUserController = new LoginUserController(loginUserUC)
+
+router
+    .route("/loginuser")
+    .get((req: Request, res: Response) => loginUserController.handle(req, res))
 module.exports = router;

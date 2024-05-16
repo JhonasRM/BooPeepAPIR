@@ -1,6 +1,3 @@
-import { conn } from "../../../../Data Access/DAO/conn";
-import { User } from "../../../../Service/Model/User";
-import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
 import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
 import { CreateUserRequestDTO } from "./CreateUserDTO";

@@ -1,6 +1,5 @@
-import { User } from "../../../Service/Model/User"
-import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../Service/Repositories/UsersFireStoreRepository";
+import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
+import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
 import { ReadAllUsersUC } from "./ReadAllUserUC";
 
 describe('UserRepository function getAllUsers to return a Array List of Users from Firebase', () => {

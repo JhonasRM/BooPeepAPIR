@@ -1,4 +1,3 @@
-
 import { User } from "../../../../Service/Model/User";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
@@ -12,20 +11,18 @@ export class ReadUserUC {
   ): Promise<{ valido: boolean; value?: number; erro?: string; data?: User }> {
     try {
       const wantedUser = await this.usersAuthRepository.findByEmail(data.email);
+      const wantedUserData = await this.usersFireStoreRepository.findByEmail(data.email)
       if (wantedUser.valido === false) {
         return { valido: false, value: 404, erro: "Not Found" };
       }
+      console.log("Usuario encontrado");
       const userAuth = wantedUser.value as UserOnAuth
-      const loginUser = await this.usersFireStoreRepository.login(data.email, data.password)
-      if (loginUser.valido === false) {
-        console.log(loginUser.erro)
-        return { valido: false, value: 401, erro: 'Unauthorized' };
-      }
-      const userData = loginUser.value as UserOnFirestore
-      const FoundUser = new User(userAuth, userData)
-      return { valido: true, value: 200, data: FoundUser};
+      const userData = wantedUserData.value as UserOnFirestore
+      const user: User = new User(userAuth, userData)
+      console.log(user)
+      
+      return { valido: true, value: 200, data: user as User };
     } catch (error) {
-      console.log(error)
       return { valido: false, value: 500, erro: "Internal Server Error" };
     }
   }

@@ -1,6 +1,6 @@
-import { User } from "../../../Service/Model/User"
-import { UsersAuthRepository } from "../../../Service/Repositories/UsersAuthRepository"
-import { UsersFireStoreRepository } from "../../../Service/Repositories/UsersFireStoreRepository"
+
+import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository"
+import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository"
 import { IUpdateUserRequestDTO } from "./UpdateUserDTO"
 import { UpdateUserUC } from "./UpdateUserUC"
 
