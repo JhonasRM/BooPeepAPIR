@@ -1,5 +1,5 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
-import { conn } from "../../Data Access/DAO/conn";
+import { conn } from "../../Data Access/DAO/AppAdmin/conn";
 import { Post } from "../Model/Post";
 export class PostRepository {
     private db: Firestore

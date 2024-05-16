@@ -1,14 +1,14 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
 import { User } from "../Model/User";
-import { conn } from "../../Data Access/DAO/conn";
 import * as admin from 'firebase-admin';
 import { UserOnFirestore } from "../Model/UserOnFireStore";
 import { UserOnAuth } from "../Model/UserOnAuth";
+import { AppAdmin } from "../../Data Access/DAO/AppAdmin/conn";
 export class UsersFireStoreRepository {
     private db: Firestore
     private collectionPath: string
     constructor(){
-        this.db = conn.firestore()
+        this.db = AppAdmin.firestore()
         this.collectionPath = 'users'
     }
     async findByEmail(email: string): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }>{

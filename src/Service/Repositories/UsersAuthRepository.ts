@@ -1,20 +1,17 @@
-import { Firestore } from "firebase-admin/firestore";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { conn } from "../../Data Access/DAO/conn";
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
 import { UserOnAuth } from "../Model/UserOnAuth";
-import { AuthApp } from "../../Data Access/DAO/AuthConn/AuthApp";
+import { AppWeb } from "../../Data Access/DAO/AppWeb/appWeb";
+import { AppAdmin } from "../../Data Access/DAO/AppAdmin/conn";
 
 export class UsersAuthRepository {
-  private usersFireStoreReposiroty: UsersFireStoreRepository;
   private auth: Auth;
   private Authapp
   constructor() {
-    this.usersFireStoreReposiroty = new UsersFireStoreRepository();
-    this.auth = conn.auth();
-    this.Authapp = getAuth(AuthApp)
+    this.auth = AppAdmin.auth();
+    this.Authapp = getAuth(AppWeb)
   }
   async findByEmail(
     email: string
