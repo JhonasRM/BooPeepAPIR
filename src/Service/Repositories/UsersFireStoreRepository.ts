@@ -3,7 +3,7 @@ import { User } from "../Model/User";
 import * as admin from 'firebase-admin';
 import { UserOnFirestore } from "../Model/UserOnFireStore";
 import { UserOnAuth } from "../Model/UserOnAuth";
-import { AppAdmin } from "../../Data Access/DAO/AppAdmin/conn";
+import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 export class UsersFireStoreRepository {
     private db: Firestore
     private collectionPath: string

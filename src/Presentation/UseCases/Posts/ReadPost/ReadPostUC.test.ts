@@ -1,4 +1,4 @@
-import { PostRepository } from "../../../Service/Repositories/PostRepository";
+import { PostRepository } from "../../../../Service/Repositories/PostRepository";
 
 describe('UserRepository function getAllPosts to return a Array List of Posts from Firebase', () => {
     let postRepository: PostRepository
