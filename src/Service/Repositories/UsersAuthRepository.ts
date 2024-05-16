@@ -1,19 +1,20 @@
 import { Firestore } from "firebase-admin/firestore";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { conn } from "../../Data Access/DAO/conn";
-
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
 import { UserOnAuth } from "../Model/UserOnAuth";
+import { AuthApp } from "../../Data Access/DAO/AuthConn/AuthApp";
 
 export class UsersAuthRepository {
   private usersFireStoreReposiroty: UsersFireStoreRepository;
-  private collectionPath: string;
   private auth: Auth;
+  private Authapp
   constructor() {
     this.usersFireStoreReposiroty = new UsersFireStoreRepository();
     this.auth = conn.auth();
-    this.collectionPath = "users";
+    this.Authapp = getAuth(AuthApp)
   }
   async findByEmail(
     email: string
@@ -61,6 +62,7 @@ export class UsersAuthRepository {
     user: UserOnAuth
   ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
     try {
+      
       const userRecord = await this.auth.createUser(user);
       const createdUser = userRecord.toJSON();
       return {
@@ -101,10 +103,11 @@ export class UsersAuthRepository {
   async resetPassword(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }>{
     try {
       const link = await this.auth.generatePasswordResetLink(user.email)
-      console.log(link)
-      return { valido: true, value: 'E-mail de redefinição de senha enviado com sucesso'}
+      const sendEmail = await sendPasswordResetEmail(this.Authapp, user.email)
+      return { valido: true, value: link}
     } catch (error) {
       if (error instanceof Error) {
+        console.log(error.message)
         const mensagemErro = error.message;
         return { valido: false, erro: mensagemErro };
       } else {
@@ -147,3 +150,4 @@ export class UsersAuthRepository {
       } 
   }
 }
+

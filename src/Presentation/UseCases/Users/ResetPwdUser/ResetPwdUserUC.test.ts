@@ -21,11 +21,11 @@ describe("UserRepository function getAllPosts to return a Array List of Posts fr
 
     expect(user).toEqual({ valido: false, value: 404, erro: "Not Found" });
   }, 100000);
-  test("Trying to reset with a non existing email", async () => {
+  test("Trying to reset with an existing email", async () => {
     const ExistingEmail: IResetPwdUserRequestDTO = {
       email: "dias44520@gmail.com",
     };
     const user = await resetpwdUC.execute(ExistingEmail);
-    expect(user).toEqual({ valido: false, value: 200, data:'E-mail de redefinição de senha enviado com sucesso'});
+    expect(user).toEqual({ valido: false, value: 200, data: user.data});
   }, 100000);
 });
