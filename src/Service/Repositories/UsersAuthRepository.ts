@@ -98,6 +98,10 @@ export class UsersAuthRepository {
     }
   }
 
+  async resetPassword(email: string){
+    const link = this.auth.generatePasswordResetLink(email)
+  }
+
   async update(
     uid: string,
     fieldToUpdate: string,
