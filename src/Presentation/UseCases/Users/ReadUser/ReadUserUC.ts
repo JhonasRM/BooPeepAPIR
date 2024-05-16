@@ -12,7 +12,7 @@ export class ReadUserUC {
     try {
       const wantedUser = await this.usersAuthRepository.findByEmail(data.email);
       const wantedUserData = await this.usersFireStoreRepository.findByEmail(data.email)
-      if (wantedUser.valido === false) {
+      if (wantedUser.valido === false || wantedUserData.valido === false) {
         return { valido: false, value: 404, erro: "Not Found" };
       }
       console.log("Usuario encontrado");

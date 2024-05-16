@@ -1,11 +1,11 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
-import { conn } from "../../Data Access/DAO/conn";
 import { Post } from "../Model/Post";
+import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 export class PostRepository {
     private db: Firestore
     private collectionPath: string
     constructor() {
-        this.db = conn.firestore()
+        this.db = AppAdmin.firestore()
         this.collectionPath = 'posts'
     }
     

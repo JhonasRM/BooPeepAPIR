@@ -17,7 +17,7 @@ describe('UserRepository', () => {
   test('Create Post without user verification should return by console.log the post data', async () => {
     const UserData: CreateUserRequestDTO = new  CreateUserRequestDTO(
          {displayName: 'Aroldo Histórias',
-         email: 'aroldo@trabalhos.com',
+         email: 'dias44520@gmail.com',
          password: '123asd789',}
     )
     const NewUser = await createUserUC.execute(UserData)

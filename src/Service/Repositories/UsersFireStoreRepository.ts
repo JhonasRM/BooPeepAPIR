@@ -1,14 +1,14 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
 import { User } from "../Model/User";
-import { conn } from "../../Data Access/DAO/conn";
 import * as admin from 'firebase-admin';
 import { UserOnFirestore } from "../Model/UserOnFireStore";
 import { UserOnAuth } from "../Model/UserOnAuth";
+import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 export class UsersFireStoreRepository {
     private db: Firestore
     private collectionPath: string
     constructor(){
-        this.db = conn.firestore()
+        this.db = AppAdmin.firestore()
         this.collectionPath = 'users'
     }
     async findByEmail(email: string): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }>{
@@ -36,19 +36,19 @@ export class UsersFireStoreRepository {
               }
         }
       
-        async login(
+        async loginOnFireStore(
           email: string,
           password: string
-        ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+        ): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }> {
          
           try {
             const login = await this.findByEmail(email)
             if(login.valido === false){
               throw new Error(login.erro)
             }
-            const user = login.value as User
+            const user = login.value as UserOnFirestore
             if(password === user.password){
-            return { valido: true, value: user as User};
+            return { valido: true, value: user};
             }
             throw new Error('A senha está incorreta')
           } catch (error: unknown) {
@@ -146,12 +146,17 @@ export class UsersFireStoreRepository {
               throw new Error('Documento não encontrado.')
           }
   
-          const postData = userSnapshot.data();
-          if (!postData || !postData.hasOwnProperty(fieldToUpdate)) {
+          const userData = userSnapshot.data();
+          if (!userData || !userData.hasOwnProperty(fieldToUpdate)) {
               throw new Error(`O campo '${fieldToUpdate}' não existe no documento.`);
           }
   
-          const previousValue = postData[fieldToUpdate];
+          const previousValue = userData[fieldToUpdate];
+          if(fieldToUpdate === 'password'){
+            if(previousValue === newValue){
+              throw new Error('A nova senha não pode ser igual a anterior')
+            }
+          }
           if (typeof previousValue !== typeof newValue) {
               throw new Error(`O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`)
           }

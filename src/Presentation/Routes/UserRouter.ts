@@ -13,6 +13,8 @@ import { ReadAllUsersUC } from '../UseCases/Users/ReadAllUsers/ReadAllUserUC';
 import { ReadAllUsersController } from '../UseCases/Users/ReadAllUsers/ReadAllUserController';
 import { ReadUserUC } from '../UseCases/Users/ReadUser/ReadUserUC';
 import { ReadUserController } from '../UseCases/Users/ReadUser/ReadUserController';
+import { ResetPwdUserUC } from '../UseCases/Users/ResetPwdUser/ResetPwdUserUC';
+import { ResetPwdUserController } from '../UseCases/Users/ResetPwdUser/ResetPwdUserController';
 
 const router: Router= Router();
 const userARep = new UsersAuthRepository()
@@ -62,4 +64,12 @@ const loginUserController: LoginUserController = new LoginUserController(loginUs
 router
     .route("/loginuser")
     .get((req: Request, res: Response) => loginUserController.handle(req, res))
+
+// Reset Password 
+const resetpwdUC: ResetPwdUserUC = new ResetPwdUserUC(userARep, userFRep)
+const resetpwdController: ResetPwdUserController = new ResetPwdUserController(resetpwdUC)
+
+router
+    .route("/resetpwd")
+    .post((req: Request, res: Response) => resetpwdController.handle(req, res))
 module.exports = router;

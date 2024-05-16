@@ -1,19 +1,17 @@
-import { Firestore } from "firebase-admin/firestore";
-import { conn } from "../../Data Access/DAO/conn";
-
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
 import { UserOnAuth } from "../Model/UserOnAuth";
+import { AppWeb } from "../../Data Access/DAO/AppWeb/appWeb";
+import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 
 export class UsersAuthRepository {
-  private usersFireStoreReposiroty: UsersFireStoreRepository;
-  private collectionPath: string;
   private auth: Auth;
+  private Authapp
   constructor() {
-    this.usersFireStoreReposiroty = new UsersFireStoreRepository();
-    this.auth = conn.auth();
-    this.collectionPath = "users";
+    this.auth = AppAdmin.auth();
+    this.Authapp = getAuth(AppWeb)
   }
   async findByEmail(
     email: string
@@ -61,6 +59,7 @@ export class UsersAuthRepository {
     user: UserOnAuth
   ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
     try {
+      
       const userRecord = await this.auth.createUser(user);
       const createdUser = userRecord.toJSON();
       return {
@@ -74,6 +73,32 @@ export class UsersAuthRepository {
         return { valido: false, erro: mensagemErro };
       } else {
         return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
+    }
+  }
+  
+  async loginOnAuth(
+    email: string,
+    password: string
+  ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
+   
+    try {
+      const loginAuth = await signInWithEmailAndPassword(this.Authapp, email, password)
+      const user: UserOnAuth = new UserOnAuth(
+        loginAuth.user.displayName as string,
+        loginAuth.user.email as string,
+        '',
+        loginAuth.user.emailVerified,
+        false,
+        loginAuth.user.uid
+      )    
+      return { valido: true, value: user as UserOnAuth }
+     } catch (error: unknown) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao realizar o login" };
       }
     }
   }
@@ -98,8 +123,20 @@ export class UsersAuthRepository {
     }
   }
 
-  async resetPassword(email: string){
-    const link = this.auth.generatePasswordResetLink(email)
+  async resetPassword(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }>{
+    try {
+      const link = await this.auth.generatePasswordResetLink(user.email)
+      const sendEmail = await sendPasswordResetEmail(this.Authapp, user.email)
+      return { valido: true, value: link}
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message)
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
+    }
   }
 
   async update(
@@ -133,7 +170,7 @@ export class UsersAuthRepository {
         return { valido: false, erro: error.message };
       }
       return { valido: false, erro: 'Erro Interno do Servidor'}
-      }
-    
+      } 
   }
 }
+
