@@ -1,24 +1,23 @@
 import { Router, Request, Response} from 'express';
 import { PostRepository } from '../../Service/Repositories/PostRepository';
-import { CreatePostUC } from '../UseCases/CreatePost/CreatePostUC';
-import { CreatePostController } from '../UseCases/CreatePost/CreatePostController';
-import { ReadPostUC } from '../UseCases/ReadPost/ReadPostUC';
-import { ReadPostController } from '../UseCases/ReadPost/ReadPostController';
-import { ReadAllPostUC } from '../UseCases/ReadAllPost/ReadAllPostUC';
-import { ReadAllPostController } from '../UseCases/ReadAllPost/ReadAllPostController';
-import { UpdatePostUC } from '../UseCases/UpdatePost/UpdatePostUC';
-import { UpdatePostController } from '../UseCases/UpdatePost/UpdatePostController';
-import { UsersRepository } from '../../Service/Repositories/UsersRepository';
-import { DeletePostUC } from '../UseCases/DeletePost/DeletePostUC';
-import { DeletePostController } from '../UseCases/DeletePost/DeletePostController';
-
+import { CreatePostController } from '../UseCases/Posts/CreatePost/CreatePostController';
+import { CreatePostUC } from '../UseCases/Posts/CreatePost/CreatePostUC';
+import { ReadPostUC } from '../UseCases/Posts/ReadPost/ReadPostUC';
+import { ReadPostController } from '../UseCases/Posts/ReadPost/ReadPostController';
+import { UpdatePostUC } from '../UseCases/Posts/UpdatePost/UpdatePostUC';
+import { UpdatePostController } from '../UseCases/Posts/UpdatePost/UpdatePostController';
+import { DeletePostUC } from '../UseCases/Posts/DeletePost/DeletePostUC';
+import { DeletePostController } from '../UseCases/Posts/DeletePost/DeletePostController';
+import { ReadAllPostController } from '../UseCases/Posts/ReadAllPost/ReadAllPostController';
+import { ReadAllPostUC } from '../UseCases/Posts/ReadAllPost/ReadAllPostUC';
+import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
 
 //Create Post
 const router: Router= Router();
 
-const userRepository: UsersRepository = new UsersRepository()
+const usersFireStoreRepository: UsersFireStoreRepository = new UsersFireStoreRepository()
 const postRepository: PostRepository = new PostRepository()
-const createPostUC: CreatePostUC = new CreatePostUC(postRepository, userRepository)
+const createPostUC: CreatePostUC = new CreatePostUC(postRepository, usersFireStoreRepository)
 const createPostController: CreatePostController = new CreatePostController(createPostUC)
 
 //Read Post

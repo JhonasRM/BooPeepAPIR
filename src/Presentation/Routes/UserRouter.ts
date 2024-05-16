@@ -1,35 +1,41 @@
 import { Router, Request, Response} from 'express';
-import { CreateUserUC } from '../UseCases/CreateUser/CreateUserUC';
-import { UsersRepository } from '../../Service/Repositories/UsersRepository';
-import { CreateUserController } from '../UseCases/CreateUser/CreateUserController';
-import { ReadAllUsersUC } from '../UseCases/ReadAllUsers/ReadAllUserUC';
-import { ReadAllUsersController } from '../UseCases/ReadAllUsers/ReadAllUserController';
-import { ReadUserUC } from '../UseCases/ReadUser/ReadUserUC';
-import { ReadUserController } from '../UseCases/ReadUser/ReadUserController';
-import { UpdateUserUC } from '../UseCases/UpdateUser/UpdateUserUC';
-import { UpdateUserController } from '../UseCases/UpdateUser/UpdateUserController';
-import { DeleteUserUC } from '../UseCases/DeleteUser/DeleteUserUC';
-import { DeleteUserController } from '../UseCases/DeleteUser/DeleteUserController';
+import { CreateUserUC } from '../UseCases/Users/CreateUser/CreateUserUC';
+import { CreateUserController } from '../UseCases/Users/CreateUser/CreateUserController';
+import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
+import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
+import { LoginUserUC } from '../UseCases/Users/LoginUser/LoginUserUC';
+import { LoginUserController } from '../UseCases/Users/LoginUser/LoginUserController';
+import { UpdateUserController } from '../UseCases/Users/UpdateUser/UpdateUserController';
+import { UpdateUserUC } from '../UseCases/Users/UpdateUser/UpdateUserUC';
+import { DeleteUserUC } from '../UseCases/Users/DeleteUser/DeleteUserUC';
+import { DeleteUserController } from '../UseCases/Users/DeleteUser/DeleteUserController';
+import { ReadAllUsersUC } from '../UseCases/Users/ReadAllUsers/ReadAllUserUC';
+import { ReadAllUsersController } from '../UseCases/Users/ReadAllUsers/ReadAllUserController';
+import { ReadUserUC } from '../UseCases/Users/ReadUser/ReadUserUC';
+import { ReadUserController } from '../UseCases/Users/ReadUser/ReadUserController';
+
+const router: Router= Router();
+const userARep = new UsersAuthRepository()
+const userFRep =  new UsersFireStoreRepository()
+
 
 //Create User
-const router: Router= Router();
 
-const usersRepository: UsersRepository = new UsersRepository()
-const createUserUC: CreateUserUC = new CreateUserUC(usersRepository)
+const createUserUC: CreateUserUC = new CreateUserUC(userARep, userFRep)
 const createUserController: CreateUserController = new CreateUserController(createUserUC)
 
 //Read User
-const readUserUC: ReadUserUC = new ReadUserUC(usersRepository)
+const readUserUC: ReadUserUC = new ReadUserUC(userARep, userFRep)
 const readUserController: ReadUserController = new ReadUserController(readUserUC)
 
 //UpdateUser
 
-const updateUserUC: UpdateUserUC = new UpdateUserUC(usersRepository)
+const updateUserUC: UpdateUserUC = new UpdateUserUC(userARep, userFRep)
 const updateUserController: UpdateUserController = new UpdateUserController(updateUserUC)
 
 //Delete User
 
-const deleteUserUC: DeleteUserUC = new DeleteUserUC(usersRepository)
+const deleteUserUC: DeleteUserUC = new DeleteUserUC(userARep, userFRep)
 const deleteUserController: DeleteUserController = new DeleteUserController(deleteUserUC)
 
 
@@ -42,22 +48,18 @@ router
 
 //Read All Users
 
-const readAllUserUC: ReadAllUsersUC = new ReadAllUsersUC(usersRepository)
+const readAllUserUC: ReadAllUsersUC = new ReadAllUsersUC(userARep, userFRep)
 const readAllUsersContrller: ReadAllUsersController = new ReadAllUsersController(readAllUserUC)
 
 router
     .route("/users")
     .get((req: Request ,res: Response) => readAllUsersContrller.handle(req, res))
 
-// router
-//     .route("/user")
-//     .get((req: Request ,res: Response) => UserController.get(req, res))
+//Login User
+const loginUserUC: LoginUserUC = new LoginUserUC(userARep, userFRep)
+const loginUserController: LoginUserController = new LoginUserController(loginUserUC)
 
-//  router
-//     .route("/user")
-//     .delete((req: Request ,res: Response) => UserController.delete(req, res))
-
-// router
-//     .route("/user")
-//     
+router
+    .route("/loginuser")
+    .get((req: Request, res: Response) => loginUserController.handle(req, res))
 module.exports = router;

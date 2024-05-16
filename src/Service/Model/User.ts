@@ -1,3 +1,7 @@
+import { Post } from "./Post";
+import { UserOnAuth } from "./UserOnAuth";
+import { UserOnFirestore } from "./UserOnFireStore";
+
 export class User{
     public readonly uid!: string;
 
@@ -7,13 +11,30 @@ export class User{
     public emailVerified: boolean;
     // public photoURL: string;
     public disabled: boolean;
+    public posts!: Post[];
+    public age!: number;
 
-    constructor(props: Omit<User, 'uid'|'posts'>){
-        this.displayName = props.displayName;
-        this.email = props.email;
-        this.password = props.password;
-        this.emailVerified = false;
+    constructor(userOnAuth: UserOnAuth, userOnFireStore: UserOnFirestore){
+        this.displayName = userOnAuth.displayName;
+        this.email = userOnAuth.email;
+        this.password = userOnFireStore.password;
+        this.emailVerified = userOnAuth.emailVerified;
         // this.photoURL = '';
-        this.disabled = false;
+        this.disabled = userOnAuth.disabled;
+    }
+
+    destructuring(){
+        const userOnAuth: UserOnAuth = new UserOnAuth(
+          this.displayName,
+          this.email,
+           this.password,
+          this.emailVerified,
+          this.disabled
+        )
+        const userOnData: UserOnFirestore = new UserOnFirestore({
+            email: this.email,
+            password: this.password,
+        }, this.uid, this.posts, this.age)
+        return {userOnAuth, userOnData}
     }
 }
