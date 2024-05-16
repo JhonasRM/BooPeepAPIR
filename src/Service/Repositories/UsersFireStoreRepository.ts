@@ -146,12 +146,17 @@ export class UsersFireStoreRepository {
               throw new Error('Documento não encontrado.')
           }
   
-          const postData = userSnapshot.data();
-          if (!postData || !postData.hasOwnProperty(fieldToUpdate)) {
+          const userData = userSnapshot.data();
+          if (!userData || !userData.hasOwnProperty(fieldToUpdate)) {
               throw new Error(`O campo '${fieldToUpdate}' não existe no documento.`);
           }
   
-          const previousValue = postData[fieldToUpdate];
+          const previousValue = userData[fieldToUpdate];
+          if(fieldToUpdate === 'password'){
+            if(previousValue === newValue){
+              throw new Error('A nova senha não pode ser igual a anterior')
+            }
+          }
           if (typeof previousValue !== typeof newValue) {
               throw new Error(`O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`)
           }

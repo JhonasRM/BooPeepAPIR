@@ -144,7 +144,6 @@ export class UsersAuthRepository {
         return { valido: false, erro: error.message };
       }
       return { valido: false, erro: 'Erro Interno do Servidor'}
-      }
-    
+      } 
   }
 }
