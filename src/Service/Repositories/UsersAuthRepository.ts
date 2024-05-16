@@ -1,4 +1,4 @@
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
@@ -73,6 +73,32 @@ export class UsersAuthRepository {
         return { valido: false, erro: mensagemErro };
       } else {
         return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
+    }
+  }
+  
+  async loginOnAuth(
+    email: string,
+    password: string
+  ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
+   
+    try {
+      const loginAuth = await signInWithEmailAndPassword(this.Authapp, email, password)
+      const user: UserOnAuth = new UserOnAuth(
+        loginAuth.user.displayName as string,
+        loginAuth.user.email as string,
+        '',
+        loginAuth.user.emailVerified,
+        false,
+        loginAuth.user.uid
+      )    
+      return { valido: true, value: user as UserOnAuth }
+     } catch (error: unknown) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao realizar o login" };
       }
     }
   }

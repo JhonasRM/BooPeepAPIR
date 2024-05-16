@@ -36,19 +36,19 @@ export class UsersFireStoreRepository {
               }
         }
       
-        async login(
+        async loginOnFireStore(
           email: string,
           password: string
-        ): Promise<{ valido: boolean; value?: User; erro?: string }> {
+        ): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }> {
          
           try {
             const login = await this.findByEmail(email)
             if(login.valido === false){
               throw new Error(login.erro)
             }
-            const user = login.value as User
+            const user = login.value as UserOnFirestore
             if(password === user.password){
-            return { valido: true, value: user as User};
+            return { valido: true, value: user};
             }
             throw new Error('A senha está incorreta')
           } catch (error: unknown) {
