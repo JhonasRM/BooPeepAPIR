@@ -98,8 +98,19 @@ export class UsersAuthRepository {
     }
   }
 
-  async resetPassword(email: string){
-    const link = this.auth.generatePasswordResetLink(email)
+  async resetPassword(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }>{
+    try {
+      const link = await this.auth.generatePasswordResetLink(user.email)
+      console.log(link)
+      return { valido: true, value: 'E-mail de redefinição de senha enviado com sucesso'}
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { valido: false, erro: mensagemErro };
+      } else {
+        return { valido: false, erro: "Erro desconhecido ao validar o texto" };
+      }
+    }
   }
 
   async update(
