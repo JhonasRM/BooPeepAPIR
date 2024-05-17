@@ -5,7 +5,7 @@ import { IResetPwdUserRequestDTO } from "./ResetPwdUserDTO";
 export class ResetPwdUserController {
   constructor(private resetpwdUC: ResetPwdUserUC) {}
   async handle(request: Request, response: Response) {
-    const { email } = request.params;
+    const { email } = request.body;
     const data: IResetPwdUserRequestDTO = {
       email: email,
     };
