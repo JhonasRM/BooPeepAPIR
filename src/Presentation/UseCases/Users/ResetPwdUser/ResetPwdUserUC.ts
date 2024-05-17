@@ -23,7 +23,9 @@ export class ResetPwdUserUC {
       if(resetPassword.valido === false){
         return { valido: false, value: 500,  erro:"Internal Server Error"}
       }
-      return { valido: false, value: 200, data: resetPassword.value}
+      const parsedURL  = new URL(resetPassword.value as string)
+      const token = parsedURL.searchParams.get('oobCode') 
+      return { valido: false, value: 200, data: token as string}
     } catch (error) {
         return {valido: false, value: 503, erro: "Unknown Error"}
     }

@@ -21,7 +21,7 @@ export class UpdateUserUC {
             const user = userToUpdate.value as UserOnAuth
             const userData = userDataToUpdate.value as UserOnFirestore
             if(data.fieldToUpdate in user || data.fieldToUpdate in userData){
-                    const updatedUserAuth =  await this.usersAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
+                    const updatedUserAuth =  await this.usersAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
                     if(updatedUserAuth.valido === false){
                         console.log(updatedUserAuth.erro)
                         return { valido: false, value: 400, erro: "Bad Request" };
@@ -34,7 +34,7 @@ export class UpdateUserUC {
                     const updatedUser = new User(updatedUserAuth.value as UserOnAuth, updatedUserData.value as UserOnFirestore)
                         return { valido: true, value: 200 };
                     }
-                    throw new Error()
+                    return { valido: false, value: 400, erro: "O campo informado não existe no banco"}
             }catch(error){
         console.log(error)
         return { valido: false, value: 500, erro: "Internal Server Error" };
