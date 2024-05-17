@@ -23,7 +23,6 @@ export class UsersFireStoreRepository {
             } 
                 const user = query.docs[0].data()
 
-            console.log(user)
                 return { valido: true, value: user as unknown as UserOnFirestore }
             
         } catch (error) {
@@ -100,7 +99,7 @@ export class UsersFireStoreRepository {
           const uid = docRef.id; 
           const data = { ...NewUserData, uid }
           const createdUser = await docRef.set(data);
-          console.log(`usuário criado. ${createdUser.writeTime}`)
+          console.log(`${createdUser.writeTime} Usuário criado`)
           return { valido: true, value:data as UserOnFirestore , erro: undefined };
         } catch (error) {
           if (error instanceof Error) {

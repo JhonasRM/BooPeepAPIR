@@ -127,7 +127,7 @@ export class UsersAuthRepository {
   async resetPassword(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }>{
     try {
       const link = await this.auth.generatePasswordResetLink(user.email)
-      const sendEmail = sendPasswordResetEmail(this.Authapp, user.email)
+      const sendEmail = await sendPasswordResetEmail(this.Authapp, user.email)
       return { valido: true, value: link}
     } catch (error) {
       if (error instanceof Error) {
@@ -158,6 +158,9 @@ export class UsersAuthRepository {
             await this.auth.updateUser(uid, { phoneNumber: newValue });
             break;
           case 'password':
+            if(token === ''|| token === null || token === undefined){
+              throw new Error('Unauthorized')
+            }
             await confirmPasswordReset(this.Authapp, token as string, newValue)
           default:
             throw new Error(`Campo '${fieldToUpdate}' não é suportado para atualização.`);

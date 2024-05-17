@@ -23,6 +23,9 @@ export class UpdateUserUC {
             if(data.fieldToUpdate in user || data.fieldToUpdate in userData){
                     const updatedUserAuth =  await this.usersAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
                     if(updatedUserAuth.valido === false){
+                        if(updatedUserAuth.erro === 'Unauthorized'){
+                            return { valido: false,value:401, erro: 'Unauthorized'}
+                        }
                         console.log(updatedUserAuth.erro)
                         return { valido: false, value: 400, erro: "Bad Request" };
                     }

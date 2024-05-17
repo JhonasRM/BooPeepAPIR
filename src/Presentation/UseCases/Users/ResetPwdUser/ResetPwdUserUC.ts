@@ -18,14 +18,13 @@ export class ResetPwdUserUC {
         return { valido: false, value: 404, erro: "Not Found" };
       }
       const user: UserOnAuth = wantedUser.value as UserOnAuth
-
       const resetPassword = await this.usersAuthRepository.resetPassword(user)
       if(resetPassword.valido === false){
         return { valido: false, value: 500,  erro:"Internal Server Error"}
       }
       const parsedURL  = new URL(resetPassword.value as string)
       const token = parsedURL.searchParams.get('oobCode') 
-      return { valido: false, value: 200, data: token as string}
+      return { valido: true, value: 200, data: token as string}
     } catch (error) {
         return {valido: false, value: 503, erro: "Unknown Error"}
     }
