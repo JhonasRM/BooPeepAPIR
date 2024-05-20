@@ -17,7 +17,7 @@ export class User{
     constructor(userOnAuth: UserOnAuth, userOnFireStore: UserOnFirestore){
         this.displayName = userOnAuth.displayName;
         this.email = userOnAuth.email;
-        this.password = userOnFireStore.password;
+        this.password = '';
         this.emailVerified = userOnAuth.emailVerified;
         // this.photoURL = '';
         this.disabled = userOnAuth.disabled;

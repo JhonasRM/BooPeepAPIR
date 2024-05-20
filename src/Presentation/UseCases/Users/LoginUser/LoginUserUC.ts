@@ -16,7 +16,7 @@ export class LoginUserUC {
         return { valido: false, value: 404, erro: "Not Found" };
       }
       const userAuth = wantedUser.value as UserOnAuth
-      const loginUserData = await this.usersFireStoreRepository.findByEmail(data.email)
+      const loginUserData = await this.usersFireStoreRepository.findByUID(userAuth.uid as string)
       if(loginUserData.valido === false){
         throw new Error()
       }
