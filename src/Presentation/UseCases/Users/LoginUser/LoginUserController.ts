@@ -8,7 +8,6 @@ export class LoginUserController {
 
   async handle(request: Request, response: Response): Promise<void> {
     const { email, password } = request.params;
-
     try {
       const wantedUser = await this.loginUseruc.execute({
         email,

@@ -7,14 +7,13 @@ export class CreateUserController {
   constructor(private createUserUC: CreateUserUC) {}
 
   async handle(request: Request, response: Response): Promise<void> {
-    const { name, email, password } = request.body;
+    const { displayName, email, password } = request.body;
 
-    // Verifica se os campos estão preenchidos
-    if (!name || !email || !password) {
+    if (!displayName || !email || !password) {
       response.status(400).send("Erro: Campos obrigatórios não preenchidos");
     }
     const data = {
-      displayName: name,
+      displayName: displayName,
       email: email,
       password: password,
     }

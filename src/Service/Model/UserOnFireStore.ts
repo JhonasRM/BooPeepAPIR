@@ -6,12 +6,8 @@ export class UserOnFirestore{
 
     public posts!: Post[];
     public age!: number;
-    public email: string;
-    public password: string;
 
     constructor(props: Omit<UserOnFirestore, 'posts'|'age' | 'uid'>,uid?: string, posts?: Post[], age?: number){
-        this.email = props.email;
-        this.password = props.password;
         this.posts = []
         if(posts){
             this.posts = posts
@@ -26,7 +22,7 @@ export class UserOnFirestore{
     static fromDocumentSnapshot(snapshot: DocumentSnapshot): UserOnFirestore {
         const data = snapshot.data();
         const uid = snapshot.id;
-        const { email, password, posts, age } = data as UserOnFirestore;
-        return new UserOnFirestore({ email, password }, uid, posts, age);
+        const { posts, age } = data as UserOnFirestore;
+        return new UserOnFirestore({},uid, posts, age);
     }
 }
