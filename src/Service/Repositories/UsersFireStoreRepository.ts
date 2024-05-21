@@ -67,12 +67,10 @@ export class UsersFireStoreRepository {
         const Newuser: UserOnFirestore = new UserOnFirestore({})
         const NewUserData: FirebaseFirestore.DocumentData = Newuser
       try {
-        console.log('criando usuário no database')
           const docRef = await this.db.collection(this.collectionPath).doc()
           const uid = docRef.id; 
           const data = { ...NewUserData, uid }
           const createdUser = await docRef.set(data);
-          console.log(`${createdUser.writeTime} Usuário criado`)
           return { valido: true, value:data as UserOnFirestore , erro: undefined };
         } catch (error) {
           if (error instanceof Error) {
@@ -86,10 +84,10 @@ export class UsersFireStoreRepository {
       }
       
     
-    async delete(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }> {
+    async delete(uid: string): Promise<{ valido: boolean; value?: string; erro?: string }> {
         try {
             const userQuerySnapshot = await this.db.collection(this.collectionPath)
-                .where('uid', '==', user.uid)
+                .where('uid', '==', uid)
                 .get();
             if (userQuerySnapshot.empty) {
                 throw new Error('Nenhum usuário encontrado');

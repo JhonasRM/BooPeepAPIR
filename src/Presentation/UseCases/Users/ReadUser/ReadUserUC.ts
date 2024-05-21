@@ -14,21 +14,22 @@ export class ReadUserUC {
       if (wantedUser.valido === false) {
         return { valido: false, value: 404, erro: "Not Found" };
       }
-      
-      const userAuth = wantedUser.value as UserOnAuth
+      const foundUserAuth = wantedUser.value as unknown as UserOnAuth
+      const userAuth = new UserOnAuth(
+        foundUserAuth.displayName,
+        foundUserAuth.email,
+        '*',
+        foundUserAuth.emailVerified,
+        foundUserAuth.disabled,
+        foundUserAuth.uid
+
+      )
       const wantedUserData = await this.usersFireStoreRepository.findByUID(userAuth.uid as string)
       if (wantedUserData.valido === false) {
         return { valido: false, value: 404, erro: "Not Found" };
       }
       const userData = wantedUserData.value as UserOnFirestore      
-      const user: User = new User({
-        uid: userAuth.uid,
-        displayName: userAuth.displayName,
-        email: userAuth.email,
-        emailVerified: userAuth.emailVerified,
-        disabled: userAuth.disabled,
-        password: '*'
-      }, {
+      const user: User = new User(userAuth, {
         posts: userData.posts,
         age: userData.age,
         uid: userData.uid

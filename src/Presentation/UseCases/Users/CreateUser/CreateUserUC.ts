@@ -13,38 +13,25 @@ export class CreateUserUC {
             if (userAlreadyExists.valido === true) {
                 return { valido: false, value: 401, erro: 'Unauthorized'}
             }
+            const NewUserData = data.destructuring().userOnData
+            const createUserData = await this.usersFireStoreRepository.saveOnFireStore(NewUserData)
+            if(createUserData.valido === false){
+                return { valido: false, value: 400, erro: 'Bad Request'}
+            }
+            const userData = new UserOnFirestore({}, createUserData.value?.uid, createUserData.value?.posts, createUserData.value?.age)
             const NewUserAuth = data.destructuring().userOnAuth
+            NewUserAuth.conectData(userData.uid as string)
         const createdUserAuth = await this.usersAuthRepository.saveOnAuth(NewUserAuth)
         if(createdUserAuth.valido === false){
             return { valido: false, value: 400, erro: 'Bad Request'}
-        } 
-        const userAuth = createdUserAuth.value as UserOnAuth
-        const userDataAlreadyExists = await this.usersFireStoreRepository.findByUID(userAuth.uid as string)
-        if (userDataAlreadyExists.valido === true) {
-            return { valido: false, value: 401, erro: 'Unauthorized'}
-        } else if(userDataAlreadyExists.valido === false){
-            const NewUserData = data.destructuring().userOnData
-            const createUserData = await this.usersFireStoreRepository.saveOnFireStore(NewUserData)
-        if(createUserData.valido === false){
-            return { valido: false, value: 400, erro: 'Bad Request'}
         }
-        const userData = createUserData.value as UserOnFirestore
-        const user: User = new User({
-            uid: userAuth.uid,
-            displayName: userAuth.displayName,
-            email: userAuth.email,
-            emailVerified: userAuth.emailVerified,
-            disabled: userAuth.disabled,
-            password: '*'
-          }, {
-            posts: userData.posts,
-            age: userData.age,
-            uid: userData.uid
-          })
+        const userAuth = new UserOnAuth(
+            createdUserAuth.value?.displayName as string,
+            createdUserAuth.value?.email as string,
+            createdUserAuth.value?.password as string,
+        )
+        const user: User = new User(userAuth, userData)
         return { valido: true, value: 201, data: user as User}   
-     }
-     throw new Error()
-               
         } catch (error) {
             return { valido: false, value: 500, erro: 'Internal Server Error'}
         }

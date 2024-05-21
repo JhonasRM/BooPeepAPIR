@@ -17,7 +17,7 @@ export class DeleteUserUC {
                 return { valido: false, value: 400, erro: "Bad Request" };
             }
             const deleteUserData = userToDelete.value
-            const deletedUserOnData = await this.usersFireStoreRepository.delete(deleteUserData as UserOnAuth)
+            const deletedUserOnData = await this.usersFireStoreRepository.delete(deleteUserData?.uid as string)
             if(deletedUserOnData.valido === false){
                 throw new Error()
             }
