@@ -8,49 +8,66 @@ export class PostRepository {
         this.db = AppAdmin.firestore()
         this.collectionPath = 'posts'
     }
-    
-    async findByID(id: string): Promise<Post | null> {
+
+    async findByID(id: string): Promise<{ valido: boolean; data?: Post; erro?: string }> {
 
         try {
             const docRef = this.db.collection("posts").doc(id);
-        const docSnapshot = await docRef.get();
+            const docSnapshot = await docRef.get();
 
-        if (!docSnapshot.exists) {
-            console.log(`Nenhum post foi encontrado o ID: ${id}`);
-            return null;
-        } else {
-            console.log("Post encontrado:");
-            console.log(docSnapshot.id, "=>", docSnapshot.data());
-            return docSnapshot.data() as Post;
-        }
-            
-        } catch (error: any) {
-            console.error(`Error finding post by userID: ${error}`);
-            return null;
+            if (!docSnapshot.exists) {
+                throw new Error(`Postagem não encontrada`);
+            }
+            const FoundPost = docSnapshot.data() as Post
+            const post = new Post({
+                description: FoundPost.description,
+                local: FoundPost.local,
+                status: FoundPost.status
+            }, FoundPost.UserID, FoundPost.postId, FoundPost.createdAt)
+            return { valido: true, data: post }
+        } catch (error) {
+            if (error instanceof Error) {
+                if (error.message === `Postagem não encontrada`) {
+                    return { valido: false, erro: 'Not Found' }
+                } else {
+                    return { valido: false, erro: error.message }
+                }
+            }
+            return { valido: false, erro: 'Internal Server Error' }
         }
     }
-    async getAllPosts(): Promise<Post[] | null> {
+    async getAllPosts(): Promise<{ valido: boolean; data?: Post[]; erro?: string }> {
         try {
             const collectionRef = this.db.collection(this.collectionPath);
             const querySnapshot = await collectionRef.get();
             const posts: Post[] = [];
             querySnapshot.forEach((doc) => {
                 const postData = doc.data() as Post;
-                posts.push(postData);
+                const post: Post = new Post({
+                    description: postData.description,
+                    local: postData.local,
+                    status: postData.status
+                }, postData.UserID, postData.postId, postData.createdAt)
+                posts.push(post);
             });
             if (posts[1] === null) {
-                console.log('Nenhum post encontrado')
-                return null
+               throw new Error('Nenhum post encontrado')
             }
-            return posts;
+            return { valido: true, data: posts}
         } catch (error) {
-            console.error(`Error fetching users: ${error}`);
-            return null;
+            if (error instanceof Error) {
+                if (error.message === 'Nenhum post encontrado') {
+                    return { valido: false, erro: 'Not Found' }
+                } else {
+                    return { valido: false, erro: error.message }
+                }
+            }
+            return { valido: false, erro: 'Internal Server Error' }
         }
     }
 
 
-    async save(post: Post): Promise<void | any> {
+    async save(post: Post): Promise<{ valido: boolean; data?: string; erro?: string }> {
         const NewPost: FirebaseFirestore.DocumentData = {
             description: post.description,
             createdAt: post.createdAt,
@@ -63,82 +80,91 @@ export class PostRepository {
             const postId = docRef.id;
             await docRef.set({ ...NewPost, postId });
             const userRef = this.db.collection('users').doc(post.UserID);
-            const userDoc = await userRef.get(); 
+            const userDoc = await userRef.get();
             if (userDoc.exists) {
                 const userData = userDoc.data();
                 if (userData && Array.isArray(userData.posts)) {
-                    userData.posts.push(postId); 
-                    await userRef.update({ posts: userData.posts }); 
+                    userData.posts.push(postId);
+                    await userRef.update({ posts: userData.posts });
                     await userRef.update({ posts: [postId] });
                 }
             } else {
                 throw new Error(`Usuário com ID ${post.UserID} não encontrado.`);
             }
-        
-            console.log('Postagem criada com sucesso');
-            console.log(post);
+            return { valido: true, data: 'Post criado com sucesso'}
         } catch (error) {
-            console.error(`Erro ao criar a postagem: ${error}`);
-            return error
+            if (error instanceof Error) {
+                if (error.message === 'Usuário não encontrado') {
+                    return { valido: false, erro: 'Unauthorized' }
+                } else {
+                    return { valido: false, erro: error.message }
+                }
+            }
+            return { valido: false, erro: 'Internal Server Error' }
         }
-        
-    }
-    
 
-    async updatePostField(postId: string, fieldToUpdate: string, newValue: any): Promise<void | string > {
+    }
+
+
+    async updatePostField(postId: string, fieldToUpdate: string, newValue: any): Promise<{ valido: boolean; data?: string; erro?: string }> {
         try {
             const postRef = this.db.collection(this.collectionPath).doc(postId);
 
             const postSnapshot = await postRef.get();
 
             if (!postSnapshot.exists) {
-                console.error('Documento não encontrado.');
-                return 'Documento não encontrado';
+                throw new Error('Postagem não encontrada.');
+                
             }
-    
+
             const postData = postSnapshot.data();
             if (!postData || !postData.hasOwnProperty(fieldToUpdate)) {
-                console.error(`O campo '${fieldToUpdate}' não existe no documento.`);
-                return 'O campo requerido não existe no documento';
+                throw new Error(`O campo '${fieldToUpdate}' não existe no documento.`);
             }
-    
+
             const previousValue = postData[fieldToUpdate];
             if (typeof previousValue !== typeof newValue) {
-                console.error(`O tipo do valor anterior '${previousValue}' não corresponde ao tipo do novo valor '${newValue}'.`);
-                return 'O tipo do valor anterior do campo requerido não corresponde ao tipo do novo valor';
+                throw new Error(`O tipo do valor anterior não corresponde ao tipo do novo valor.`);
             }
-    
+
             await postRef.update({
                 [fieldToUpdate]: newValue
             });
-    
-            console.log('Campo atualizado com sucesso.');
-            return 'Campo atualizado com sucesso';
+            return { valido: true, data: 'Postagem atualizada com sucesso'}
         } catch (error) {
-            console.error('Erro ao atualizar campo:', error);
+            if (error instanceof Error) {
+                if (error.message === 'Postagem não encontrada.') {
+                    return { valido: false, erro: 'Not Found' }
+                } else if(error.message === `O campo '${fieldToUpdate}' não existe no documento.` || error.message === `O tipo do valor anterior não corresponde ao tipo do novo valor.`){
+                    return { valido: false, erro: 'Bad Request'}
+                } else{
+                    return { valido: false, erro: error.message }
+                }
+            }
+            return { valido: false, erro: 'Internal Server Error' }
         }
     }
-    async DeletePost(postId: string): Promise<void | string> {
+    async DeletePost(postId: string): Promise<{ valido: boolean; data?: string; erro?: string }> {
         try {
             const postRef = this.db.collection(this.collectionPath).doc(postId);
 
             const postSnapshot = await postRef.get();
 
             if (!postSnapshot.exists) {
-                console.error('Documento não encontrado.');
-                throw new Error('Post Não Encontrado');
+                throw new Error('Postagem não encontrada');
             }
-            
+
             await postRef.delete();
-            return
+            return { valido: true, data: 'Postagem deletada com sucesso' }
         } catch (error) {
             if (error instanceof Error) {
-                console.error('Erro ao deletar documento:', error);
-                return 'Erro ao deletar documento: ' + error.message; // Retorna uma mensagem de erro
-            } else {
-                console.error('Erro ao deletar documento:', error);
-                return 'Erro ao deletar documento: ' + String(error); // Retorna uma mensagem de erro
+                if (error.message === 'Postagem não encontrada') {
+                    return { valido: false, erro: 'Not Found' }
+                } else {
+                    return { valido: false, erro: error.message }
+                }
             }
-    }
+            return { valido: false, erro: 'Internal Server Error' }
+        }
     }
 }
