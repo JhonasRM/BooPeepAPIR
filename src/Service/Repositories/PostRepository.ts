@@ -33,7 +33,7 @@ export class PostRepository {
                     return { valido: false, erro: error.message }
                 }
             }
-            return { valido: false, erro: 'Internal Server Error' }
+            return { valido: false, erro: `Internal Server Error: ${error}` }
         }
     }
     async getAllPosts(): Promise<{ valido: boolean; data?: Post[]; erro?: string }> {
@@ -57,12 +57,12 @@ export class PostRepository {
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Nenhum post encontrado') {
-                    return { valido: false, erro: 'Not Found' }
+                    return { valido: false, erro: 'Nenhum post encontrado' }
                 } else {
                     return { valido: false, erro: error.message }
                 }
             }
-            return { valido: false, erro: 'Internal Server Error' }
+            return { valido: false, erro: `Internal Server Error: ${error}` }
         }
     }
 
