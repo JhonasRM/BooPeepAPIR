@@ -91,11 +91,11 @@ export class PostRepository {
             } else {
                 throw new Error(`Usuário com ID ${post.UserID} não encontrado.`);
             }
-            return { valido: true, data: 'Post criado com sucesso' }
+            return { valido: true, data: post.postId }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Usuário não encontrado') {
-                    return { valido: false, erro: 'Unauthorized' }
+                    return { valido: false, erro: 'Not Found' }
                 } else {
                     return { valido: false, erro: error.message }
                 }
