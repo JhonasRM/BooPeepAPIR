@@ -51,9 +51,9 @@ export class PostRepository {
                 posts.push(post);
             });
             if (posts[1] === null) {
-               throw new Error('Nenhum post encontrado')
+                throw new Error('Nenhum post encontrado')
             }
-            return { valido: true, data: posts}
+            return { valido: true, data: posts }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Nenhum post encontrado') {
@@ -91,7 +91,7 @@ export class PostRepository {
             } else {
                 throw new Error(`Usuário com ID ${post.UserID} não encontrado.`);
             }
-            return { valido: true, data: 'Post criado com sucesso'}
+            return { valido: true, data: 'Post criado com sucesso' }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Usuário não encontrado') {
@@ -114,7 +114,7 @@ export class PostRepository {
 
             if (!postSnapshot.exists) {
                 throw new Error('Postagem não encontrada.');
-                
+
             }
 
             const postData = postSnapshot.data();
@@ -130,14 +130,14 @@ export class PostRepository {
             await postRef.update({
                 [fieldToUpdate]: newValue
             });
-            return { valido: true, data: 'Postagem atualizada com sucesso'}
+            return { valido: true, data: 'Postagem atualizada com sucesso' }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Postagem não encontrada.') {
                     return { valido: false, erro: 'Not Found' }
-                } else if(error.message === `O campo '${fieldToUpdate}' não existe no documento.` || error.message === `O tipo do valor anterior não corresponde ao tipo do novo valor.`){
-                    return { valido: false, erro: 'Bad Request'}
-                } else{
+                } else if (error.message === `O campo '${fieldToUpdate}' não existe no documento.` || error.message === `O tipo do valor anterior não corresponde ao tipo do novo valor.`) {
+                    return { valido: false, erro: 'Bad Request' }
+                } else {
                     return { valido: false, erro: error.message }
                 }
             }
