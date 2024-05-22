@@ -159,7 +159,7 @@ export class PostRepository {
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Postagem não encontrada') {
-                    return { valido: false, erro: 'Not Found' }
+                    return { valido: false, erro: 'Postagem não encontrada' }
                 } else {
                     return { valido: false, erro: error.message }
                 }
