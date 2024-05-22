@@ -5,7 +5,7 @@ import { IResetPwdUserRequestDTO } from "./ResetPwdUserDTO";
 export class ResetPwdUserController {
   constructor(private resetpwdUC: ResetPwdUserUC) {}
   async handle(request: Request, response: Response) {
-    const { email } = request.params;
+    const { email } = request.body;
     const data: IResetPwdUserRequestDTO = {
       email: email,
     };
@@ -14,7 +14,8 @@ export class ResetPwdUserController {
       if (resetPassword.valido === false) {
         throw new Error(resetPassword.erro);
       }
-      response.status(200).send(resetPassword.value);
+      const token = resetPassword.data as string
+      response.status(200).send(token);
     } catch (error: unknown) {
       if (error instanceof Error) {
         if (error.message === "Not Found") {

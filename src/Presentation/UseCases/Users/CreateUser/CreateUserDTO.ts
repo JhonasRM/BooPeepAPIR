@@ -27,10 +27,7 @@ export class CreateUserRequestDTO {
       this.emailVerified,
       this.disabled
     );
-    const userOnData: UserOnFirestore = new UserOnFirestore({
-      email: this.email,
-      password: this.password,
-    });
+    const userOnData: UserOnFirestore = new UserOnFirestore({});
     return { userOnAuth, userOnData };
   }
 }

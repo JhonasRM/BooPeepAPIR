@@ -1,4 +1,4 @@
-import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { confirmPasswordReset, getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
@@ -123,11 +123,11 @@ export class UsersAuthRepository {
     }
   }
 
+
   async resetPassword(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }>{
     try {
-      const link = await this.auth.generatePasswordResetLink(user.email)
       const sendEmail = await sendPasswordResetEmail(this.Authapp, user.email)
-      return { valido: true, value: link}
+      return { valido: true, value: 'Email enviado com sucesso'}
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message)
@@ -142,7 +142,8 @@ export class UsersAuthRepository {
   async update(
     uid: string,
     fieldToUpdate: string,
-    newValue: any
+    newValue: any,
+    token?: string
   ): Promise<{ valido: boolean; value?: UserOnAuth; erro?: string }> {
       try {    
         switch (fieldToUpdate) {
@@ -155,11 +156,11 @@ export class UsersAuthRepository {
           case 'phoneNumber':
             await this.auth.updateUser(uid, { phoneNumber: newValue });
             break;
-         
+          case 'password':
+            await confirmPasswordReset(this.Authapp, token as string, newValue)
           default:
             throw new Error(`Campo '${fieldToUpdate}' não é suportado para atualização.`);
         }
-        // console.log(`Campo '${fieldToUpdate}' atualizado com sucesso para '${newValue}'.`);
 
         const updatedUser = await this.auth.getUser(uid)
         const user = new UserOnAuth(updatedUser.displayName as string, updatedUser.email as string, '', updatedUser.emailVerified, updatedUser.disabled, updatedUser.uid)

@@ -63,7 +63,7 @@ const loginUserController: LoginUserController = new LoginUserController(loginUs
 
 router
     .route("/loginuser")
-    .get((req: Request, res: Response) => loginUserController.handle(req, res))
+    .post((req: Request, res: Response) => loginUserController.handle(req, res))
 
 // Reset Password 
 const resetpwdUC: ResetPwdUserUC = new ResetPwdUserUC(userARep, userFRep)

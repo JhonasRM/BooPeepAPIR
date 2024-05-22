@@ -14,15 +14,22 @@ export class UpdateUserUC {
         try {
             console.log(data)
             const userToUpdate = await this.usersAuthRepository.findByEmail(data.email);
-            const userDataToUpdate = await this.usersFireStoreRepository.findByEmail(data.email)
-            if (userToUpdate.valido === false || userDataToUpdate.valido === false) {
+            if (userToUpdate.valido === false) {
                 return { valido: false, value: 404, erro: "Not Found" };
               }
             const user = userToUpdate.value as UserOnAuth
+            const userDataToUpdate = await this.usersFireStoreRepository.findByUID(user.uid as string)
+            if (userDataToUpdate.valido === false) {
+                return { valido: false, value: 404, erro: "Not Found" };
+              }
             const userData = userDataToUpdate.value as UserOnFirestore
             if(data.fieldToUpdate in user || data.fieldToUpdate in userData){
-                    const updatedUserAuth =  await this.usersAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
+
+                    const updatedUserAuth =  await this.usersAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
                     if(updatedUserAuth.valido === false){
+                        if(updatedUserAuth.erro === 'Unauthorized'){
+                            return { valido: false,value:401, erro: 'Unauthorized'}
+                        }
                         console.log(updatedUserAuth.erro)
                         return { valido: false, value: 400, erro: "Bad Request" };
                     }
@@ -34,7 +41,7 @@ export class UpdateUserUC {
                     const updatedUser = new User(updatedUserAuth.value as UserOnAuth, updatedUserData.value as UserOnFirestore)
                         return { valido: true, value: 200 };
                     }
-                    throw new Error()
+                    return { valido: false, value: 400, erro: "O campo informado não existe no banco"}
             }catch(error){
         console.log(error)
         return { valido: false, value: 500, erro: "Internal Server Error" };

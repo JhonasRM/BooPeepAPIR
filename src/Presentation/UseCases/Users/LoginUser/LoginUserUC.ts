@@ -16,11 +16,13 @@ export class LoginUserUC {
         return { valido: false, value: 404, erro: "Not Found" };
       }
       const userAuth = wantedUser.value as UserOnAuth
-      const loginUserData = await this.usersFireStoreRepository.loginOnFireStore(data.email, data.password)
+      const loginUserData = await this.usersFireStoreRepository.findByUID(userAuth.uid as string)
+      if(loginUserData.valido === false){
+        throw new Error()
+      }
       const loginUserAuth = await this.usersAuthRepository.loginOnAuth(data.email, data.password)
-      if (loginUserData.valido === false || loginUserAuth.valido === false) {
+      if ( loginUserAuth.valido === false) {
         console.log(loginUserAuth.erro)
-        console.log(loginUserData.erro)
         return { valido: false, value: 401, erro: 'Unauthorized' };
       }
       const userOnAuth = loginUserAuth.value as UserOnAuth
@@ -29,7 +31,7 @@ export class LoginUserUC {
       return { valido: true, value: 200, data: user};
     } catch (error) {
       console.log(error)
-      return { valido: false, value: 500, erro: "Internal Server Error" };
+      return { valido: false, value: 500, erro: `Internal Server Error: ${error}` };
     }
   }
 }

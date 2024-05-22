@@ -25,7 +25,6 @@ export class UserOnAuth{
             this.disabled = disabled
         }
     }
-
     conectData(uid: string){
         this.uid = uid
     }

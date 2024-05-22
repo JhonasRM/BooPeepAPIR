@@ -11,9 +11,9 @@ export class UsersFireStoreRepository {
         this.db = AppAdmin.firestore()
         this.collectionPath = 'users'
     }
-    async findByEmail(email: string): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }>{
-        const field = 'email';
-        const value = email;
+    async findByUID(uid: string): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }>{
+        const field = 'uid';
+        const value = uid;
 
         try {
             const collectionRef = this.db.collection(this.collectionPath);
@@ -23,7 +23,6 @@ export class UsersFireStoreRepository {
             } 
                 const user = query.docs[0].data()
 
-            console.log(user)
                 return { valido: true, value: user as unknown as UserOnFirestore }
             
         } catch (error) {
@@ -36,30 +35,6 @@ export class UsersFireStoreRepository {
               }
         }
       
-        async loginOnFireStore(
-          email: string,
-          password: string
-        ): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }> {
-         
-          try {
-            const login = await this.findByEmail(email)
-            if(login.valido === false){
-              throw new Error(login.erro)
-            }
-            const user = login.value as UserOnFirestore
-            if(password === user.password){
-            return { valido: true, value: user};
-            }
-            throw new Error('A senha está incorreta')
-          } catch (error: unknown) {
-            if (error instanceof Error) {
-              const mensagemErro = error.message;
-              return { valido: false, erro: mensagemErro };
-            } else {
-              return { valido: false, erro: "Erro desconhecido ao realizar o login" };
-            }
-          }
-        }
       
     
     async getAllUsers(): Promise<{ valido: boolean; value?: UserOnFirestore[]; erro?: string }>{
@@ -89,18 +64,13 @@ export class UsersFireStoreRepository {
     async saveOnFireStore(
         user: UserOnFirestore
       ): Promise<{ valido: boolean; value?: UserOnFirestore; erro?: string }> {
-        const Newuser: UserOnFirestore = new UserOnFirestore({
-          email: user.email,
-          password: user.password
-        })
+        const Newuser: UserOnFirestore = new UserOnFirestore({})
         const NewUserData: FirebaseFirestore.DocumentData = Newuser
       try {
-        console.log('criando usuário no database')
           const docRef = await this.db.collection(this.collectionPath).doc()
           const uid = docRef.id; 
           const data = { ...NewUserData, uid }
           const createdUser = await docRef.set(data);
-          console.log(`usuário criado. ${createdUser.writeTime}`)
           return { valido: true, value:data as UserOnFirestore , erro: undefined };
         } catch (error) {
           if (error instanceof Error) {
@@ -114,10 +84,10 @@ export class UsersFireStoreRepository {
       }
       
     
-    async delete(user: UserOnAuth): Promise<{ valido: boolean; value?: string; erro?: string }> {
+    async delete(uid: string): Promise<{ valido: boolean; value?: string; erro?: string }> {
         try {
             const userQuerySnapshot = await this.db.collection(this.collectionPath)
-                .where('email', '==', user.email)
+                .where('uid', '==', uid)
                 .get();
             if (userQuerySnapshot.empty) {
                 throw new Error('Nenhum usuário encontrado');

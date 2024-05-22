@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { LoginUserUC } from './LoginUserUC';
+import { ILoginUserRequestDTO } from './LoginUserDTO';
 
 export class LoginUserController {
   constructor(
@@ -7,8 +8,12 @@ export class LoginUserController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<void> {
-    const { email, password } = request.params;
-
+    const { email, password } = request.body
+    if (email && password) {
+      response.send(`Email: ${email}, Password: ${password}`);
+    } else {
+      response.status(400).send('Email and password are required');
+    }
     try {
       const wantedUser = await this.loginUseruc.execute({
         email,

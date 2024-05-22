@@ -1,5 +1,6 @@
 export interface IUpdateUserRequestDTO{
     email: string,
     fieldToUpdate: string,
-    newValue: any
+    newValue: any,
+    token?: string
 }
