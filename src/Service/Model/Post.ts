@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { User } from "./User";
+import { User } from "../Entities/User";
 import { UserOnFirestore } from "./UserOnFireStore";
 export class Post{
     public readonly postId!: string;

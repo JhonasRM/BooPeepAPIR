@@ -1,4 +1,4 @@
-import { User } from "../../../../Service/Model/User";
+import { User } from "../../../../Service/Entities/User";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
 import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";

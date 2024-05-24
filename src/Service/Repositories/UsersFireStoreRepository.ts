@@ -1,5 +1,5 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
-import { User } from "../Model/User";
+import { User } from "../Entities/User";
 import * as admin from 'firebase-admin';
 import { UserOnFirestore } from "../Model/UserOnFireStore";
 import { UserOnAuth } from "../Model/UserOnAuth";
