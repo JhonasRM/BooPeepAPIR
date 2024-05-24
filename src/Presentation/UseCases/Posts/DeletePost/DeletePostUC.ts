@@ -1,21 +1,22 @@
 
+import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
 import { PostRepository } from "../../../../Service/Repositories/PostRepository";
 import { DeletePostRequestDTO } from "./DeletePostDTO";
 
 export class DeletePostUC{
     constructor( private postRepository: PostRepository){}
-    async execute(deletePostDTO: DeletePostRequestDTO):Promise<{ valido: boolean; erro?: string | unknown, data?: string }>{
+    async execute(deletePostDTO: DeletePostRequestDTO):Promise<IReturnAdapter>{
         try {
-            const deletePost = await this.postRepository.DeletePost(deletePostDTO.postID)
-            if(deletePost.valido === false){
+            const deletePost = await this.postRepository.deletePost(deletePostDTO.postID)
+            if(deletePost.val === false){
                 throw new Error(deletePost.erro)
             }
-            return { valido: false, data: deletePost.data}
+            return { val: false, data: deletePost.data}
         } catch (error) {
             if(error instanceof Error){
-                return { valido: false, erro: error.message}
+                return { val: false, erro: error.message}
             }
-            return { valido: false, erro: `Internal Server Error: ${error}`}
+            return { val: false, erro: `Erro interno do servidor: ${error}`}
         }
     }
 }

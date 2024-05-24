@@ -1,15 +1,17 @@
-import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
 import { Post } from "../Model/Post";
 import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
-export class PostRepository {
-    private db: Firestore
-    private collectionPath: string
+import { IPostRepository } from "../Interfaces/IPostRepository";
+import { IReturnAdapter } from "../Interfaces/IReturnAdapter";
+import { Firestore } from "firebase-admin/firestore";
+export class PostRepository implements IPostRepository{
+    db: Firestore;
+    collectionPath: string;
     constructor() {
         this.db = AppAdmin.firestore()
         this.collectionPath = 'posts'
     }
 
-    async findByID(id: string): Promise<{ valido: boolean; data?: Post; erro?: string }> {
+    async findByID(id: string): Promise<IReturnAdapter> {
 
         try {
             const docRef = this.db.collection("posts").doc(id);
@@ -24,19 +26,19 @@ export class PostRepository {
                 local: FoundPost.local,
                 status: FoundPost.status
             }, FoundPost.UserID, FoundPost.postId, FoundPost.createdAt)
-            return { valido: true, data: post }
+            return { val: true, data: post }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Postagem não encontrada') {
-                    return { valido: false, erro: 'Postagem não encontrada' }
+                    return { val: false, erro: 'Postagem não encontrada' }
                 } else {
-                    return { valido: false, erro: error.message }
+                    return { val: false, erro: error.message }
                 }
             }
-            return { valido: false, erro: `Internal Server Error: ${error}` }
+            return { val: false, erro: `Internal Server Error: ${error}` }
         }
     }
-    async getAllPosts(): Promise<{ valido: boolean; data?: Post[]; erro?: string }> {
+    async getAllPosts(): Promise<IReturnAdapter> {
         try {
             const collectionRef = this.db.collection(this.collectionPath);
             const querySnapshot = await collectionRef.get();
@@ -53,21 +55,21 @@ export class PostRepository {
             if (posts[1] === null) {
                 throw new Error('Nenhum post encontrado')
             }
-            return { valido: true, data: posts }
+            return { val: true, data: posts }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Nenhum post encontrado') {
-                    return { valido: false, erro: 'Nenhum post encontrado' }
+                    return { val: false, erro: 'Nenhum post encontrado' }
                 } else {
-                    return { valido: false, erro: error.message }
+                    return { val: false, erro: error.message }
                 }
             }
-            return { valido: false, erro: `Internal Server Error: ${error}` }
+            return { val: false, erro: `Internal Server Error: ${error}` }
         }
     }
 
 
-    async save(post: Post): Promise<{ valido: boolean; data?: string; erro?: string }> {
+    async save(post: Post): Promise<IReturnAdapter> {
         const NewPost: FirebaseFirestore.DocumentData = {
             description: post.description,
             createdAt: post.createdAt,
@@ -91,22 +93,22 @@ export class PostRepository {
             } else {
                 throw new Error(`Usuário com ID ${post.UserID} não encontrado.`);
             }
-            return { valido: true, data: post.postId }
+            return { val: true, data: post.postId }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Usuário não encontrado') {
-                    return { valido: false, erro: 'Not Found' }
+                    return { val: false, erro: 'Not Found' }
                 } else {
-                    return { valido: false, erro: error.message }
+                    return { val: false, erro: error.message }
                 }
             }
-            return { valido: false, erro: 'Internal Server Error' }
+            return { val: false, erro: 'Internal Server Error' }
         }
 
     }
 
 
-    async updatePostField(postId: string, fieldToUpdate: string, newValue: any): Promise<{ valido: boolean; data?: string; erro?: string }> {
+    async updatePostField(postId: string, fieldToUpdate: string, newValue: any): Promise<IReturnAdapter> {
         try {
             const postRef = this.db.collection(this.collectionPath).doc(postId);
 
@@ -130,21 +132,21 @@ export class PostRepository {
             await postRef.update({
                 [fieldToUpdate]: newValue
             });
-            return { valido: true, data: 'Postagem atualizada com sucesso' }
+            return { val: true, data: 'Postagem atualizada com sucesso' }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Postagem não encontrada.') {
-                    return { valido: false, erro: 'Not Found' }
+                    return { val: false, erro: 'Not Found' }
                 } else if (error.message === `O campo '${fieldToUpdate}' não existe no documento.` || error.message === `O tipo do valor anterior não corresponde ao tipo do novo valor.`) {
-                    return { valido: false, erro: 'Bad Request' }
+                    return { val: false, erro: 'Bad Request' }
                 } else {
-                    return { valido: false, erro: error.message }
+                    return { val: false, erro: error.message }
                 }
             }
-            return { valido: false, erro: 'Internal Server Error' }
+            return { val: false, erro: 'Internal Server Error' }
         }
     }
-    async DeletePost(postId: string): Promise<{ valido: boolean; data?: string; erro?: string }> {
+    async deletePost(postId: string): Promise<IReturnAdapter> {
         try {
             const postRef = this.db.collection(this.collectionPath).doc(postId);
 
@@ -155,16 +157,16 @@ export class PostRepository {
             }
 
             await postRef.delete();
-            return { valido: true, data: 'Postagem deletada com sucesso' }
+            return { val: true, data: 'Postagem deletada com sucesso' }
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message === 'Postagem não encontrada') {
-                    return { valido: false, erro: 'Postagem não encontrada' }
+                    return { val: false, erro: 'Postagem não encontrada' }
                 } else {
-                    return { valido: false, erro: error.message }
+                    return { val: false, erro: error.message }
                 }
             }
-            return { valido: false, erro: 'Internal Server Error' }
+            return { val: false, erro: 'Internal Server Error' }
         }
     }
 }

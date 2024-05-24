@@ -20,7 +20,7 @@ export class UpdatePostController {
                 newValue
             })
 
-            if(updatedPost.valido === false){
+            if(updatedPost.val === false){
                 throw new Error(updatedPost.erro as string)
             }
              response.status(200).send(updatedPost.data);

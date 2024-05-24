@@ -1,20 +1,21 @@
+import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
 import { PostRepository } from "../../../../Service/Repositories/PostRepository";
 import { IUpdatePostRequestDTO } from "./UpdatePostDTO";
 
 export class UpdatePostUC {
     constructor(private postRepository: PostRepository) { }
-    async execute(data: IUpdatePostRequestDTO): Promise<{ valido: boolean; erro?: string | unknown, data?: string }>{
+    async execute(data: IUpdatePostRequestDTO): Promise<IReturnAdapter>{
         try {
             const updatedPost = await this.postRepository.updatePostField(data.postId, data.fieldToUpdate, data.newValue)
-            if(updatedPost.valido === false){
+            if(updatedPost.val === false){
                 throw new Error(updatedPost.erro)
             }    
-            return { valido: true,data: updatedPost.data}
+            return { val: true,data: updatedPost.data}
         } catch (error) {
             if(error instanceof Error){
-            return { valido: false, erro: error.message}
+            return { val: false, erro: error.message}
         }
-        return { valido: false, erro: error}
+        return { val: false, erro: `Erro interno do servidor: ${error}`}
         }
         
     }

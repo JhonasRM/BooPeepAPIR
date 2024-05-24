@@ -1,21 +1,22 @@
+import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter"
 import { Post } from "../../../../Service/Model/Post"
 import { PostRepository } from "../../../../Service/Repositories/PostRepository"
 
 
 export class ReadAllPostUC {
     constructor(private postRepository: PostRepository){ }
-    async execute(): Promise<{ valido: boolean; data?: Post[]; erro?: string }>{
+    async execute(): Promise<IReturnAdapter>{
         try {
             const getAllPosts = await this.postRepository.getAllPosts()
-            if (getAllPosts.valido === false) {
+            if (getAllPosts.val === false) {
                 throw new Error(getAllPosts.erro)
             } 
-            return { valido: true, data: getAllPosts.data }   
+            return { val: true, data: getAllPosts.data }   
         } catch (error) {
             if(error instanceof Error){
-                return { valido: false, erro: error.message}
+                return { val: false, erro: error.message}
             }
-            return { valido: false, erro: `Internal Server Error: ${error}`}
+            return { val: false, erro: `Erro interno do servidor: ${error}`}
         }
     }
 }

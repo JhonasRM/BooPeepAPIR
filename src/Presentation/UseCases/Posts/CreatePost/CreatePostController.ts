@@ -24,7 +24,7 @@ export class CreatePostController {
         }
         try {
             const createpost = await this.createPostUC.execute(PostData,  email)
-            if(createpost.valido === false){
+            if(createpost.val === false){
                 throw new Error(createpost.erro as string)
             }
             response.status(201).send(createpost.data);

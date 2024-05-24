@@ -8,7 +8,9 @@ export class DeletePostController{
         const { postID } = request.body
         try {
             const deletedPost = await this.deletePostUC.execute({postID})
-
+            if(deletedPost.val === false){
+                throw new Error(deletedPost.erro)
+            }
             response.status(200).send(deletedPost.data)
         } catch (error) {
             if(error instanceof Error){
@@ -18,7 +20,7 @@ export class DeletePostController{
                     response.status(400).send(`Erro de requisição: ${error.message}`)
                 }
             }
-            response.status(500).send(`Internal server error: ${error}`)
+            response.status(500).send(`Erro interno do servidor: ${error}`)
           }
     }
 }

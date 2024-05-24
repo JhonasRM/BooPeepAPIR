@@ -1,4 +1,5 @@
 
+import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
 import { Post } from "../../../../Service/Model/Post";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
 import { PostRepository } from "../../../../Service/Repositories/PostRepository";
@@ -7,7 +8,7 @@ import { UsersFireStoreRepository } from "../../../../Service/Repositories/Users
 import { ICreatePostRequestDTO } from "./CreatePostDTO";
 export class CreatePostUC {
     constructor(private postRepository: PostRepository, private usersFireStoreRepository: UsersFireStoreRepository, private usersAuthRepository: UsersAuthRepository) { }
-    async execute(data: ICreatePostRequestDTO, email: string): Promise<{ valido: boolean; erro?: string | unknown, data?: string }>{
+    async execute(data: ICreatePostRequestDTO, email: string): Promise<IReturnAdapter>{
         try {
             const userAuth = await this.usersAuthRepository.findByEmail(email)
         if(userAuth.valido === false){
@@ -16,15 +17,15 @@ export class CreatePostUC {
         const uid = userAuth.value?.uid as string
         const NewPost: Post = new Post(data, uid)
         const createpost = await this.postRepository.save(NewPost)   
-        if(createpost.valido === false){
+        if(createpost.val === false){
             throw new Error(createpost.erro)
         } 
-        return { valido: true, data: createpost.data }
+        return { val: true, data: createpost.data }
         } catch (error) {
             if(error instanceof Error){
-                return { valido: false, erro: error.message}
+                return { val: false, erro: error.message}
             }
-            return { valido: false, erro: error}
+            return { val: false, erro: `Erro interno do servidor: ${error}`}
         }
         
     }

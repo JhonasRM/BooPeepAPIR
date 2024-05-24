@@ -10,7 +10,7 @@ export class ReadPostController {
         const { postId } = request.params;
         try {
             const wantedPost = await this.readPostUC.execute({postId})
-            if(wantedPost.valido === false){
+            if(wantedPost.val === false){
                 throw new Error(wantedPost.erro as string)
             }
             response.status(200).json(wantedPost.data);
@@ -22,7 +22,7 @@ export class ReadPostController {
                     response.status(400).send(`Erro de requisição: ${error.message}`)
                 }
             }
-            response.status(500).send(`Internal server error: ${error}`)
+            response.status(500).send(`Erro interno do servidor: ${error}`)
           }
     }
 }

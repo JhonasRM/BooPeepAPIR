@@ -10,7 +10,7 @@ export class ReadAllPostController {
   async handle(request: Request, response: Response): Promise<void> {
     try {
       const getAllPost = await this.readAllPostUC.execute()
-      if(getAllPost.valido === false){
+      if(getAllPost.val === false){
         throw new Error(getAllPost.erro)
       }
       const posts: Post[] = getAllPost.data as Post[]
