@@ -1,6 +1,9 @@
 import { DeletePostUC } from "./DeletePostUC";
 import { Request, Response } from "express";
 
+
+console.log("passei aqui, neguinho te amo")
+
 export class DeletePostController{
     constructor(private deletePostUC: DeletePostUC){}
 
