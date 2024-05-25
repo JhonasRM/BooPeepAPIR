@@ -4,19 +4,23 @@ import { Request, Response } from "express";
 export class DeletePostController{
     constructor(private deletePostUC: DeletePostUC){}
 
-    async handle(request: Request, response: Response): Promise<Response>{
+    async handle(request: Request, response: Response): Promise<void>{
         const { postID } = request.body
         try {
-            const deletedPost = await this.deletePostUC.execute({
-                postID,
-            })
-
-            return response.status(200).send()
+            const deletedPost = await this.deletePostUC.execute({postID})
+            if(deletedPost.val === false){
+                throw new Error(deletedPost.erro)
+            }
+            response.status(200).send(deletedPost.data)
         } catch (error) {
-            console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
-            const statusCode = error instanceof Error ? 400 : 500;
-            const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-            return response.status(statusCode).send(`Erro: ${errorMessage}`);
+            if(error instanceof Error){
+                if(error.message === 'Postagem não encontrada'){
+                    response.status(404).send('Postagem não encontrada')
+                } else if(error.message !== 'Postagem não encontrada' ){
+                    response.status(400).send(`Erro de requisição: ${error.message}`)
+                }
+            }
+            response.status(500).send(`Erro interno do servidor: ${error}`)
           }
     }
 }

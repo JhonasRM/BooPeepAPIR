@@ -7,7 +7,7 @@ export class CreatePostController {
         private createPostUC: CreatePostUC,
     ) { }
 
-    async handle(request: Request, response: Response): Promise<Response> {
+    async handle(request: Request, response: Response): Promise<void> {
         const {
             description,
             local,
@@ -23,17 +23,19 @@ export class CreatePostController {
             UserID
         }
         try {
-            await this.createPostUC.execute(PostData,  email)
-
-            return response.status(201).send();
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error(`Erro: ${error.message}`);
-                return response.status(400).send('Erro: ' + error.message);
-            } else {
-                console.error(`Erro desconhecido: ${error}`);
-                return response.status(500).send('Erro desconhecido');
+            const createpost = await this.createPostUC.execute(PostData,  email)
+            if(createpost.val === false){
+                throw new Error(createpost.erro as string)
             }
+            response.status(201).send(createpost.data);
+        } catch (error: unknown) {
+            if(error instanceof Error){
+                if(error.message === 'Unauthorized'){
+                    response.status(404).send('Usuário não encontrado.')
+                }
+                    response.status(400).send(error.message)
+            }
+            response.status(500).send(`Internal Server Error: ${error}`)
         }
     }
 }

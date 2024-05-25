@@ -6,7 +6,7 @@ export class UpdatePostController {
         private updatePostUC: UpdatePostUC,
     ) { }
 
-    async handle(request: Request, response: Response): Promise<Response> {
+    async handle(request: Request, response: Response): Promise<void> {
         const {
             postId,
             fieldToUpdate,
@@ -20,14 +20,20 @@ export class UpdatePostController {
                 newValue
             })
 
-            if (typeof updatedPost === 'string') {
-                return response.status(400).json({ error: updatedPost });
+            if(updatedPost.val === false){
+                throw new Error(updatedPost.erro as string)
             }
-
-            return response.status(200).send();
+             response.status(200).send(updatedPost.data);
         } catch (error: unknown) {
-            console.error('Erro ao lidar com a solicitação:', error);
-        return response.status(500).json({ error: 'Erro interno do servidor' });
+            if(error instanceof Error){
+                if(error.message === 'Not Found'){
+                    response.status(404).send('Postagem não encontrada')
+                } else if(error.message === 'Bad Request'){
+                   response.status(400).send('Erro de requisição: verifique os campos e valores preenchidos')
+                }
+                    response.status(400).send(error.message)
+            }
+            response.status(500).send(`Internal Server Error: ${error}`)
         }
     }
 }
