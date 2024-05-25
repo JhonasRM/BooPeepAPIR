@@ -16,13 +16,10 @@ export class ChatRepository {
         this.path = this.realtimedb.ref('chat/')
     }
     async setChat(
-        user: User
+        newChat: Chat
     ): Promise<{ valido: boolean; value?: Chat; erro?: string }> {
-        try{
-        const newChat = new Chat()
         const chatRef = this.path.child(newChat.chatid)
-        const newMessage = new Message(newChat.chatid, 'oi jonathan', user)
-        newChat.messages.push(newMessage)
+        try{
         chatRef.set(newChat)
         return {valido: true, value: newChat};
     }catch(error){
@@ -38,8 +35,8 @@ export class ChatRepository {
     async sendMessage(
         message: Message, user: User
     ): Promise<{ valido: boolean; erro?: string }> {
-        try{
         const chatRef = this.path.child(`${message.chatID}/messages/`)
+        try{
         chatRef.set(message)
         return { valido: true };
         }catch(error){
@@ -53,10 +50,10 @@ export class ChatRepository {
     }
 
     async readMessages(
-        chat: Chat
+        chatid:string
     ): Promise <{ valido: boolean; value?: Message[]; erro?: string }>{
         try{
-        const chatRef = this.path.child(`${chat.chatid}/messages`)
+        const chatRef = this.path.child(`${chatid}/messages`)
         const messages: Message[] = [];
         await chatRef.on('value', (snapshot) => {
             const data = snapshot.val();
@@ -100,7 +97,7 @@ async function tantofaz() {
     
     console.log('deu bom');
     const user = readUser.data as User;
-    const chatResponse = await chatrep.setChat(user);
+    const chatResponse = await chatrep.setChat(chat);
     
     if (!chatResponse.valido) {
         console.log(chatResponse.erro);
