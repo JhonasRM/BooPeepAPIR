@@ -19,10 +19,10 @@ export class LoginUserController {
         email,
         password
       })
-      if(wantedUser.valido === true){
+      if(wantedUser.val === true){
         response.status(200).json(wantedUser.data)
       }
-      if(wantedUser.valido === false){
+      if(wantedUser.val === false){
         throw new Error(wantedUser.erro)
       }
     } catch (error: unknown) {

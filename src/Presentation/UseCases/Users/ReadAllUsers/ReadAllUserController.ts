@@ -9,11 +9,11 @@ export class ReadAllUsersController {
   async handle(request: Request, response: Response): Promise<void> {
     try {
       const wantedUser = await this.readAllUsersUC.execute();
-      if(wantedUser.valido === true){
+      if(wantedUser.val === true){
         const users = wantedUser.data
         response.status(200).json(users)
       }
-      if(wantedUser.valido === false){
+      if(wantedUser.val === false){
         throw new Error(wantedUser.erro)
       }
     } catch (error) {
