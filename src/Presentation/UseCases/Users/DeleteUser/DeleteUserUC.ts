@@ -1,30 +1,31 @@
 
+import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
 import { IDeleteUserRequestDTO } from "./DeleteUserDTO";
 
 export class DeleteUserUC {
-    constructor(private usersAuthRepository: UsersAuthRepository,private usersFireStoreRepository: UsersFireStoreRepository) { }
-    async delete(data: IDeleteUserRequestDTO): Promise<{ valido: boolean; value?: number; erro?: string; data?: string }> {
+    constructor(private usersAuthRepository: UserAuthRepository,private usersFireStoreRepository: UserFireStoreRepository) { }
+    async delete(data: IDeleteUserRequestDTO): Promise<IReturnAdapter> {
         try {
-            const userToDelete = await this.usersAuthRepository.findByEmail(data.email);
-            if(userToDelete.valido === false){
-            return { valido: false, value: 404, erro: "Not Found" };  
+            const userToDelete = await this.usersAuthRepository.getUser(data.email);
+            if(userToDelete.val === false){
+            return { val: false, erro: "Not Found" };  
             }
-            const deletedUserOnAuth = await this.usersAuthRepository.delete(userToDelete.value?.uid as string);
-            if(deletedUserOnAuth.valido === false){
-                return { valido: false, value: 400, erro: "Bad Request" };
+            const deletedUserOnAuth = await this.usersAuthRepository.delete(userToDelete.data?.uid as string);
+            if(deletedUserOnAuth.val === false){
+                return { val: false,  erro: "Bad Request" };
             }
-            const deleteUserData = userToDelete.value
+            const deleteUserData = userToDelete.data
             const deletedUserOnData = await this.usersFireStoreRepository.delete(deleteUserData?.uid as string)
-            if(deletedUserOnData.valido === false){
+            if(deletedUserOnData.val === false){
                 throw new Error()
             }
-            const deletedUser = deletedUserOnAuth.value
-            return { valido: true, value: 200, data: deletedUser};   
+            const deletedUser = deletedUserOnAuth.data
+            return { val: true, data: deletedUser};   
         } catch (error) {
-            return { valido: false, value: 500, erro: "Internal Server Error" };
+            return { val: false, erro: "Internal Server Error" };
         }
         
     }

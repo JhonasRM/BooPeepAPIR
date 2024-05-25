@@ -22,10 +22,10 @@ export class CreateUserController {
       const newUser: CreateUserRequestDTO = new CreateUserRequestDTO(data);
 
       const createUser = await this.createUserUC.execute(newUser);
-      if (createUser.valido === true) {
-        response.status(201).json(createUser.data);
+      if (createUser.val === true) {
+        response.status(201).json('Usuário criado com sucesso');
       }
-      if (createUser.valido === false) {
+      if (createUser.val === false) {
         throw new Error(createUser.erro);
       }
     } catch (error: unknown) {
@@ -35,7 +35,7 @@ export class CreateUserController {
             .status(401)
             .send("Erro: o email já existe. " + error.message);
         } else if (error.message === "Bad Request") {
-          response.status(400).send("Erro: firebase error. " + error.message);
+          response.status(400).send("Erro: erro na requisição. " + error.message);
         } else if (error.message === "Internal Server Error") {
           response
             .status(500)
