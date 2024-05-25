@@ -1,50 +1,51 @@
 
 import { User } from "../../../../Service/Entities/User";
+import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
 import { IUpdateUserRequestDTO } from "./UpdateUserDTO";
 
 
 export class UpdateUserUC {
-    constructor(private usersAuthRepository: UsersAuthRepository, private usersFireStoreRepository: UsersFireStoreRepository) { }
+    constructor(private userAuthRepository: UserAuthRepository, private userFireStoreRepository: UserFireStoreRepository) { }
 
-    async execute(data: IUpdateUserRequestDTO): Promise<{ valido: boolean; value?: number; erro?: string }> {
+    async execute(data: IUpdateUserRequestDTO): Promise<IReturnAdapter> {
         try {
             console.log(data)
-            const userToUpdate = await this.usersAuthRepository.findByEmail(data.email);
-            if (userToUpdate.valido === false) {
-                return { valido: false, value: 404, erro: "Not Found" };
+            const userToUpdate = await this.userAuthRepository.getUser(data.email);
+            if (userToUpdate.val === false) {
+                return { val: false, erro: "Not Found" };
               }
-            const user = userToUpdate.value as UserOnAuth
-            const userDataToUpdate = await this.usersFireStoreRepository.findByUID(user.uid as string)
-            if (userDataToUpdate.valido === false) {
-                return { valido: false, value: 404, erro: "Not Found" };
+            const user = userToUpdate.data as UserOnAuth
+            const userDataToUpdate = await this.userFireStoreRepository.getUser(user.uid as string)
+            if (userDataToUpdate.val === false) {
+                return { val: false, erro: "Not Found" };
               }
-            const userData = userDataToUpdate.value as UserOnFirestore
+            const userData = userDataToUpdate.data as UserOnFirestore
             if(data.fieldToUpdate in user || data.fieldToUpdate in userData){
 
-                    const updatedUserAuth =  await this.usersAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
-                    if(updatedUserAuth.valido === false){
+                    const updatedUserAuth =  await this.userAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
+                    if(updatedUserAuth.val === false){
                         if(updatedUserAuth.erro === 'Unauthorized'){
-                            return { valido: false,value:401, erro: 'Unauthorized'}
+                            return { val: false, erro: 'Unauthorized'}
                         }
                         console.log(updatedUserAuth.erro)
-                        return { valido: false, value: 400, erro: "Bad Request" };
+                        return { val: false, erro: "Bad Request" };
                     }
-                    const updatedUserData = await this.usersFireStoreRepository.update(userData.uid as unknown as string, data.fieldToUpdate, data.newValue)
-                    if(updatedUserData.valido === false){
+                    const updatedUserData = await this.userFireStoreRepository.update(userData.uid as unknown as string, data.fieldToUpdate, data.newValue)
+                    if(updatedUserData.val === false){
                         console.log(updatedUserData.erro)
-                        return { valido: false, value: 400, erro: 'Bad Request'}
+                        return { val: false, erro: 'Bad Request'}
                     }
-                    const updatedUser = new User(updatedUserAuth.value as UserOnAuth, updatedUserData.value as UserOnFirestore)
-                        return { valido: true, value: 200 };
+                    const updatedUser = new User(updatedUserAuth.data as UserOnAuth, updatedUserData.data as UserOnFirestore)
+                        return { val: true, data: 200 };
                     }
-                    return { valido: false, value: 400, erro: "O campo informado não existe no banco"}
+                    return { val: false, erro: "O campo informado não existe no banco"}
             }catch(error){
         console.log(error)
-        return { valido: false, value: 500, erro: "Internal Server Error" };
+        return { val: false, erro: "Internal Server Error" };
     }
 }
 }

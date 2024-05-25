@@ -1,27 +1,27 @@
+import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
 import { IResetPwdUserRequestDTO } from "./ResetPwdUserDTO";
 
 export class ResetPwdUserUC {
   constructor(
-    private usersAuthRepository: UsersAuthRepository,
-    private usersFireStoreRepository: UsersFireStoreRepository
+    private userAuthRepository: UserAuthRepository
   ) {}
-  async execute(data: IResetPwdUserRequestDTO):Promise<{valido: boolean, value: number, erro?: string, data?: string}>{
+  async execute(data: IResetPwdUserRequestDTO):Promise<IReturnAdapter>{
     try {
-      const wantedUser = await this.usersAuthRepository.findByEmail(data.email);
-      if (wantedUser.valido === false) {
-        return { valido: false, value: 404, erro: "Not Found" };
+      const wantedUser = await this.userAuthRepository.getUser(data.email);
+      if (wantedUser.val === false) {
+        return { val: false, erro: "Not Found" };
       }
-      const user: UserOnAuth = wantedUser.value as UserOnAuth
-      const resetPassword = await this.usersAuthRepository.resetPassword(user)
-      if(resetPassword.valido === false){
-        return { valido: false, value: 500,  erro:"Internal Server Error"}
+      const user: UserOnAuth = wantedUser.data as UserOnAuth
+      const resetPassword = await this.userAuthRepository.resetPassword(user)
+      if(resetPassword.val === false){
+        return { val: false, erro:"Internal Server Error"}
       }
-      return { valido: true, value: 200, data: resetPassword.value}
+      return { val: true, data: resetPassword.data}
     } catch (error) {
-        return {valido: false, value: 503, erro: "Unknown Error"}
+        return {val: false, erro: "Unknown Error"}
     }
   }
 }

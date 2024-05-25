@@ -1,8 +1,6 @@
 import { Router, Request, Response} from 'express';
 import { CreateUserUC } from '../UseCases/Users/CreateUser/CreateUserUC';
 import { CreateUserController } from '../UseCases/Users/CreateUser/CreateUserController';
-import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
-import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
 import { LoginUserUC } from '../UseCases/Users/LoginUser/LoginUserUC';
 import { LoginUserController } from '../UseCases/Users/LoginUser/LoginUserController';
 import { UpdateUserController } from '../UseCases/Users/UpdateUser/UpdateUserController';
@@ -15,10 +13,12 @@ import { ReadUserUC } from '../UseCases/Users/ReadUser/ReadUserUC';
 import { ReadUserController } from '../UseCases/Users/ReadUser/ReadUserController';
 import { ResetPwdUserUC } from '../UseCases/Users/ResetPwdUser/ResetPwdUserUC';
 import { ResetPwdUserController } from '../UseCases/Users/ResetPwdUser/ResetPwdUserController';
+import { UserFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
+import { UserAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
 
 const router: Router= Router();
-const userARep = new UsersAuthRepository()
-const userFRep =  new UsersFireStoreRepository()
+const userARep = new UserAuthRepository()
+const userFRep =  new UserFireStoreRepository()
 
 
 //Create User
@@ -66,7 +66,7 @@ router
     .post((req: Request, res: Response) => loginUserController.handle(req, res))
 
 // Reset Password 
-const resetpwdUC: ResetPwdUserUC = new ResetPwdUserUC(userARep, userFRep)
+const resetpwdUC: ResetPwdUserUC = new ResetPwdUserUC(userARep)
 const resetpwdController: ResetPwdUserController = new ResetPwdUserController(resetpwdUC)
 
 router
