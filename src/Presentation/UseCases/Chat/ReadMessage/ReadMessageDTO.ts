@@ -1,5 +1,4 @@
-
-export interface IReadChatRequestDTO {
+export interface IReadMessageRequestDTO {
     chatid: string;
     messages: [];
     uid: string;
