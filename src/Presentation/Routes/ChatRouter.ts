@@ -3,20 +3,30 @@ import {ChatRepository} from  '../../Service/Repositories/ChatRepository';
 import { CreateChatUC } from '../UseCases/Chat/CreateChat/CreateChatUC';
 import { ReadMessageUC } from '../UseCases/Chat/ReadMessage/ReadMessageUC';
 import { ReadMessageController } from '../UseCases/Chat/ReadMessage/ReadMessageController';
-import { CreateMessageUC } from '../UseCases/Chat/CreateMessage/CreateMessageUC';
-import { CreateMessageController } from '../UseCases/Message/CreateMessage/CreateMessageController';
 import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
-import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
+import { CreateChatController } from '../UseCases/Chat/CreateChat/CreateChatController';
+import { CreateMessageUC } from '../UseCases/Chat/CreateMessage/CreateMessageUC';
+import { CreateMessageController } from '../UseCases/Chat/CreateMessage/CreateMessageController';
 
-//Create Chat
 const router: Router= Router();
 
-const usersAuthRepository: UsersAuthRepository = new UsersAuthRepository()
 const usersFireStoreRepository: UsersFireStoreRepository = new UsersFireStoreRepository()
 const chatRepository: ChatRepository = new ChatRepository()
-const createChatUC: CreateChatUC = new CreateChatUC(chatRepository, usersFireStoreRepository, usersAuthRepository)
+
+//Create Chat
+const createChatUC: CreateChatUC = new CreateChatUC(chatRepository, usersFireStoreRepository)
 const createChatController: CreateChatController = new CreateChatController(createChatUC)
 
 //Read Message
-const readChatUC: ReadChatUC = new ReadChatUC(chatRepository)
-const readChatController:ReadChatController = new ReadChatController(readChattUC)
+const readMessageUC: ReadMessageUC = new ReadMessageUC(chatRepository)
+const readChatController:ReadMessageController = new ReadMessageController(readMessageUC)
+
+//Create Message
+const createMessageUC: CreateMessageUC = new CreateMessageUC(chatRepository, usersFireStoreRepository)
+const createMessageController: CreateMessageController = new CreateMessageController(createMessageUC)
+
+router
+    .route('/chat')
+    .post((req: Request, res: Response) => createChatController.handle(req, res))
+    .get((req: Request,  res: Response) => readChatController.handle(req, res))
+    .put((req: Request,  res: Response) => createMessageController.handle(req, res))

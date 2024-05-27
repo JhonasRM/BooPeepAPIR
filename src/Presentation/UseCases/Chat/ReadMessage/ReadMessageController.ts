@@ -1,8 +1,10 @@
+ 
 import { Request, Response } from 'express';
 import { ReadMessageUC } from './ReadMessageUC';
 import { Chat } from '../../../../Service/Model/Chat';
+import { IReadMessageRequestDTO } from './ReadMessageDTO';
 
-export class ReadChatController {
+export class ReadMessageController {
   constructor(
     private readMessageUC: ReadMessageUC,
   ) { }
@@ -14,7 +16,10 @@ export class ReadChatController {
         response.status(400).send('O chatid é obrigatório');
         return;
       }
-      const getChat = await this.readMessageUC.execute(chatid)
+      const readDTO: IReadMessageRequestDTO = {
+        chatID: chatid
+      }
+      const getChat = await this.readMessageUC.execute(readDTO)
       
       if(getChat.valido === false){
         throw new Error(getChat.erro)
