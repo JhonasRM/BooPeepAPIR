@@ -4,5 +4,5 @@ export interface ICreateMessageRequestDTO {
     // photoURL: string;
     displayName: string;
     lastmsg: string;
-    dataTime: number;
+    dateTime: number;
 }

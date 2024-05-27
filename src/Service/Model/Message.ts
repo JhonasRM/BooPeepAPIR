@@ -6,13 +6,13 @@ export class Message{
     // photoURL: string;
     public displayName: string;
     public lastmsg: string;
-    public dataTime: number;
+    public dateTime: number;
 
     constructor(chatID:string, lastmsg: string, user:User ){
         this.chatID = chatID,
         this.UserID = user.uid,
         this.displayName = user.displayName,
         this.lastmsg = lastmsg,
-        this.dataTime = Date.now() 
+        this.dateTime = Date.now() 
        }
 }

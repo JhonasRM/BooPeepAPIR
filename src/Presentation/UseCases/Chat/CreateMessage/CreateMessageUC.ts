@@ -1,38 +1,46 @@
 import { Message } from "../../../../Service/Model/Message";
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
 import { ChatRepository } from "../../../../Service/Repositories/ChatRepository";
+import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
 import { ICreateMessageRequestDTO } from "./CreateMessageDTO";
 
 export class CreateMessageUC {
-    constructor(private chatRepository: ChatRepository, private usersFireStoreRepository: UsersFireStoreRepository, private usersAuthRepository: UsersAuthRepository
+    constructor(
+        private chatRepository: ChatRepository, 
+        private usersFireStoreRepository: UsersFireStoreRepository
     ) { }
 
-    async execute(data: ICreateMessageRequestDTO, email: string): Promise<{valido: boolean, value?: Message[], erro?: string}> {
+    async execute(data: ICreateMessageRequestDTO): Promise<{ valido: boolean, value?: number, erro?: string, data?: Message }> {
         try {
-            const userAuth = await this.usersAuthRepository.findByEmail(email);
-            if (userAuth.valido === false) {
-                throw new Error('Usuário não encontrado');
+            const user = await this.usersFireStoreRepository.findByUID(data.UserID)
+            if (user.valido === false) {
+                throw new Error('O Usuário não foi encontrado')
+            } 
+
+            const newMessage: Message = new Message(
+                data.chatID,
+                data.UserID,
+                data.displayName,
+                data.lastmsg,
+                data.dateTime
+            );
+
+            console.log('Enviando Nova Mensagem...');
+            const sendMessage = await this.chatRepository.sendMessage(newMessage);
+            if (sendMessage.valido === false) {
+                throw new Error(sendMessage.erro);
             }
-
-            const uid = userAuth.value?.uid as string;
-            if (uid !== data.UserID) {
-                throw new Error('ID do usuário não corresponde ao autenticado');
-            }
-
-            const newMessage: Message = new Message(data.chatID, data.lastmsg);
-            const sendMessageResult = await this.chatRepository.sendMessage(newMessage);
-
-            if (sendMessageResult.valido === false) {
-                throw new Error(sendMessageResult.erro);
-            }
-
-            return { valido: true, value: sendMessageResult};
+            return {
+                valido: true, value: 201, data: sendMessage.value
+            };
         } catch (error) {
             if (error instanceof Error) {
-                return { valido: false, erro: error.message };
+                if (error.message === "O Chat não foi encontrado") {
+                    return { valido: false, value: 404, erro: "O Chat não foi encontrado" };
+                } else {
+                    return { valido: false, value: 400, erro: `Erro ao enviar a mensagem: ${error.message}` };
+                }
             }
-            return { valido: false, erro: `Erro interno do servidor: ${error}` };
+            return { valido: false, value: 500, erro: `Erro interno do servidor: ${error}` };
         }
     }
 }

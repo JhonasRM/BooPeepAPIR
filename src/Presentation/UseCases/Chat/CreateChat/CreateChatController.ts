@@ -9,15 +9,13 @@ export class CreateChatController {
 
     async handle(request: Request, response: Response): Promise<Response> {
         const {
-           chatid,
-           messages,    
+  
            uid         
         } = request.body;
 
         const UserID = ''
         const ChatData: ICreateChatRequestDTO = {
-            chatid,
-            messages, 
+            
             uid
         }
         try {

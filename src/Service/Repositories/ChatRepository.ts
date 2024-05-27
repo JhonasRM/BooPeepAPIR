@@ -34,17 +34,17 @@ export class ChatRepository {
 
     async sendMessage(
         message: Message
-    ): Promise<{ valido: boolean; erro?: string }> {
+    ): Promise<{ valido: boolean; erro?: string, value?: Message}> {
         const chatRef = this.path.child(`${message.chatID}/messages/`)
         try{
         chatRef.set(message)
-        return { valido: true };
+        return { valido: true, value: message};
         }catch(error){
             if (error instanceof Error) {
                 const mensagemErro = error.message;
-                return { valido: false, erro: mensagemErro };
+                return { valido: false, erro: mensagemErro};
             } else {
-                return { valido: false, erro: "Erro desconhecido ao enviar a mensagem" };
+                return { valido: false, erro: "Erro desconhecido ao enviar a mensagem"};
             }
         }
     }
