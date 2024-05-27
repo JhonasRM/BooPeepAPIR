@@ -29,9 +29,9 @@ export class CreateChatUC {
          } catch (error) {
           if(error instanceof Error){
             if(error.message === "Chat já existe"){
-                return {valido: false, value:401 , erro:"Chat já existe"}
+                return { valido: false, value:401 , erro:"Chat já existe" }
             }else if(error.message !== "Chat já existe"){
-              return {valido: false, value:400 , erro: `Erro ao criar o chat: ${error.message}`}
+              return { valido: false, value:400 , erro: `Erro ao criar o chat: ${error.message}` }
             }
           }
           return{ valido: false, value:500, erro: `Erro interno do servidor: ${error}` }

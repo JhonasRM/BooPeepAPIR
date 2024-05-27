@@ -11,17 +11,15 @@ export class CreateMessageUC {
 
     async execute(data: ICreateMessageRequestDTO): Promise<{ valido: boolean, value?: number, erro?: string, data?: Message }> {
         try {
-            const user = await this.usersFireStoreRepository.findByUID(data.UserID)
+            const user = await this.usersFireStoreRepository.findByUID(data.uid)
             if (user.valido === false) {
                 throw new Error('O Usuário não foi encontrado')
             } 
-
             const newMessage: Message = new Message(
                 data.chatID,
-                data.UserID,
+                data.uid,
                 data.displayName,
-                data.lastmsg,
-                data.dateTime
+                data.lastmsg
             );
 
             console.log('Enviando Nova Mensagem...');

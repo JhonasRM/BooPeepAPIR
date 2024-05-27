@@ -1,8 +1,7 @@
 export interface ICreateMessageRequestDTO {
     chatID: string;
-    UserID: string;
-    // photoURL: string;
-    displayName: string;
+    uid: string;
+    displayName: string,
+    // photoURL: nn sei
     lastmsg: string;
-    dateTime: number;
 }

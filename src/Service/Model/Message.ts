@@ -8,10 +8,10 @@ export class Message{
     public lastmsg: string;
     public dateTime: number;
 
-    constructor(chatID:string, lastmsg: string, user:User ){
+    constructor(chatID:string, uid: string, displayName: string, lastmsg: string){
         this.chatID = chatID,
-        this.UserID = user.uid,
-        this.displayName = user.displayName,
+        this.UserID = uid,
+        this.displayName = displayName,
         this.lastmsg = lastmsg,
         this.dateTime = Date.now() 
        }

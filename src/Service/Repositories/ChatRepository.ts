@@ -1,19 +1,14 @@
 import { Database } from "firebase-admin/lib/database/database";
 import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
-import { randomUUID } from "crypto";
 import { Chat } from "../Model/Chat";
 import { Message } from "../Model/Message";
-import { User } from "../Model/User";
-import { ReadUserUC } from "../../Presentation/UseCases/Users/ReadUser/ReadUserUC";
-import { UsersAuthRepository } from "./UsersAuthRepository";
-import { UsersFireStoreRepository } from "./UsersFireStoreRepository";
-
+import { User, sendEmailVerification } from "@firebase/auth";
 export class ChatRepository {
     private realtimedb: Database;
     private path;
     constructor() {
         this.realtimedb = AppAdmin.database()
-        this.path = this.realtimedb.ref('chat/')
+        this.path = this.realtimedb.ref('chatest')
     }
     async setChat(
         newChat: Chat
@@ -36,8 +31,9 @@ export class ChatRepository {
         message: Message
     ): Promise<{ valido: boolean; erro?: string, value?: Message}> {
         const chatRef = this.path.child(`${message.chatID}/messages/`)
+        const ref = chatRef.child(`${message.UserID}-${message.dateTime}`)
         try{
-        chatRef.set(message)
+        ref.push(message)
         return { valido: true, value: message};
         }catch(error){
             if (error instanceof Error) {

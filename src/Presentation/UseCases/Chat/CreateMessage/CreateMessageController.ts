@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { CreateMessageUC } from './CreateMessageUC';
 import { ICreateMessageRequestDTO } from './CreateMessageDTO';
+import { User } from '../../../../Service/Model/User';
 
 export class CreateMessageController {
     constructor(
@@ -14,17 +15,15 @@ export class CreateMessageController {
             // photoURL
             displayName,
             lastmsg,
-            dateTime
         } = request.body;
 
        // const UserID = ''
         const MessageData: ICreateMessageRequestDTO = {
-            chatID,
-            UserID,
+            chatID: chatID,
+            uid:  UserID,
             // photoURL
-            displayName,
-            lastmsg,
-            dateTime
+            displayName: displayName,
+            lastmsg: lastmsg,
         }
         try {
             await this.createMessageUC.execute(MessageData)
