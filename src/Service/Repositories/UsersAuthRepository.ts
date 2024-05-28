@@ -57,13 +57,15 @@ export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collec
   async create(
     user: UserOnAuth
   ): Promise<IReturnAdapter> {
+    const userAuth = user
     try {
-      
-      const userRecord = await this.auth.createUser(user);
+      const userRecord = await this.auth.createUser(userAuth);
       const createdUser = userRecord.toJSON();
+      const user = createdUser as UserOnAuth
+      const uid = user.uid
       return {
         val: true,
-        data: createdUser as UserOnAuth,
+        data: uid,
         erro: undefined,
       };
     } catch (error) {

@@ -12,28 +12,24 @@ export class CreateUserUC {
         try {
             const userAlreadyExists = await this.usersAuthRepository.getUser(data.email)
             if (userAlreadyExists.val === true) {
-                return { val: false, erro: 'Unauthorized'}
+                throw new Error('Este email já está cadastrado')
             }
             const NewUserData = data.destructuring().userOnData
             const createUserData = await this.usersFireStoreRepository.create(NewUserData)
             if(createUserData.val === false){
-                return { val: false,  erro: 'Bad Request'}
+                throw new Error('Erro ao cadastrar dados do usuário')
             }
-            const userData = new UserOnFirestore({}, createUserData.data?.uid, createUserData.data?.posts, createUserData.data?.age)
             const NewUserAuth = data.destructuring().userOnAuth
-            NewUserAuth.conectData(userData.uid as string)
+            NewUserAuth.conectData(createUserData.data as string)
         const createdUserAuth = await this.usersAuthRepository.create(NewUserAuth)
         if(createdUserAuth.val === false){
-            return { val: false, erro: 'Bad Request'}
+            throw new Error('Erro ao cadastrar usuário no auth.')
         }
-        const userAuth = new UserOnAuth(
-            createdUserAuth.data?.displayName as string,
-            createdUserAuth.data?.email as string,
-            createdUserAuth.data?.password as string,
-        )
-        const user: User = new User(userAuth, userData)
-        return { val: true, data: user as User}   
+        return { val: true, data: 'Usuário Cadatrado com sucesso'}   
         } catch (error) {
+            if(error instanceof Error){
+                return { val: false, erro: error.message}
+            }
             return { val: false, erro: 'Internal Server Error'}
         }
        

@@ -18,9 +18,9 @@ export class ReadAllUsersController {
       }
     } catch (error) {
       if (error instanceof Error) {
-        if(error.message === 'Not Found'){
-          response.status(404).send('Erro: este email nao existe ' + error.message);
-        }else if(error.message === 'Internal Server Error'){
+        if(error.message === 'Nenhum usuário foi encontrado'){
+          response.status(404).send('Erro: nenhum usuário foi encontrado' + error.message);
+        }else if(error.message !== 'Nenhum usuário foi encontrado'){
           response.status(500).send('Erro: erro interno do servidor. ' + error.message);
         }
       } else {

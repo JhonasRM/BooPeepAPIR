@@ -22,10 +22,10 @@ export class ReadUserController {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        if(error.message === 'Not Found'){
-          response.status(404).send('Erro: este email nao existe ' + error.message);
-        } else if(error.message === 'Unauthorized'){
-          response.status(401).send('Erro: senha incorreta. ' + error.message);
+        if(error.message === 'Usuário não encontrado.'){
+          response.status(404).send('Erro: usuário não encontrado');
+        } else if(error.message === 'Os dados do usuário não foram encontrados'){
+          response.status(400).send('Erro: Os dados não foram encontrados. ');
         } else if(error.message === 'Internal Server Error'){
           response.status(500).send('Erro: erro interno do servidor. ' + error.message);
         }

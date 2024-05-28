@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { CreateUserRequestDTO } from "./CreateUserDTO";
 import { CreateUserUC } from "./CreateUserUC";
-import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
-import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
 export class CreateUserController {
-  constructor(private createUserUC: CreateUserUC) {}
+  constructor(
+    private createUserUC: CreateUserUC
+  ) {}
 
   async handle(request: Request, response: Response): Promise<void> {
     const { displayName, email, password } = request.body;
@@ -12,30 +12,30 @@ export class CreateUserController {
     if (!displayName || !email || !password) {
       response.status(400).send("Erro: Campos obrigatórios não preenchidos");
     }
-    const data = {
-      displayName: displayName,
-      email: email,
-      password: password,
-    }
-
+    const requestData = {
+      displayName: displayName as string,
+      email: email as string,
+      password: password as string,
+    };
     try {
-      const newUser: CreateUserRequestDTO = new CreateUserRequestDTO(data);
-
-      const createUser = await this.createUserUC.execute(newUser);
+      const data: CreateUserRequestDTO = new CreateUserRequestDTO(requestData);
+      const createUser = await this.createUserUC.execute(data);
       if (createUser.val === true) {
-        response.status(201).json('Usuário criado com sucesso');
-      }
+          response.status(201).json(createUser.data);
+        }
       if (createUser.val === false) {
         throw new Error(createUser.erro);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        if (error.message === "Unauthorized") {
+        if (error.message === 'Este email já está cadastrado') {
           response
             .status(401)
-            .send("Erro: o email já existe. " + error.message);
-        } else if (error.message === "Bad Request") {
-          response.status(400).send("Erro: erro na requisição. " + error.message);
+            .send("Erro: este email já está cadastrado ");
+        } else if (error.message === 'Erro ao cadastrar dados do usuário' || error.message === 'Erro ao cadastrar usuário no auth.') {
+          response
+            .status(400)
+            .send("Erro: erro ao efetuar o cadsatro " + error.message);
         } else if (error.message === "Internal Server Error") {
           response
             .status(500)

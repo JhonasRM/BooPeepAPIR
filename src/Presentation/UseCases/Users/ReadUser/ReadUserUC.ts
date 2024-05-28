@@ -13,7 +13,7 @@ export class ReadUserUC {
     try {
       const wantedUser = await this.userAuthRepository.getUser(data.email);
       if (wantedUser.val === false) {
-        return { val: false, erro: "Not Found" };
+        throw new Error('Usuário não encontrado.')
       }
       const foundUserAuth = wantedUser.data as unknown as UserOnAuth
       const userAuth = new UserOnAuth(
@@ -27,18 +27,17 @@ export class ReadUserUC {
       )
       const wantedUserData = await this.userFireStoreRepository.getUser(userAuth.uid as string)
       if (wantedUserData.val === false) {
-        return { val: false, erro: "Not Found" };
+        return { val: false, erro: 'Os dados do usuário não foram encontrados' };
       }
       const userData = wantedUserData.data as UserOnFirestore      
-      const user: User = new User(userAuth, {
-        posts: userData.posts,
-        age: userData.age,
-        uid: userData.uid
-      })
+      const user: User = new User(userAuth,userData)
       console.log(user)
       return { val: true, data: user as User };
     } catch (error) {
-      return { val: false, erro: "Internal Server Error" };
+      if(error instanceof Error){
+        return { val: false, erro: error.message}
+      }
+      return { val: false, erro: `Internal Server Error: ${error}` };
     }
   }
 }

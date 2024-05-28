@@ -12,7 +12,7 @@ export class ReadAllUsersUC {
             const wantedUsers = await this.userAuthRepository.getUsers()
             const wantedUsersData = await this.userFireStoreRepository.getUsers()
             if (wantedUsers.val === false || wantedUsersData.val === false) {
-              return { val: false, erro: "Not Found" };
+              throw new Error(wantedUsers.erro)
             }
             const ArrayUsers = wantedUsers.data as UserOnAuth[]
             const ArrayUsersData = wantedUsersData.data as UserOnFirestore[]
@@ -24,10 +24,13 @@ export class ReadAllUsersUC {
               });
             });
             if(users[0] === undefined){
-              return { val: false, erro:"Bad Request"}
+              throw new Error('Nenhum usuário foi encontrado')
             }
             return { val: true, data: users as User[] };
           } catch (error) {
+            if(error instanceof Error){
+              return { val: false, erro: error.message}
+            }
             return { val: false, erro: "Internal Server Error" };
           }
     }

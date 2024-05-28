@@ -3,8 +3,10 @@ import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 import { IReturnAdapter } from "../Interfaces/IReturnAdapter";
 import { Firestore } from "firebase-admin/firestore";
 import { IUserRepository } from "../Interfaces/IUserRepository";
-import { Auth } from "firebase-admin/lib/auth/auth";
+import dotenv from 'dotenv';
+import { decrypt, encrypt } from "../Model/encryption";
 
+dotenv.config();
 export class UserFireStoreRepository implements Omit<IUserRepository, 'auth'>{
     db: Firestore
     collectionPath: string
@@ -17,16 +19,15 @@ export class UserFireStoreRepository implements Omit<IUserRepository, 'auth'>{
     async getUser(key: string): Promise<IReturnAdapter>{
         const field = 'uid';
         const value = key;
-
         try {
             const collectionRef = this.db.collection(this.collectionPath);
             const query = await collectionRef.where(field, "==", value).get();
             if (query.empty) {
                 throw new Error('No documents found')
             } 
-                const user = query.docs[0].data()
-
-                return { val: true, data: user as unknown as UserOnFirestore }
+                const user = query.docs[0].data() as UserOnFirestore
+                const decryptedUser = user.decryptUser(user.uid as string, user.postsID, user.chatID)
+                return { val: true, data: decryptedUser }
             
         } catch (error) {
                 if (error instanceof Error) {
@@ -47,7 +48,8 @@ export class UserFireStoreRepository implements Omit<IUserRepository, 'auth'>{
             const users: UserOnFirestore[] = [];
             querySnapshot.forEach((doc) => {
                 const userData = doc.data() as UserOnFirestore;
-                users.push(userData);
+                const decryptedData = userData.decryptUser(userData.uid as string, userData.postsID, userData.chatID)
+                users.push(decryptedData);
             });
             if (users[1] === null) {
                throw new Error('Nenhum usuário encontrado')
@@ -67,14 +69,15 @@ export class UserFireStoreRepository implements Omit<IUserRepository, 'auth'>{
     async create(
         user: UserOnFirestore
       ): Promise<IReturnAdapter> {
-        const Newuser: UserOnFirestore = new UserOnFirestore({})
-        const NewUserData: FirebaseFirestore.DocumentData = Newuser
+        const NewUser: UserOnFirestore = new UserOnFirestore(user.uid)
+        const NewUserEncrypted = NewUser.encryptUser(NewUser.uid as string, NewUser.postsID, NewUser.chatID)
+        const NewUserData: FirebaseFirestore.DocumentData = NewUserEncrypted
       try {
           const docRef = await this.db.collection(this.collectionPath).doc()
-          const uid = docRef.id; 
-          const data = { ...NewUserData, uid }
+          const uid = encrypt(docRef.id)
+          const data = { ...NewUserData, uid}
           const createdUser = await docRef.set(data);
-          return { val: true, data:data as UserOnFirestore , erro: undefined };
+          return { val: true, data: uid };
         } catch (error) {
           if (error instanceof Error) {
             console.log(error)
@@ -112,7 +115,6 @@ export class UserFireStoreRepository implements Omit<IUserRepository, 'auth'>{
     async update(uid: string, fieldToUpdate: string, newValue: any): Promise<IReturnAdapter>{
         try {
           const userRef = this.db.collection(this.collectionPath).doc(uid);
-
           const userSnapshot = await userRef.get();
 
           if (!userSnapshot.exists) {
@@ -133,14 +135,12 @@ export class UserFireStoreRepository implements Omit<IUserRepository, 'auth'>{
           if (typeof previousValue !== typeof newValue) {
               throw new Error(`O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`)
           }
+          const encryptedNewValue = encrypt(newValue)
   
           await userRef.update({
-              [fieldToUpdate]: newValue
+              [fieldToUpdate]: encryptedNewValue
           });
-
-          const updatedUser = await this.db.collection(this.collectionPath).doc(uid).get();
-          const user: UserOnFirestore = UserOnFirestore.fromDocumentSnapshot(updatedUser)
-            return { val: true, data: user}
+            return { val: true, data: 'Usuário atualizado com sucesso'}
         } catch (error) {
             if (error instanceof Error) {
               const mensagemErro = error.message;

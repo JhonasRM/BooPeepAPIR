@@ -11,7 +11,7 @@ export class DeleteUserController {
     try {
       const deleteUser = await this.deleteUserUC.delete({email});
       if(deleteUser.val === true){
-        response.status(200).send('Usuário deletado com sucesso')
+        response.status(200).send(deleteUser.data)
       }
       if(deleteUser.val === false){
         throw new Error(deleteUser.erro)
