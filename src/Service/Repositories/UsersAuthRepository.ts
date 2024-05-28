@@ -4,8 +4,8 @@ import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UserOnAuth } from "../Model/UserOnAuth";
 import { AppWeb } from "../../Data Access/DAO/AppWeb/appWeb";
 import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
-import { IUserRepository } from "../Interfaces/IUserRepository";
-import { IReturnAdapter } from "../Interfaces/IReturnAdapter";
+import { IUserRepository } from "../../utils/Interfaces/IUserRepository";
+import { IReturnAdapter } from "../../utils/Interfaces/IReturnAdapter";
 import { UserOnFirestore } from "../Model/UserOnFireStore";
 
 export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collectionPath'>{

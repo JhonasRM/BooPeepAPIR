@@ -1,10 +1,10 @@
 import { UserOnFirestore } from "../Model/UserOnFireStore";
 import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
-import { IReturnAdapter } from "../Interfaces/IReturnAdapter";
+import { IReturnAdapter } from "../../utils/Interfaces/IReturnAdapter";
 import { Firestore } from "firebase-admin/firestore";
-import { IUserRepository } from "../Interfaces/IUserRepository";
+import { IUserRepository } from "../../utils/Interfaces/IUserRepository";
 import dotenv from 'dotenv';
-import { decrypt, encrypt } from "../Model/encryption";
+import { decrypt, encrypt } from "../../utils/encryption";
 
 dotenv.config();
 export class UserFireStoreRepository implements Omit<IUserRepository, 'auth'>{

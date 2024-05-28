@@ -1,4 +1,4 @@
-import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter"
+import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter"
 import { Post } from "../../../../Service/Model/Post"
 import { PostRepository } from "../../../../Service/Repositories/PostRepository"
 

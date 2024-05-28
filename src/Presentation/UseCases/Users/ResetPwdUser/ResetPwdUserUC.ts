@@ -1,4 +1,4 @@
-import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
+import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
 import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";

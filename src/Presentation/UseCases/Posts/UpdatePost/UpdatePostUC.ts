@@ -1,4 +1,4 @@
-import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
+import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { PostRepository } from "../../../../Service/Repositories/PostRepository";
 import { IUpdatePostRequestDTO } from "./UpdatePostDTO";
 

@@ -1,5 +1,5 @@
 import { DocumentSnapshot } from "firebase-admin/firestore";
-import { decrypt, encrypt } from "./encryption";
+import { decrypt, encrypt } from "../../utils/encryption";
 
 export class UserOnFirestore{
     public readonly uid?: string 

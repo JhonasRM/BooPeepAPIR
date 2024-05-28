@@ -1,6 +1,6 @@
 
 import { User } from "../../../../Service/Entities/User";
-import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
+import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
 import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";

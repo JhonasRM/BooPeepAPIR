@@ -1,7 +1,7 @@
 import { Post } from "../Model/Post";
 import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
-import { IPostRepository } from "../Interfaces/IPostRepository";
-import { IReturnAdapter } from "../Interfaces/IReturnAdapter";
+import { IPostRepository } from "../../utils/Interfaces/IPostRepository";
+import { IReturnAdapter } from "../../utils/Interfaces/IReturnAdapter";
 import { Firestore } from "firebase-admin/firestore";
 export class PostRepository implements IPostRepository{
     db: Firestore;
