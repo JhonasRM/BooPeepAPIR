@@ -13,8 +13,8 @@ import { ReadUserUC } from '../UseCases/Users/ReadUser/ReadUserUC';
 import { ReadUserController } from '../UseCases/Users/ReadUser/ReadUserController';
 import { ResetPwdUserUC } from '../UseCases/Users/ResetPwdUser/ResetPwdUserUC';
 import { ResetPwdUserController } from '../UseCases/Users/ResetPwdUser/ResetPwdUserController';
-import { UserFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
-import { UserAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
+import { UserFireStoreRepository } from '../../Service/Repositories/UserFireStoreRepository';
+import { UserAuthRepository } from '../../Service/Repositories/UserAuthRepository';
 
 const router: Router= Router();
 const userARep = new UserAuthRepository()

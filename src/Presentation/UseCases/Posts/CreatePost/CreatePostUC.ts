@@ -4,8 +4,8 @@ import { Post } from "../../../../Service/Model/Post";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
 import { PostRepository } from "../../../../Service/Repositories/PostRepository";
 import { ICreatePostRequestDTO } from "./CreatePostDTO";
-import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 export class CreatePostUC {
     constructor(private postRepository: PostRepository, private usersFireStoreRepository: UserFireStoreRepository, private usersAuthRepository: UserAuthRepository) { }
     async execute(data: ICreatePostRequestDTO, email: string): Promise<IReturnAdapter>{

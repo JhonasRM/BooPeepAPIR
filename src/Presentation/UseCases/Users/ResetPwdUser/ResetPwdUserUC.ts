@@ -1,7 +1,7 @@
 import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
-import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { IResetPwdUserRequestDTO } from "./ResetPwdUserDTO";
 
 export class ResetPwdUserUC {

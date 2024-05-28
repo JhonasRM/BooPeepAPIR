@@ -2,8 +2,8 @@ import { User } from "../../../../Service/Entities/User";
 import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
-import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 
 export class ReadAllUsersUC {
     constructor(private userAuthRepository: UserAuthRepository, private userFireStoreRepository: UserFireStoreRepository) { }

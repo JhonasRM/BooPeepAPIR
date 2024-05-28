@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
-import { UserAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UserFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { LoginUserUC } from "./LoginUserUC";
 import { ILoginUserRequestDTO } from "./LoginUserDTO";
 describe('UserRepository', () => {
