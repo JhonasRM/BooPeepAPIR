@@ -7,7 +7,7 @@ export class ReadPostUC {
     constructor(private postRepository: PostRepository){ }
     async execute(data: IReadPostRequestDTO): Promise<IReturnAdapter> { 
         try {
-            const wantedpost = await this.postRepository.findByID(data.postId)
+            const wantedpost = await this.postRepository.getPost(data.postId)
         if(wantedpost.val === false){
             throw new Error(wantedpost.erro)
         }

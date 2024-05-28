@@ -11,7 +11,7 @@ export class PostRepository implements IPostRepository {
     this.collectionPath = "posts";
   }
 
-  async findByID(id: string): Promise<IReturnAdapter> {
+  async getPost(id: string): Promise<IReturnAdapter> {
     try {
       const docRef = this.db.collection("posts").doc(id);
       const docSnapshot = await docRef.get();
@@ -38,7 +38,7 @@ export class PostRepository implements IPostRepository {
       return { val: false, erro: `Internal Server Error: ${error}` };
     }
   }
-  async getAllPosts(): Promise<IReturnAdapter> {
+  async getPosts(): Promise<IReturnAdapter> {
     try {
       const collectionRef = this.db.collection(this.collectionPath);
       const querySnapshot = await collectionRef.get();
@@ -69,7 +69,7 @@ export class PostRepository implements IPostRepository {
     }
   }
 
-  async save(post: Post): Promise<IReturnAdapter> {
+  async createPost(post: Post): Promise<IReturnAdapter> {
     const NewPost: FirebaseFirestore.DocumentData = {
       description: post.description,
       createdAt: post.createdAt,

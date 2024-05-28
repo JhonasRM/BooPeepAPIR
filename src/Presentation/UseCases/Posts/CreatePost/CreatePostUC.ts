@@ -16,7 +16,7 @@ export class CreatePostUC {
         }
         const uid = userAuth.data?.uid as string
         const NewPost: Post = new Post(data, uid)
-        const createpost = await this.postRepository.save(NewPost)   
+        const createpost = await this.postRepository.createPost(NewPost)   
         if(createpost.val === false){
             throw new Error(createpost.erro)
         } 

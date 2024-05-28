@@ -6,9 +6,9 @@ export interface IPostRepository{
     db: Firestore
     collectionPath: string
 
-    findByID(id: string): Promise<IReturnAdapter>
-    getAllPosts(): Promise<IReturnAdapter>
-    save(post: Post): Promise<IReturnAdapter>
+    getPost(id: string): Promise<IReturnAdapter>
+    getPosts(): Promise<IReturnAdapter>
+    createPost(post: Post): Promise<IReturnAdapter>
     updatePostField(postId: string, fieldToUpdate: string, newValue: string): Promise<IReturnAdapter>
     deletePost(postId: string): Promise<IReturnAdapter>
 }
