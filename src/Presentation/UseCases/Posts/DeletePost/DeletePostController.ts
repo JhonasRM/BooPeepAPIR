@@ -18,9 +18,9 @@ export class DeletePostController{
         } catch (error) {
             if(error instanceof Error){
                 if(error.message === 'Postagem não encontrada'){
-                    response.status(404).send('Postagem não encontrada')
+                    response.status(404).send('Erro: Postagem não encontrada')
                 } else if(error.message !== 'Postagem não encontrada' ){
-                    response.status(400).send(`Erro de requisição: ${error.message}`)
+                    response.status(400).send(`Erro: Erro de requisição: ${error.message}`)
                 }
             }
             response.status(500).send(`Erro interno do servidor: ${error}`)

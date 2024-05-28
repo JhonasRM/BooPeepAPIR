@@ -30,8 +30,8 @@ export class CreatePostController {
             response.status(201).send(createpost.data);
         } catch (error) {
             if(error instanceof Error){
-                if(error.message === 'Unauthorized'){
-                    response.status(404).send('Usuário não encontrado.')
+                if(error.message === 'Usuário não encontrado'){
+                    response.status(404).send(error.message)
                 }
                     response.status(400).send(error.message)
             }

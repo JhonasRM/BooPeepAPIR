@@ -18,9 +18,9 @@ export class ReadAllPostController {
       response.status(200).json(posts);
     } catch (error) {
     if(error instanceof Error){
-      if(error.message === 'Nenhum post encontrado'){
+      if(error.message === 'Nenhuma postagem encontrada'){
         response.status(404).send(error.message)
-      } else if(error.message !== 'Nenhum post encontrado'){
+      } else if(error.message !== 'Nenhuma postagem encontrada'){
         response.status(400).send(`Erro de requisição: ${error.message}`)
       }
     }
