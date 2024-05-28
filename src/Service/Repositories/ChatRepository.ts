@@ -49,8 +49,8 @@ export class ChatRepository {
         chatid:string
     ): Promise <{ valido: boolean; value?: Message[]; erro?: string }>{
         try{
-        const chatRef = this.path.child(`${chatid}/messages`)
-        const messages: Message[] = [];
+        const chatRef = this.path.child(`${chatid}/messages/`)
+      const messages: Message[] = [];
         await chatRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -62,7 +62,7 @@ export class ChatRepository {
             }
         },
          (errorObject) => {
-            throw new Error('A leitura falhou: ' + errorObject.name);
+            throw new Error('A leitura falhou:  ');
         });
         return { valido: true, value: messages };
     }catch(error){
