@@ -8,9 +8,9 @@ describe('UserRepository function getAllPosts to return a Array List of Posts fr
     });
 
     test('getAllPosts should return an Array of type Posts', async () => {
-        const Posts = await postRepository.getAllPosts()
+        const Posts = await postRepository.getPosts()
         console.log(Posts)
         expect(Posts).toBeInstanceOf(Array);
-        expect(Posts?.length).toBeGreaterThan(0);
+        expect(Posts?).toBeGreaterThan(0);
     }, 10000);
 })
