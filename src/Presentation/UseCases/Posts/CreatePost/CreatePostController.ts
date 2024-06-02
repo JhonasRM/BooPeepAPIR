@@ -12,10 +12,9 @@ export class CreatePostController {
             description,
             local,
             status,
-            email
+            UserID
         } = request.body;
 
-        const UserID = ''
         const PostData: ICreatePostRequestDTO = {
         description,
             local,
