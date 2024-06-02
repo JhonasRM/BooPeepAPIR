@@ -12,8 +12,7 @@ export class CreatePostController {
             description,
             local,
             status,
-            UserID,
-            email
+            UserID
         } = request.body;
 
         const PostData: ICreatePostRequestDTO = {
@@ -23,7 +22,7 @@ export class CreatePostController {
             UserID
         }
         try {
-            const createpost = await this.createPostUC.execute(PostData,  email)
+            const createpost = await this.createPostUC.execute(PostData)
             if(createpost.val === false){
                 throw new Error(createpost.erro as string)
             }
