@@ -11,6 +11,6 @@ describe('UserRepository function getAllPosts to return a Array List of Posts fr
         const Posts = await postRepository.getAllPosts()
         console.log(Posts)
         expect(Posts).toBeInstanceOf(Array);
-        expect(Posts?.length).toBeGreaterThan(0);
+        expect(Posts?.data.length).toBeGreaterThan(0);
     }, 10000);
 })
