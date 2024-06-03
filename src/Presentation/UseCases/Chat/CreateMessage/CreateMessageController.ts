@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { CreateMessageUC } from './CreateMessageUC';
 import { ICreateMessageRequestDTO } from './CreateMessageDTO';
-import { User } from '../../../../Service/Model/User';
 
 export class CreateMessageController {
     constructor(
@@ -26,9 +25,11 @@ export class CreateMessageController {
             lastmsg: lastmsg,
         }
         try {
-            await this.createMessageUC.execute(MessageData)
-
-            return response.status(201).send();
+            const newMessage = await this.createMessageUC.execute(MessageData)
+            if(newMessage.valido === false){
+                throw new Error(newMessage.erro)
+            }
+            return response.status(201).send(newMessage.data);
         } catch (error: unknown) {
             if (error instanceof Error) {
                 console.error(`Erro: ${error.message}`);
