@@ -1,11 +1,11 @@
 import { DocumentData, Firestore, getFirestore } from "firebase-admin/firestore";
-import { conn } from "../../Data Access/DAO/conn";
 import { Post } from "../Model/Post";
+import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 export class PostRepository {
     private db: Firestore
     private collectionPath: string
     constructor() {
-        this.db = conn.firestore()
+        this.db = AppAdmin.firestore()
         this.collectionPath = 'posts'
     }
     
@@ -60,18 +60,15 @@ export class PostRepository {
         }
         try {
             const docRef = await this.db.collection(this.collectionPath).doc()
-            const postId = docRef.id; // Obtém o ID gerado automaticamente do novo documento
+            const postId = docRef.id;
             await docRef.set({ ...NewPost, postId });
-            // Adiciona o ID da postagem ao array de postagens do usuário
             const userRef = this.db.collection('users').doc(post.UserID);
-            const userDoc = await userRef.get(); // Obtém o documento do usuário
+            const userDoc = await userRef.get(); 
             if (userDoc.exists) {
                 const userData = userDoc.data();
                 if (userData && Array.isArray(userData.posts)) {
-                    userData.posts.push(postId); // Adiciona o ID da nova postagem ao array de postagens do usuário
-                    await userRef.update({ posts: userData.posts }); // Atualiza o documento do usuário com o novo array de postagens
-                } else {
-                    // Se o campo de postagens não existir ou não for um array, inicializa o array com o ID da nova postagem
+                    userData.posts.push(postId); 
+                    await userRef.update({ posts: userData.posts }); 
                     await userRef.update({ posts: [postId] });
                 }
             } else {
