@@ -7,7 +7,7 @@ export class CreateChatController {
         private createChatUC: CreateChatUC,
     ) { }
 
-    async handle(request: Request, response: Response): Promise<Response> {
+    async handle(request: Request, response: Response): Promise<void> {
         const {
   
            uid         
@@ -21,14 +21,17 @@ export class CreateChatController {
         try {
             await this.createChatUC.execute(ChatData)
 
-            return response.status(201).send();
+            response.status(201).send();
         } catch (error: unknown) {
             if (error instanceof Error) {
+                if(error.message === 'O chat já exite'){
+                    response.status(401).send(error.message)
+                }
                 console.error(`Erro: ${error.message}`);
-                return response.status(400).send('Erro: ' + error.message);
+                response.status(400).send('Erro: ' + error.message);
             } else {
                 console.error(`Erro desconhecido: ${error}`);
-                return response.status(500).send('Erro desconhecido');
+                response.status(500).send('Erro desconhecido');
             }
         }
     }

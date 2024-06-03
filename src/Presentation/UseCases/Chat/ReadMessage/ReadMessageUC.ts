@@ -11,6 +11,14 @@ export class ReadMessageUC {
             if (getMesssages.valido === false) {
                 throw new Error(getMesssages.erro)
             } 
+            const Messages: Message[] = []
+            getMesssages.value?.forEach((message)=>{
+                const newMessage = new Message(message.chatID, message.UserID, message.displayName, message.lastmsg)
+                Messages.push(newMessage)
+            })
+            if(Messages.length === 0 || !Message){
+                throw new Error('Não há nenhuma mensagem')
+            }
             return { valido: true, value: getMesssages.value}   
         } catch (error) {
             if(error instanceof Error){

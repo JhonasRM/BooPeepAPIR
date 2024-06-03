@@ -7,7 +7,7 @@
     "start": "node ./dist/src/server.js",
     "build": "tsc",
     "dev": "nodemon",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",

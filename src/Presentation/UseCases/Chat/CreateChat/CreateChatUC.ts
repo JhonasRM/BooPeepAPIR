@@ -15,7 +15,7 @@ export class CreateChatUC {
           const userData = user.value as UserOnFirestore
           const field = 'chatId'
           if(field in userData){
-           throw new Error ("Chat já existe")
+           throw new Error ("O chat já existe")
         }
           const NewChat: Chat = new Chat(userData.uid as string)
           console.log('Criando Novo Chat...')
@@ -28,9 +28,9 @@ export class CreateChatUC {
           }
          } catch (error) {
           if(error instanceof Error){
-            if(error.message === "Chat já existe"){
-                return { valido: false, value:401 , erro:"Chat já existe" }
-            }else if(error.message !== "Chat já existe"){
+            if(error.message === "O  chat já existe"){
+                return { valido: false, value:401 , erro:error.message }
+            }else if(error.message !== "o chat já existe"){
               return { valido: false, value:400 , erro: `Erro ao criar o chat: ${error.message}` }
             }
           }

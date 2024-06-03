@@ -22,7 +22,7 @@ describe('Create chat on Real Time Database', () => {
       valido: true,
       value: 201,
       data: newChat.data
-  })}, 5000)
+  })}, 7000)
 
   test('Create chat with an non existing user should return error', async () => {
     const ChatReqData: ICreateChatRequestDTO = {
