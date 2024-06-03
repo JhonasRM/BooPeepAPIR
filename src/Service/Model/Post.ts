@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { User } from "./User";
+import { User } from "../Entities/User";
 import { UserOnFirestore } from "./UserOnFireStore";
 export class Post{
     public readonly postId!: string;
@@ -11,12 +11,18 @@ export class Post{
     public status: number;
     public UserID: string;
 
-    constructor(props: Omit<Post, 'postId' | 'createdAt'>, user:UserOnFirestore, id?: string){
+    constructor(props: Omit<Post, 'postId' | 'createdAt' | 'UserID'>, uid: string, id?: string, createdAt?: number){
         this.description = props.description
         // this.image = props.image
         this.createdAt = Date.now();
         this.local = props.local
         this.status = props.status
-        this.UserID = user.uid as string
+        this.UserID = uid as string
+        if(id){
+            this.postId = id
+        }
+        if(createdAt){
+            this.createdAt = createdAt
+        }
     }
 }

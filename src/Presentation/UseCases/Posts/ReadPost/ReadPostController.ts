@@ -6,29 +6,23 @@ export class ReadPostController {
         private readPostUC: ReadPostUC,
     ) { }
 
-    async handle(request: Request, response: Response): Promise<Response> {
-        const { 
-            postId,
-            description,
-            local,
-            status,
-            UserID } = request.body;
-
+    async handle(request: Request, response: Response): Promise<void> {
+        const { postId } = request.params;
         try {
-            const wantedUser = await this.readPostUC.execute({
-                postId,
-                description,
-                local,
-                status,
-                UserID,
-            })
-
-            return response.status(200).json(wantedUser);
+            const wantedPost = await this.readPostUC.execute({postId})
+            if(wantedPost.val === false){
+                throw new Error(wantedPost.erro as string)
+            }
+            response.status(200).json(wantedPost.data);
         } catch (error) {
-            console.error(`Erro: ${error instanceof Error ? error.message : 'desconhecido'}`);
-            const statusCode = error instanceof Error ? 400 : 500;
-            const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-            return response.status(statusCode).send(`Erro: ${errorMessage}`);
+            if(error instanceof Error){
+                if(error.message === 'Postagem não encontrada'){
+                    response.status(404).send(error.message)
+                } else if(error.message !== 'Postagem não encontrada' ){
+                    response.status(400).send(`Erro de requisição: ${error.message}`)
+                }
+            }
+            response.status(500).send(`Erro interno do servidor: ${error}`)
           }
     }
 }

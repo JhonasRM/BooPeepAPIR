@@ -1,6 +1,6 @@
-import { Post } from "./Post";
-import { UserOnAuth } from "./UserOnAuth";
-import { UserOnFirestore } from "./UserOnFireStore";
+import { Post } from "../Model/Post";
+import { UserOnAuth } from "../Model/UserOnAuth";
+import { UserOnFirestore } from "../Model/UserOnFireStore";
 
 export class User{
     public readonly uid!: string;

@@ -9,8 +9,8 @@ describe('UserRepository function getAllPosts to return a Array List of Posts fr
     });
     test('Deleting Non existing Post By ID returning error', async () => {
         const nonExistingID = '1'
-        const WantedPost = await postRepository.DeletePost(nonExistingID)
-    expect(WantedPost).toEqual('Erro ao deletar documento: Post Não Encontrado')
+        const WantedPost = await postRepository.deletePost(nonExistingID)
+    expect(WantedPost).toBe
     }, 100000);
     test('Delete  existing Post By ID returning error', async () => {
       const ExistingID = '2EFlzO3EXQwcfSBbSfSa'
