@@ -1,15 +1,15 @@
 import { ChatRepository } from "../../../../Service/Repositories/ChatRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { ICreateMessageRequestDTO } from "./CreateMessageDTO";
 import { CreateMessageUC } from "./CreateMessageUC";
 
 describe('Create chat on Real Time Database', () => {
     let createMessageUC: CreateMessageUC
-    let userFireStore: UsersFireStoreRepository
+    let userFireStore: UserFireStoreRepository
     let chatRepository: ChatRepository
   beforeAll(() => {
     chatRepository = new ChatRepository()
-    userFireStore = new UsersFireStoreRepository()
+    userFireStore = new UserFireStoreRepository()
     createMessageUC = new CreateMessageUC(chatRepository, userFireStore)
   });
 

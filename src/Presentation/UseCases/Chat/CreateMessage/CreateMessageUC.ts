@@ -1,18 +1,18 @@
 import { Message } from "../../../../Service/Model/Message";
 import { ChatRepository } from "../../../../Service/Repositories/ChatRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { ICreateMessageRequestDTO } from "./CreateMessageDTO";
 
 export class CreateMessageUC {
     constructor(
         private chatRepository: ChatRepository, 
-        private usersFireStoreRepository: UsersFireStoreRepository
+        private usersFireStoreRepository: UserFireStoreRepository
     ) { }
 
     async execute(data: ICreateMessageRequestDTO): Promise<{ valido: boolean, value?: number, erro?: string, data?: string }> {
         try {
-            const user = await this.usersFireStoreRepository.findByUID(data.uid)
-            if (user.valido === false) {
+            const user = await this.usersFireStoreRepository.getUser(data.uid)
+            if (user.val === false) {
                 throw new Error('O Usuário não foi encontrado')
             } 
             const newMessage: Message = new Message(
