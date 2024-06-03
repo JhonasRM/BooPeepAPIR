@@ -1,20 +1,21 @@
 import { User } from "../../../../Service/Entities/User";
+import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 
 export class ReadAllUsersUC {
-    constructor(private usersAuthRepository: UsersAuthRepository, private usersFireStoreRepository: UsersFireStoreRepository) { }
-    async execute(): Promise<{ valido: boolean; value?: number; erro?: string; data?: User[] }>  {
+    constructor(private userAuthRepository: UserAuthRepository, private userFireStoreRepository: UserFireStoreRepository) { }
+    async execute(): Promise<IReturnAdapter>  {
         try {
-            const wantedUsers = await this.usersAuthRepository.getAllUsers()
-            const wantedUsersData = await this.usersFireStoreRepository.getAllUsers()
-            if (wantedUsers.valido === false || wantedUsersData.valido === false) {
-              return { valido: false, value: 404, erro: "Not Found" };
+            const wantedUsers = await this.userAuthRepository.getUsers()
+            const wantedUsersData = await this.userFireStoreRepository.getUsers()
+            if (wantedUsers.val === false || wantedUsersData.val === false) {
+              throw new Error(wantedUsers.erro)
             }
-            const ArrayUsers = wantedUsers.value as UserOnAuth[]
-            const ArrayUsersData = wantedUsersData.value as UserOnFirestore[]
+            const ArrayUsers = wantedUsers.data as UserOnAuth[]
+            const ArrayUsersData = wantedUsersData.data as UserOnFirestore[]
             const users: User[] = []
             ArrayUsers.forEach(userAuth => {
               ArrayUsersData.forEach(userFireStore => {
@@ -23,11 +24,14 @@ export class ReadAllUsersUC {
               });
             });
             if(users[0] === undefined){
-              return { valido: false, value: 400, erro:"Bad Request"}
+              throw new Error('Nenhum usuário foi encontrado')
             }
-            return { valido: true, value: 200, data: users as User[] };
+            return { val: true, data: users as User[] };
           } catch (error) {
-            return { valido: false, value: 500, erro: "Internal Server Error" };
+            if(error instanceof Error){
+              return { val: false, erro: error.message}
+            }
+            return { val: false, erro: "Internal Server Error" };
           }
     }
 }

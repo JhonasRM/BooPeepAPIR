@@ -1,19 +1,19 @@
 import { DocumentSnapshot } from "firebase-admin/firestore";
-import { Post } from "./Post";
+import { decrypt, encrypt } from "../../utils/encryption";
 
 export class UserOnFirestore{
     public readonly uid?: string 
 
-    public posts!: Post[];
-    public age!: number;
+    public postsID!: string[];
+    public chatID!: string;
 
-    constructor(props: Omit<UserOnFirestore, 'posts'|'age' | 'uid'>,uid?: string, posts?: Post[], age?: number){
-        this.posts = []
+    constructor(uid?: string, posts?: string[], chatID?: string){
+        this.postsID = []
         if(posts){
-            this.posts = posts
+            this.postsID = posts
         }
-        if(age){
-            this.age = age
+        if(chatID){
+            this.chatID = chatID
         }
         if(uid){
             this.uid = uid
@@ -22,7 +22,30 @@ export class UserOnFirestore{
     static fromDocumentSnapshot(snapshot: DocumentSnapshot): UserOnFirestore {
         const data = snapshot.data();
         const uid = snapshot.id;
-        const { posts, age } = data as UserOnFirestore;
-        return new UserOnFirestore({},uid, posts, age);
+        const { postsID, chatID } = data as UserOnFirestore;
+        return new UserOnFirestore(uid, postsID, chatID);
     }
+
+    encryptUser(uid: string, postID: string[], chatID: string){
+        const encryptedUID = encrypt(uid)
+        const encryptedPostsID: string[] = []
+        postID.forEach(ID => {
+            const IDtoEncrypt = encrypt(ID)
+            encryptedPostsID.push(IDtoEncrypt)
+        });
+        const encryptedChatID = encrypt(chatID)
+        return new UserOnFirestore(encryptedUID, encryptedPostsID, encryptedChatID)
+    }
+
+    decryptUser(uid: string, postID: string[], chatID: string){
+        const UID = decrypt(uid)
+        const PostsID: string[] = []
+        postID.forEach(ID => {
+            const IDtoDecrypt = decrypt(ID)
+            PostsID.push(IDtoDecrypt)
+        });
+        const ChatID = decrypt(chatID)
+        return new UserOnFirestore(UID, PostsID,ChatID)
+    }
+    
 }

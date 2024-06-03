@@ -10,8 +10,8 @@ import { DeletePostUC } from '../UseCases/Posts/DeletePost/DeletePostUC';
 import { DeletePostController } from '../UseCases/Posts/DeletePost/DeletePostController';
 import { ReadAllPostController } from '../UseCases/Posts/ReadAllPost/ReadAllPostController';
 import { ReadAllPostUC } from '../UseCases/Posts/ReadAllPost/ReadAllPostUC';
-import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
-import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
+import { UsersFireStoreRepository } from '../../Service/Repositories/UserFireStoreRepository';
+import { UsersAuthRepository } from '../../Service/Repositories/UserAuthRepository';
 
 //Create Post
 const router: Router= Router();

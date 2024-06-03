@@ -19,18 +19,18 @@ export class LoginUserController {
         email,
         password
       })
-      if(wantedUser.valido === true){
+      if(wantedUser.val === true){
         response.status(200).json(wantedUser.data)
       }
-      if(wantedUser.valido === false){
+      if(wantedUser.val === false){
         throw new Error(wantedUser.erro)
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        if(error.message === 'Not Found'){
-          response.status(404).send('Erro: este email nao existe ' + error.message);
-        } else if(error.message === 'Unauthorized'){
-          response.status(401).send('Erro: senha incorreta. ' + error.message);
+        if(error.message === 'Usuário não encontrado.'){
+          response.status(404).send('Erro: usuário não encontrado ');
+        } else if(error.message === 'Login não autorizado'){
+          response.status(401).send('Erro: senha incorreta. ');
         } else if(error.message === 'Internal Server Error'){
           response.status(500).send('Erro: erro interno do servidor. ' + error.message);
         }

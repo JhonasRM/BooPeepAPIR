@@ -17,10 +17,10 @@ export class UpdateUserController {
           token: token
         }
     const updatedUser = await this.updateUserUC.execute(updateUser)
-    if(updatedUser.valido === true){
+    if(updatedUser.val === true){
       response.status(200).send('Usuário alterado com sucesso')
     }
-    if(updatedUser.valido === false){
+    if(updatedUser.val === false){
       console.log(updatedUser.erro)
       throw new Error(updatedUser.erro)
     }

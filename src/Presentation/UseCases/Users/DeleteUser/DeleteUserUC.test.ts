@@ -1,5 +1,5 @@
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UsersAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UsersFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { IDeleteUserRequestDTO } from "./DeleteUserDTO";
 import { DeleteUserUC } from "./DeleteUserUC";
 

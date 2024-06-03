@@ -9,18 +9,18 @@ export class ReadAllUsersController {
   async handle(request: Request, response: Response): Promise<void> {
     try {
       const wantedUser = await this.readAllUsersUC.execute();
-      if(wantedUser.valido === true){
+      if(wantedUser.val === true){
         const users = wantedUser.data
         response.status(200).json(users)
       }
-      if(wantedUser.valido === false){
+      if(wantedUser.val === false){
         throw new Error(wantedUser.erro)
       }
     } catch (error) {
       if (error instanceof Error) {
-        if(error.message === 'Not Found'){
-          response.status(404).send('Erro: este email nao existe ' + error.message);
-        }else if(error.message === 'Internal Server Error'){
+        if(error.message === 'Nenhum usuário foi encontrado'){
+          response.status(404).send('Erro: nenhum usuário foi encontrado' + error.message);
+        }else if(error.message !== 'Nenhum usuário foi encontrado'){
           response.status(500).send('Erro: erro interno do servidor. ' + error.message);
         }
       } else {

@@ -26,8 +26,8 @@ export class UpdatePostController {
              response.status(200).send(updatedPost.data);
         } catch (error: unknown) {
             if(error instanceof Error){
-                if(error.message === 'Not Found'){
-                    response.status(404).send('Postagem não encontrada')
+                if(error.message === 'Postagem não encontrada'){
+                    response.status(404).send('Erro: postagem não encontrada')
                 } else if(error.message === 'Bad Request'){
                    response.status(400).send('Erro de requisição: verifique os campos e valores preenchidos')
                 }

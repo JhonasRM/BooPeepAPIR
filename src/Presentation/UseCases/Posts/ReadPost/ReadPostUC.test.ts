@@ -8,12 +8,12 @@ describe('UserRepository function getAllPosts to return a Array List of Posts fr
     });
     test('Find Non existing Post By ID returning error', async () => {
         const nonExistingID = '1'
-        const WantedPost = await postRepository.findByID(nonExistingID)
+        const WantedPost = await postRepository.getPost(nonExistingID)
     expect(WantedPost).toBeNull()
     }, 100000);
     test('Find  existing Post By ID returning error', async () => {
       const ExistingID = '2EFlzO3EXQwcfSBbSfSa'
-      const WantedPost = await postRepository.findByID(ExistingID)
+      const WantedPost = await postRepository.getPost(ExistingID)
       expect(WantedPost).toEqual({
         'description': 'NewPost',
               'local': 'Etec Zona Leste',

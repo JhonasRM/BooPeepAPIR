@@ -1,4 +1,4 @@
-import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter"
+import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter"
 import { Post } from "../../../../Service/Model/Post"
 import { PostRepository } from "../../../../Service/Repositories/PostRepository"
 
@@ -7,7 +7,7 @@ export class ReadAllPostUC {
     constructor(private postRepository: PostRepository){ }
     async execute(): Promise<IReturnAdapter>{
         try {
-            const getAllPosts = await this.postRepository.getAllPosts()
+            const getAllPosts = await this.postRepository.getPosts()
             if (getAllPosts.val === false) {
                 throw new Error(getAllPosts.erro)
             } 
