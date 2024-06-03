@@ -9,7 +9,7 @@ export class CreateMessageUC {
         private usersFireStoreRepository: UsersFireStoreRepository
     ) { }
 
-    async execute(data: ICreateMessageRequestDTO): Promise<{ valido: boolean, value?: number, erro?: string, data?: Message }> {
+    async execute(data: ICreateMessageRequestDTO): Promise<{ valido: boolean, value?: number, erro?: string, data?: string }> {
         try {
             const user = await this.usersFireStoreRepository.findByUID(data.uid)
             if (user.valido === false) {

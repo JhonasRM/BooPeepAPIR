@@ -15,10 +15,10 @@ describe('Create chat on Real Time Database', () => {
 
   test('Create chat with an existing User', async () => {
     const ChatReqData: ICreateMessageRequestDTO = {
-        chatID: "c4a5c7eb-37e7-4472-bda3-15eb2b250dc3",
+        chatID: "8d61971e-d7e4-49dc-bd0d-2d55c5dd9341",
         uid: "AojZJpdXpf2why3SY2Ts",
         displayName: "Jonathan Dias",
-        lastmsg: "Olá"
+        lastmsg: "Tranquilo?nn"
     }
     const newMessage = await createMessageUC.execute(ChatReqData)
     expect(newMessage).toEqual({
