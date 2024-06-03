@@ -1,4 +1,3 @@
-
 import { IReturnAdapter } from "../../../../Service/Interfaces/IReturnAdapter";
 import { Post } from "../../../../Service/Model/Post";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
