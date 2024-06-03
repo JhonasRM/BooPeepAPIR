@@ -3,9 +3,11 @@ import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 import { Chat } from "../Model/Chat";
 import { Message } from "../Model/Message";
 import { User, sendEmailVerification } from "@firebase/auth";
+import { Firestore } from "firebase-admin/firestore";
 export class ChatRepository {
   private realtimedb: Database;
   private path;
+
   constructor() {
     this.realtimedb = AppAdmin.database();
     this.path = this.realtimedb.ref("/chatest");

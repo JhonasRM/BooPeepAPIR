@@ -13,7 +13,7 @@ export class CreateChatUC {
               throw new Error('O Usuário não foi encontrado')
           } 
           const userData = user.value as UserOnFirestore
-          const field = 'chatId'
+          const field = 'chatID'
           if(field in userData){
            throw new Error ("O chat já existe")
         }
@@ -23,6 +23,10 @@ export class CreateChatUC {
           if(setchat.valido === false){
             throw new Error(setchat.erro)  
           }
+          const update = await this.usersFireStoreRepository.update(data.uid, 'chatID', NewChat.chatid)
+          if(update.valido === false){
+            throw new Error('erro ao criar o chat para este usuário')
+          }
           return {
             valido: true, value:201, data:setchat.value
           }
@@ -31,10 +35,10 @@ export class CreateChatUC {
             if(error.message === "O  chat já existe"){
                 return { valido: false, value:401 , erro:error.message }
             }else if(error.message !== "o chat já existe"){
-              return { valido: false, value:400 , erro: `Erro ao criar o chat: ${error.message}` }
+              return { valido: false, value:400 , erro: error.message }
             }
           }
-          return{ valido: false, value:500, erro: `Erro interno do servidor: ${error}` }
+          return{ valido: false, value:500, erro: `erro interno do servidor: ${error}` }
          }
     }
 }
