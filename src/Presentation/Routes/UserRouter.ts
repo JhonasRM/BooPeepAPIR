@@ -72,4 +72,4 @@ const resetpwdController: ResetPwdUserController = new ResetPwdUserController(re
 router
     .route("/resetpwd")
     .post((req: Request, res: Response) => resetpwdController.handle(req, res))
-module.exports = router;
+    module.exports = router;

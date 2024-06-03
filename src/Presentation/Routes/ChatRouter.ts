@@ -30,3 +30,5 @@ router
     .post((req: Request, res: Response) => createChatController.handle(req, res))
     .get((req: Request,  res: Response) => readChatController.handle(req, res))
     .put((req: Request,  res: Response) => createMessageController.handle(req, res))
+
+module.exports = router;
