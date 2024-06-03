@@ -17,9 +17,9 @@ export class ReadMessageUC {
                 Messages.push(newMessage)
             })
             if(Messages.length === 0 || !Message){
-                throw new Error('Não há nenhuma mensagem')
+                throw new Error('Este chat não existe')
             }
-            return { valido: true, value: getMesssages.value}   
+            return { valido: true, value: Messages}   
         } catch (error) {
             if(error instanceof Error){
                 return { valido: false, erro: error.message}

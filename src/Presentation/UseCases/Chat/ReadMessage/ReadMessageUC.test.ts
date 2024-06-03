@@ -13,7 +13,7 @@ describe('Read messages from Real Time Database', () => {
 
     test('Read messages from an existing chat', async () => {
         const ChatReqData: IReadMessageRequestDTO = {
-            chatID: "c4a5c7eb-37e7-4472-bda3-15eb2b250dc3",
+            chatID: "8d61971e-d7e4-49dc-bd0d-2d55c5dd9341",
         };
 
         const Messages = await readMessageUC.execute(ChatReqData);
@@ -33,7 +33,7 @@ describe('Read messages from Real Time Database', () => {
 
         expect(Messages).toEqual({
             valido: false,
-            erro: "A leitura falhou: O Usuário não foi encontrado", // Ajuste esta mensagem conforme o retorno real da sua função
+            erro: "Este chat não existe", // Ajuste esta mensagem conforme o retorno real da sua função
         });
     });
 });

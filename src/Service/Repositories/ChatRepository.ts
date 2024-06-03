@@ -55,38 +55,38 @@ export class ChatRepository {
   async readMessages(
     chatid: string
   ): Promise<{ valido: boolean; value?: Message[]; erro?: string }> {
-    try {
-      const chatRef = this.path.child(`${chatid}/messages/`);
-      const messages: Message[] = [];
-      const snapshot = await chatRef.once("value");
-      const data = snapshot.val();
-
-      if (data) {
-        Object.values(data).forEach((value) => {
-          if (Array.isArray(value)) {
-            value.forEach((item) => {
-              if (
-                typeof item === "object" &&
-                item !== null &&
-                "id" in item &&
-                "text" in item &&
-                "timestamp" in item
-              ) {
-                messages.push(item as Message);
-              }
-            });
-          }
-        });
-      }
-
-      return { valido: true, value: messages };
-    } catch (error) {
-      if (error instanceof Error) {
-        const mensagemErro = error.message;
-        return { valido: false, erro: mensagemErro };
-      } else {
-        return { valido: false, erro: "Erro desconhecido ao ler as mensagens" };
+      try {
+        const chatRef = this.path.child(`${chatid}/messages/`);
+        const messages: Message[] = [];
+        const snapshot = await chatRef.once('value');
+        const data = snapshot.val();
+    
+        if (data) {
+          Object.values(data).forEach((item) => {
+            // Verifica se o item é um objeto Message
+            if (
+              typeof item === 'object' &&
+              item !== null &&
+              'chatID' in item &&
+              'UserID' in item &&
+              'displayName' in item &&
+              'lastmsg' in item &&
+              'dateTime' in item
+            ) {
+              messages.push(item as Message);
+            }
+          });
+        }
+    
+        return { valido: true, value: messages };
+      } catch (error) {
+        if (error instanceof Error) {
+          const mensagemErro = error.message;
+          return { valido: false, erro: mensagemErro };
+        } else {
+          return { valido: false, erro: 'Erro desconhecido ao ler as mensagens' };
+        }
       }
     }
-  }
-}
+      }
+
