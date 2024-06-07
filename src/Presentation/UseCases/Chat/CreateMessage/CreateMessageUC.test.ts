@@ -22,8 +22,7 @@ describe('Create chat on Real Time Database', () => {
     }
     const newMessage = await createMessageUC.execute(ChatReqData)
     expect(newMessage).toEqual({
-      valido: true,
-      value: 201,
+      val: true,
       data: newMessage.data
   })}, 50000)
 
@@ -35,6 +34,6 @@ describe('Create chat on Real Time Database', () => {
         lastmsg: "oi"
     }
     const newMessage = await createMessageUC.execute(ChatReqData)
-    expect(newMessage).toEqual({ valido: false, value: 400, erro: "Erro ao enviar a mensagem: O Usuário não foi encontrado"});
+    expect(newMessage).toEqual({ val: false, erro: "Erro ao enviar a mensagem: O Usuário não foi encontrado"});
   })
   });
