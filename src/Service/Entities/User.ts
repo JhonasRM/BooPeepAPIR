@@ -20,6 +20,9 @@ export class User{
         this.password = '';
         this.emailVerified = userOnAuth.emailVerified;
         // this.photoURL = '';
+        if(userOnAuth.uid  !== undefined){
+            this.uid = userOnAuth.uid
+        }
         this.disabled = userOnAuth.disabled;
         if(userOnFireStore){
             this.postsID = userOnFireStore.postsID

@@ -23,7 +23,6 @@ export class ReadUserUC {
         foundUserAuth.emailVerified,
         foundUserAuth.disabled,
         foundUserAuth.uid
-
       )
       const wantedUserData = await this.userFireStoreRepository.getUser(userAuth.uid as string)
       if (wantedUserData.val === false) {
