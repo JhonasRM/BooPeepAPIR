@@ -18,7 +18,6 @@ export class UpdateUserUC {
                 throw new Error('Usuário não encontrado.')
               }
             const user = userToUpdate.data as UserOnAuth
-            console.log('Auth encontrado')
             const userDataToUpdate = await this.userFireStoreRepository.getUser(user.uid as string)
             if (userDataToUpdate.val === false) {
                 throw new Error('Usuário não encontrado.')
@@ -31,7 +30,6 @@ export class UpdateUserUC {
                         throw new Error(updatedUserAuth.erro)
                     }
                     if(data.fieldToUpdate in userData){
-                        console.log('Entrou no data')
                     const updatedUserData = await this.userFireStoreRepository.update(userData.uid as unknown as string, data.fieldToUpdate, data.newValue)
                     if(updatedUserData.val === false){
                        throw new Error(updatedUserData.erro)

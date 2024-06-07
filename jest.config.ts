@@ -14,7 +14,7 @@ const jestConfig: JestConfigWithTsJest = {
     'src/Presentation/UseCases/Users/DeleteUser/DeleteUserUC.test.ts',
     'src/Presentation/UseCases/Users/ReadAllUsers/ReadAllUserUC.test.ts',
     'src/Presentation/UseCases/Users/ReadUser/ReadUserUC.test.ts',
-    // 'src/Presentation/UseCases/Users/UpdateUser/UpdateUserUC.test.ts',
+    'src/Presentation/UseCases/Users/UpdateUser/UpdateUserUC.test.ts',
     'src/Presentation/UseCases/Users/ResetPwdUser/ResetPwdUserUC.test.ts',
     'src/Presentation/UseCases/Chat/CreateChat/CreateChatUC.test.ts',
     'src/Presentation/UseCases/Chat/CreateMessage/CreateMessageUC.test.ts',
