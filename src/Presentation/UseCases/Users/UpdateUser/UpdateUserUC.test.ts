@@ -28,18 +28,18 @@ describe('Update User feature on usersrepository', () => {
       }
         const updatedUser = await updateUserUC.execute(NotRealUser)
         expect(updatedUser).toEqual({
-            valido: false, value: 404, erro: "Not Found" 
+            val: false, erro: "Usuário não encontrado." 
         })
     }, 10000)
 
     it('Update User with an existing email', async () => {
       const RealUser: IUpdateUserRequestDTO = {
-        email: 'luis@trabalhos.com',
+        email: 'jonathan@gmail.com',
         fieldToUpdate: 'email',
-        newValue: 'jhons@trabalhos.com',
+        newValue: 'dias44520@gmail.com',
       }
         const updatedUser = await updateUserUC.execute(RealUser)
-        expect(updatedUser).toEqual({ valido: true, value: 200})
+        expect(updatedUser).toEqual({ val: true, data: 'Usuário alterado com sucesso.'})
 
     }, 10000)
 })

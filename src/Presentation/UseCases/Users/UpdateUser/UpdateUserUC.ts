@@ -13,30 +13,31 @@ export class UpdateUserUC {
 
     async execute(data: IUpdateUserRequestDTO): Promise<IReturnAdapter> {
         try {
-            console.log(data)
             const userToUpdate = await this.userAuthRepository.getUser(data.email);
             if (userToUpdate.val === false) {
-                throw new Error(userToUpdate.erro)
+                throw new Error('Usuário não encontrado.')
               }
             const user = userToUpdate.data as UserOnAuth
+            console.log('Auth encontrado')
             const userDataToUpdate = await this.userFireStoreRepository.getUser(user.uid as string)
             if (userDataToUpdate.val === false) {
-                throw new Error(userDataToUpdate.erro)
+                throw new Error('Usuário não encontrado.')
               }
             const userData = userDataToUpdate.data as UserOnFirestore
-            if(data.fieldToUpdate in user || data.fieldToUpdate in userData){
+            if(data.fieldToUpdate in user){
 
                     const updatedUserAuth =  await this.userAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
                     if(updatedUserAuth.val === false){
                         throw new Error(updatedUserAuth.erro)
                     }
+                    if(data.fieldToUpdate in userData){
+                        console.log('Entrou no data')
                     const updatedUserData = await this.userFireStoreRepository.update(userData.uid as unknown as string, data.fieldToUpdate, data.newValue)
                     if(updatedUserData.val === false){
                        throw new Error(updatedUserData.erro)
-                      
                     }
-                    const updatedUser = new User(updatedUserAuth.data as UserOnAuth, updatedUserData.data as UserOnFirestore)
-                        return { val: true, data: 200 };
+                }
+                        return { val: true, data: 'Usuário alterado com sucesso.'};
                     }
                     throw new Error('O campo mencionado para ser atualizado não existe')
             }catch(error){

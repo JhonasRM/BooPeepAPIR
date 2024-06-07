@@ -127,20 +127,15 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
       const userSnapshot = await userRef.get();
 
       if (!userSnapshot.exists) {
-        throw new Error("Documento não encontrado.");
+        throw new Error("Usuário não encontrado.");
       }
 
       const userData = userSnapshot.data();
       if (!userData || !userData.hasOwnProperty(fieldToUpdate)) {
-        throw new Error(`O campo '${fieldToUpdate}' não existe no documento.`);
+        throw new Error('O campo mencionado para ser atualizado não existe');
       }
 
       const previousValue = userData[fieldToUpdate];
-      if (fieldToUpdate === "password") {
-        if (previousValue === newValue) {
-          throw new Error("A nova senha não pode ser igual a anterior");
-        }
-      }
       if (typeof previousValue !== typeof newValue) {
         throw new Error(
           `O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`

@@ -160,12 +160,10 @@ export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collec
           case 'password':
             await confirmPasswordReset(this.Authapp, token as string, newdata)
           default:
-            throw new Error(`Campo '${fieldToUpdate}' não é suportado para atualização.`);
+            throw new Error('O campo mencionado para ser atualizado não existe');
         }
 
-        const updatedUser = await this.auth.getUser(uid)
-        const user = new UserOnAuth(updatedUser.displayName as string, updatedUser.email as string, '', updatedUser.emailVerified, updatedUser.disabled, updatedUser.uid)
-        return { val: true, data: user };
+        return { val: true, data: 'Usuário alterado com sucesso.' };
       } catch (error) {
         console.error('Erro ao atualizar usuário:', error);
         if(error instanceof Error){
