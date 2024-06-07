@@ -10,10 +10,17 @@ export class ReadAllUsersUC {
     async execute(): Promise<IReturnAdapter>  {
         try {
             const wantedUsers = await this.userAuthRepository.getUsers()
-            const wantedUsersData = await this.userFireStoreRepository.getUsers()
-            if (wantedUsers.val === false || wantedUsersData.val === false) {
+            if (wantedUsers.val === false) {
               throw new Error(wantedUsers.erro)
             }
+            console.log('Auth encontrado')
+            const wantedUsersData = await this.userFireStoreRepository.getUsers()
+            if(wantedUsersData.val === false){
+              console.log(wantedUsersData.erro)
+              throw new Error(wantedUsersData.erro)
+            }
+            console.log('Data encontrada')
+            console.log('Usuários encontrados')
             const ArrayUsers = wantedUsers.data as UserOnAuth[]
             const ArrayUsersData = wantedUsersData.data as UserOnFirestore[]
             const users: User[] = []

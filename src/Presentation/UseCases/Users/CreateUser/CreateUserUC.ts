@@ -30,7 +30,7 @@ export class CreateUserUC {
             if(error instanceof Error){
                 return { val: false, erro: error.message}
             }
-            return { val: false, erro: 'Internal Server Error'}
+            return { val: false, erro: `Internal Server Error: ${error}` }
         }
        
     }

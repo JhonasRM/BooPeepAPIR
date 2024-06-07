@@ -9,6 +9,8 @@ export class UserOnFirestore{
 
     constructor(uid?: string, posts?: string[], chatID?: string){
         this.postsID = []
+        this.uid = ''
+        this.chatID = ''
         if(posts){
             this.postsID = posts
         }
@@ -26,26 +28,32 @@ export class UserOnFirestore{
         return new UserOnFirestore(uid, postsID, chatID);
     }
 
-    encryptUser(uid: string, postID: string[], chatID: string){
+    encryptUser(uid: string, postID: string[], chatID?: string){
         const encryptedUID = encrypt(uid)
         const encryptedPostsID: string[] = []
         postID.forEach(ID => {
             const IDtoEncrypt = encrypt(ID)
             encryptedPostsID.push(IDtoEncrypt)
         });
+        if(chatID){
         const encryptedChatID = encrypt(chatID)
         return new UserOnFirestore(encryptedUID, encryptedPostsID, encryptedChatID)
     }
+    return new UserOnFirestore(encryptedUID, encryptedPostsID)
+    }
 
-    decryptUser(uid: string, postID: string[], chatID: string){
+    decryptUser(uid: string, postID: string[], chatID?: string){
         const UID = decrypt(uid)
         const PostsID: string[] = []
         postID.forEach(ID => {
             const IDtoDecrypt = decrypt(ID)
             PostsID.push(IDtoDecrypt)
         });
+        if(chatID){
         const ChatID = decrypt(chatID)
         return new UserOnFirestore(UID, PostsID,ChatID)
+    }
+    return new UserOnFirestore(UID, PostsID)
     }
     
 }

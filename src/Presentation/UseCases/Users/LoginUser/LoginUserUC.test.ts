@@ -25,7 +25,7 @@ describe('UserRepository', () => {
       }
       const user = await loginUserUC.execute(login)
       expect(user).toEqual({
-        valido: false, value: 404, erro: "Not Found"
+        val: false, erro: "Usuário não encontrado."
       })
     }, 100000);
 
@@ -38,7 +38,7 @@ describe('UserRepository', () => {
         
       }
       const user = await loginUserUC.execute(login)
-      expect(user).toEqual({ valido: false, value: 401, erro: "Unauthorized" })
+      expect(user).toEqual({ val: false,  erro: "Login não autorizado." })
     }, 50000)
 
     test('ReadUser(login) should return an existing user', async () => {
@@ -50,6 +50,6 @@ describe('UserRepository', () => {
         
       }
       const user = await loginUserUC.execute(login)
-      expect(user).toEqual({ valido: true, value: 200, data: user.data})
+      expect(user).toEqual({ val: true,  data: user.data})
     })
   })

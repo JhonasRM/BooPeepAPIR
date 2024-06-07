@@ -16,36 +16,35 @@ export class UpdateUserUC {
             console.log(data)
             const userToUpdate = await this.userAuthRepository.getUser(data.email);
             if (userToUpdate.val === false) {
-                return { val: false, erro: "Not Found" };
+                throw new Error(userToUpdate.erro)
               }
             const user = userToUpdate.data as UserOnAuth
             const userDataToUpdate = await this.userFireStoreRepository.getUser(user.uid as string)
             if (userDataToUpdate.val === false) {
-                return { val: false, erro: "Not Found" };
+                throw new Error(userDataToUpdate.erro)
               }
             const userData = userDataToUpdate.data as UserOnFirestore
             if(data.fieldToUpdate in user || data.fieldToUpdate in userData){
 
                     const updatedUserAuth =  await this.userAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
                     if(updatedUserAuth.val === false){
-                        if(updatedUserAuth.erro === 'Unauthorized'){
-                            return { val: false, erro: 'Unauthorized'}
-                        }
-                        console.log(updatedUserAuth.erro)
-                        return { val: false, erro: "Bad Request" };
+                        throw new Error(updatedUserAuth.erro)
                     }
                     const updatedUserData = await this.userFireStoreRepository.update(userData.uid as unknown as string, data.fieldToUpdate, data.newValue)
                     if(updatedUserData.val === false){
-                        console.log(updatedUserData.erro)
-                        return { val: false, erro: 'Bad Request'}
+                       throw new Error(updatedUserData.erro)
+                      
                     }
                     const updatedUser = new User(updatedUserAuth.data as UserOnAuth, updatedUserData.data as UserOnFirestore)
                         return { val: true, data: 200 };
                     }
-                    return { val: false, erro: "O campo informado não existe no banco"}
+                    throw new Error('O campo mencionado para ser atualizado não existe')
             }catch(error){
         console.log(error)
-        return { val: false, erro: "Internal Server Error" };
+        if(error instanceof Error){
+            return { val: false, erro: error.message}
+        }
+        return { val: false, erro: `Erro interno do servidor: ${error}` };
     }
 }
 }

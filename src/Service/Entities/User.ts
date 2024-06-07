@@ -11,16 +11,20 @@ export class User{
     public emailVerified: boolean;
     // public photoURL: string;
     public disabled: boolean;
-    public posts!: Post[];
-    public age!: number;
+    public postsID!: string[];
+    public chatID!: string;
 
-    constructor(userOnAuth: UserOnAuth, userOnFireStore: UserOnFirestore){
+    constructor(userOnAuth: UserOnAuth, userOnFireStore?: UserOnFirestore){
         this.displayName = userOnAuth.displayName;
         this.email = userOnAuth.email;
         this.password = '';
         this.emailVerified = userOnAuth.emailVerified;
         // this.photoURL = '';
         this.disabled = userOnAuth.disabled;
+        if(userOnFireStore){
+            this.postsID = userOnFireStore.postsID
+            this.chatID = userOnFireStore.chatID
+        }
     }
 
     destructuring(){
@@ -31,10 +35,7 @@ export class User{
           this.emailVerified,
           this.disabled
         )
-        const userOnData: UserOnFirestore = new UserOnFirestore({
-            email: this.email,
-            password: this.password,
-        }, this.uid, this.posts, this.age)
+        const userOnData: UserOnFirestore = new UserOnFirestore(this.uid, this.postsID, this.chatID)
         return {userOnAuth, userOnData}
     }
 }

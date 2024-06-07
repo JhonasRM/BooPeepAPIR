@@ -1,20 +1,20 @@
 
-import { UsersAuthRepository } from "../../../../Service/Repositories/UserAuthRepository"
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository"
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository"
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository"
 import { IUpdateUserRequestDTO } from "./UpdateUserDTO"
 import { UpdateUserUC } from "./UpdateUserUC"
 
 describe('Update User feature on usersrepository', () => {
-    let UserAuth: UsersAuthRepository
-    let UserFire: UsersFireStoreRepository
+    let UserAuth: UserAuthRepository
+    let UserFire: UserFireStoreRepository
     let updateUserUC: UpdateUserUC
     let NotRealUser: IUpdateUserRequestDTO
     let RealUser: IUpdateUserRequestDTO
     let expectedObject: any
 
     beforeAll(() => {
-      UserAuth = new UsersAuthRepository()
-      UserFire = new UsersFireStoreRepository()
+      UserAuth = new UserAuthRepository()
+      UserFire = new UserFireStoreRepository()
 
         updateUserUC = new UpdateUserUC(UserAuth, UserFire)
         
