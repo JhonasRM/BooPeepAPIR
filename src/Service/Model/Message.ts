@@ -1,5 +1,3 @@
-import { User } from "./User";
-
 export class Message{
     public readonly chatID: string;
     public readonly messageID: string

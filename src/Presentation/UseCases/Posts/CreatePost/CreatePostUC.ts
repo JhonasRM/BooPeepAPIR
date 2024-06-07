@@ -8,9 +8,9 @@ import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRep
 import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 export class CreatePostUC {
     constructor(private postRepository: PostRepository, private usersFireStoreRepository: UserFireStoreRepository, private usersAuthRepository: UserAuthRepository) { }
-    async execute(data: ICreatePostRequestDTO, email: string): Promise<IReturnAdapter>{
+    async execute(data: ICreatePostRequestDTO): Promise<IReturnAdapter>{
         try {
-            const userAuth = await this.usersAuthRepository.getUser(email)
+            const userAuth = await this.usersFireStoreRepository.getUser(data.UserID)
         if(userAuth.val === false){
             throw new Error('Usuário não encontrado')
         }

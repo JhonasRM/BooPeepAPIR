@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ReadMessageUC } from "./ReadMessageUC";
 import { Chat } from "../../../../Service/Model/Chat";
 import { IReadMessageRequestDTO } from "./ReadMessageDTO";
+import { Message } from "../../../../Service/Model/Message";
 
 export class ReadMessageController {
   constructor(private readMessageUC: ReadMessageUC) {}
@@ -19,10 +20,10 @@ export class ReadMessageController {
       };
       const getChat = await this.readMessageUC.execute(readDTO);
 
-      if (!getChat.valido) {
+      if (getChat.val === false) {
         throw new Error(getChat.erro);
       }
-      const chats: Chat[] = getChat.value as unknown as Chat[];
+      const chats: Message[] = getChat.data as unknown as Message[];
 
       response.status(200).json(chats);
     } catch (error) {
