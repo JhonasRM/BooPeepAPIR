@@ -1,16 +1,17 @@
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { CreateUserRequestDTO } from "./CreateUserDTO";
 import { CreateUserUC } from "./CreateUserUC";
 
 describe('UserRepository', () => {
-  let usersA: UsersAuthRepository
-  let usersF: UsersFireStoreRepository
+  let usersA: UserAuthRepository
+  let usersF: UserFireStoreRepository
   let createUserUC: CreateUserUC
 
   beforeAll(() => {
-    usersA = new UsersAuthRepository()
-    usersF = new UsersFireStoreRepository()
+    usersA = new UserAuthRepository()
+    usersF = new UserFireStoreRepository()
     createUserUC = new CreateUserUC(usersA, usersF)
   });
 
@@ -22,8 +23,7 @@ describe('UserRepository', () => {
     )
     const NewUser = await createUserUC.execute(UserData)
     expect(NewUser).toEqual({
-      valido: true,
-      value: 201,
+      val: true,
       data: NewUser.data
   })}, 50000)
 
@@ -35,6 +35,6 @@ describe('UserRepository', () => {
       password: '123asd789',}
  )
     const NewUser = await createUserUC.execute(UserData)
-    expect(NewUser).toEqual({ valido: false, value: 401, erro: 'Unauthorized'});
+    expect(NewUser).toEqual({ val: false, erro: "Este email já está cadastrado"});
   })
   });

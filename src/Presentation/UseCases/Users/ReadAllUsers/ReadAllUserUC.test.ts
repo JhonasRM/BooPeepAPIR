@@ -1,15 +1,16 @@
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { ReadAllUsersUC } from "./ReadAllUserUC";
 
 describe('UserRepository function getAllUsers to return a Array List of Users from Firebase', () => {
-    let userA: UsersAuthRepository;
-    let userF: UsersFireStoreRepository;
+    let userA: UserAuthRepository;
+    let userF: UserFireStoreRepository;
     let readalluseruc: ReadAllUsersUC;
 
     beforeAll(() => {
-        userA = new UsersAuthRepository();
-        userF = new UsersFireStoreRepository();
+        userA = new UserAuthRepository();
+        userF = new UserFireStoreRepository();
         readalluseruc = new ReadAllUsersUC(userA, userF)
 
     });

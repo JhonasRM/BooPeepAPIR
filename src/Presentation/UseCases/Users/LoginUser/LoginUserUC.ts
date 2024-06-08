@@ -1,37 +1,41 @@
 
 import { User } from "../../../../Service/Entities/User";
+import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { ILoginUserRequestDTO } from "./LoginUserDTO";
 export class LoginUserUC {
-  constructor(private usersAuthRepository: UsersAuthRepository, private usersFireStoreRepository: UsersFireStoreRepository) {}
+  constructor(private userAuthRepository: UserAuthRepository, private userFireStoreRepository: UserFireStoreRepository) {}
   async execute(
     data: ILoginUserRequestDTO
-  ): Promise<{ valido: boolean; value?: number; erro?: string; data?: User }> {
+  ): Promise<IReturnAdapter> {
     try {
-      const wantedUser = await this.usersAuthRepository.findByEmail(data.email);
-      if (wantedUser.valido === false) {
-        return { valido: false, value: 404, erro: "Not Found" };
+      const wantedUser = await this.userAuthRepository.getUser(data.email);
+      if (wantedUser.val === false) {
+        throw new Error('Usuário não encontrado.')
       }
-      const userAuth = wantedUser.value as UserOnAuth
-      const loginUserData = await this.usersFireStoreRepository.findByUID(userAuth.uid as string)
-      if(loginUserData.valido === false){
-        throw new Error()
+      const userAuth = wantedUser.data as UserOnAuth
+      const wantedUserData = await this.userFireStoreRepository.getUser(userAuth.uid as string)
+      if(wantedUserData.val === false){
+        throw new Error('Usuário não encontrado.')
       }
-      const loginUserAuth = await this.usersAuthRepository.loginOnAuth(data.email, data.password)
-      if ( loginUserAuth.valido === false) {
-        console.log(loginUserAuth.erro)
-        return { valido: false, value: 401, erro: 'Unauthorized' };
+      const loginUserAuth = await this.userAuthRepository.loginOnAuth(data.email, data.password)
+      if ( loginUserAuth.val === false) {
+        throw new Error('Login não autorizado.')
       }
-      const userOnAuth = loginUserAuth.value as UserOnAuth
-      const userOnFirestore = loginUserData.value as UserOnFirestore
+      const userOnAuth = loginUserAuth.data as UserOnAuth
+      const userOnFirestore = wantedUserData.data as UserOnFirestore
       const user: User = new User(userOnAuth, userOnFirestore)
-      return { valido: true, value: 200, data: user};
+      console.log(user)
+      return { val: true, data: user};
     } catch (error) {
+      if(error instanceof Error){
+        return { val: false, erro: error.message}
+      }
       console.log(error)
-      return { valido: false, value: 500, erro: `Internal Server Error: ${error}` };
+      return { val: false, erro: `Internal Server Error: ${error}` };
     }
   }
 }

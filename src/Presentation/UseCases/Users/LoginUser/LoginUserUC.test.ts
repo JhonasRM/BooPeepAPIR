@@ -1,18 +1,18 @@
 import * as admin from "firebase-admin";
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { LoginUserUC } from "./LoginUserUC";
 import { ILoginUserRequestDTO } from "./LoginUserDTO";
 describe('UserRepository', () => {
-    let usersAuthRepository: UsersAuthRepository;
-    let userFireStore: UsersFireStoreRepository
+    let userAuthRepository: UserAuthRepository;
+    let userFireStore: UserFireStoreRepository
     let loginUserUC: LoginUserUC;
     let authLoginApp: any
 
     beforeAll(() => {
-      usersAuthRepository = new UsersAuthRepository();
-      userFireStore = new UsersFireStoreRepository()
-      loginUserUC = new LoginUserUC(usersAuthRepository, userFireStore) 
+      userAuthRepository = new UserAuthRepository();
+      userFireStore = new UserFireStoreRepository()
+      loginUserUC = new LoginUserUC(userAuthRepository, userFireStore) 
     });
   
     test('VerifyWPassword should return null for non-existing email', async () => {
@@ -25,7 +25,7 @@ describe('UserRepository', () => {
       }
       const user = await loginUserUC.execute(login)
       expect(user).toEqual({
-        valido: false, value: 404, erro: "Not Found"
+        val: false, erro: "Usuário não encontrado."
       })
     }, 100000);
 
@@ -38,7 +38,7 @@ describe('UserRepository', () => {
         
       }
       const user = await loginUserUC.execute(login)
-      expect(user).toEqual({ valido: false, value: 401, erro: "Unauthorized" })
+      expect(user).toEqual({ val: false,  erro: "Login não autorizado." })
     }, 50000)
 
     test('ReadUser(login) should return an existing user', async () => {
@@ -50,6 +50,6 @@ describe('UserRepository', () => {
         
       }
       const user = await loginUserUC.execute(login)
-      expect(user).toEqual({ valido: true, value: 200, data: user.data})
+      expect(user).toEqual({ val: true,  data: user.data})
     })
   })

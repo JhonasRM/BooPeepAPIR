@@ -10,16 +10,16 @@ import { DeletePostUC } from '../UseCases/Posts/DeletePost/DeletePostUC';
 import { DeletePostController } from '../UseCases/Posts/DeletePost/DeletePostController';
 import { ReadAllPostController } from '../UseCases/Posts/ReadAllPost/ReadAllPostController';
 import { ReadAllPostUC } from '../UseCases/Posts/ReadAllPost/ReadAllPostUC';
-import { UsersFireStoreRepository } from '../../Service/Repositories/UsersFireStoreRepository';
-import { UsersAuthRepository } from '../../Service/Repositories/UsersAuthRepository';
+import { UserFireStoreRepository } from '../../Service/Repositories/UserFireStoreRepository';
+import { UserAuthRepository } from '../../Service/Repositories/UserAuthRepository';
 
 //Create Post
 const router: Router= Router();
 
-const usersAuthRepository: UsersAuthRepository = new UsersAuthRepository()
-const usersFireStoreRepository: UsersFireStoreRepository = new UsersFireStoreRepository()
+const userAuthRepository: UserAuthRepository = new UserAuthRepository()
+const userFireStoreRepository: UserFireStoreRepository = new UserFireStoreRepository()
 const postRepository: PostRepository = new PostRepository()
-const createPostUC: CreatePostUC = new CreatePostUC(postRepository, usersFireStoreRepository, usersAuthRepository)
+const createPostUC: CreatePostUC = new CreatePostUC(postRepository, userFireStoreRepository, userAuthRepository)
 const createPostController: CreatePostController = new CreatePostController(createPostUC)
 
 //Read Post

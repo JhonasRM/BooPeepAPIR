@@ -1,15 +1,15 @@
 import { ChatRepository } from "../../../../Service/Repositories/ChatRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { ICreateMessageRequestDTO } from "./CreateMessageDTO";
 import { CreateMessageUC } from "./CreateMessageUC";
 
 describe('Create chat on Real Time Database', () => {
     let createMessageUC: CreateMessageUC
-    let userFireStore: UsersFireStoreRepository
+    let userFireStore: UserFireStoreRepository
     let chatRepository: ChatRepository
   beforeAll(() => {
     chatRepository = new ChatRepository()
-    userFireStore = new UsersFireStoreRepository()
+    userFireStore = new UserFireStoreRepository()
     createMessageUC = new CreateMessageUC(chatRepository, userFireStore)
   });
 
@@ -22,8 +22,7 @@ describe('Create chat on Real Time Database', () => {
     }
     const newMessage = await createMessageUC.execute(ChatReqData)
     expect(newMessage).toEqual({
-      valido: true,
-      value: 201,
+      val: true,
       data: newMessage.data
   })}, 50000)
 
@@ -35,6 +34,6 @@ describe('Create chat on Real Time Database', () => {
         lastmsg: "oi"
     }
     const newMessage = await createMessageUC.execute(ChatReqData)
-    expect(newMessage).toEqual({ valido: false, value: 400, erro: "Erro ao enviar a mensagem: O Usuário não foi encontrado"});
+    expect(newMessage).toEqual({ val: false, erro: "Erro ao enviar a mensagem: O Usuário não foi encontrado"});
   })
   });

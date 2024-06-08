@@ -17,10 +17,10 @@ describe('Read messages from Real Time Database', () => {
         };
 
         const Messages = await readMessageUC.execute(ChatReqData);
-        console.log(Messages.value)
+        console.log(Messages.data)
         expect(Messages).toEqual({
-            valido: true,
-            value: expect.any(Array),
+            val: true,
+            data: expect.any(Array),
         });
     }, 50000);
 
@@ -32,7 +32,7 @@ describe('Read messages from Real Time Database', () => {
         const Messages = await readMessageUC.execute(ChatReqData);
 
         expect(Messages).toEqual({
-            valido: false,
+            val: false,
             erro: "Este chat não existe", // Ajuste esta mensagem conforme o retorno real da sua função
         });
     });

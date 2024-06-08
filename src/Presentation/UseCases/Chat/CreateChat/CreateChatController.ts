@@ -19,7 +19,7 @@ export class CreateChatController {
         }
         try {
             const newChat = await this.createChatUC.execute(ChatData)
-            if(newChat.valido === false){
+            if(newChat.val === false){
                 throw new Error(newChat.erro)
             }
             response.status(201).send(newChat.data);

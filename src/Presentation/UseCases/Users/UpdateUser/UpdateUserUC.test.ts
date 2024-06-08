@@ -1,20 +1,20 @@
 
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository"
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository"
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository"
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository"
 import { IUpdateUserRequestDTO } from "./UpdateUserDTO"
 import { UpdateUserUC } from "./UpdateUserUC"
 
 describe('Update User feature on usersrepository', () => {
-    let UserAuth: UsersAuthRepository
-    let UserFire: UsersFireStoreRepository
+    let UserAuth: UserAuthRepository
+    let UserFire: UserFireStoreRepository
     let updateUserUC: UpdateUserUC
     let NotRealUser: IUpdateUserRequestDTO
     let RealUser: IUpdateUserRequestDTO
     let expectedObject: any
 
     beforeAll(() => {
-      UserAuth = new UsersAuthRepository()
-      UserFire = new UsersFireStoreRepository()
+      UserAuth = new UserAuthRepository()
+      UserFire = new UserFireStoreRepository()
 
         updateUserUC = new UpdateUserUC(UserAuth, UserFire)
         
@@ -28,18 +28,18 @@ describe('Update User feature on usersrepository', () => {
       }
         const updatedUser = await updateUserUC.execute(NotRealUser)
         expect(updatedUser).toEqual({
-            valido: false, value: 404, erro: "Not Found" 
+            val: false, erro: "Usuário não encontrado." 
         })
     }, 10000)
 
     it('Update User with an existing email', async () => {
       const RealUser: IUpdateUserRequestDTO = {
-        email: 'luis@trabalhos.com',
+        email: 'jonathan@gmail.com',
         fieldToUpdate: 'email',
-        newValue: 'jhons@trabalhos.com',
+        newValue: 'dias44520@gmail.com',
       }
         const updatedUser = await updateUserUC.execute(RealUser)
-        expect(updatedUser).toEqual({ valido: true, value: 200})
+        expect(updatedUser).toEqual({ val: true, data: 'Usuário alterado com sucesso.'})
 
     }, 10000)
 })

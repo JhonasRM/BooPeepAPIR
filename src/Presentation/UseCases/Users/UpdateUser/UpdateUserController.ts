@@ -17,20 +17,20 @@ export class UpdateUserController {
           token: token
         }
     const updatedUser = await this.updateUserUC.execute(updateUser)
-    if(updatedUser.valido === true){
+    if(updatedUser.val === true){
       response.status(200).send('Usuário alterado com sucesso')
     }
-    if(updatedUser.valido === false){
+    if(updatedUser.val === false){
       console.log(updatedUser.erro)
       throw new Error(updatedUser.erro)
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-      if(error.message === 'Not Found'){
-        response.status(401).send('Erro: email nao enconrtado. ' + error.message);
-      } else if(error.message === 'Bad Request'){
+      if(error.message === 'Usuário não encontrado.'){
+        response.status(404).send('Erro: ' + error.message);
+      } else if(error.message  === 'O campo mencionado para ser atualizado não existe'){
         response.status(400).send('Erro: erro de requisiçao. ' + error.message);
-      } else if(error.message === 'Internal Server Error'){
+      } else if(error.message !== 'Usuário não encontrado.' || 'O campo mencionado para ser atualizado não existe'){
         response.status(500).send('Erro: erro interno do servidor. ' + error.message);
       }
     } else {

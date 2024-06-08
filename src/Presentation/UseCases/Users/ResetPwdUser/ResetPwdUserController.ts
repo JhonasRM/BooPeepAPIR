@@ -11,7 +11,7 @@ export class ResetPwdUserController {
     };
     try {
       const resetPassword = await this.resetpwdUC.execute(data);
-      if (resetPassword.valido === false) {
+      if (resetPassword.val === false) {
         throw new Error(resetPassword.erro);
       }
       const token = resetPassword.data as string

@@ -1,16 +1,16 @@
-import { UsersAuthRepository } from "../../../../Service/Repositories/UsersAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UsersFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { IReadUserRequestDTO } from "./ReadUserDTO";
 import { ReadUserUC } from "./ReadUserUC";
 
 describe('UserRepository', () => {
-    let usersA: UsersAuthRepository
-    let userF: UsersFireStoreRepository
+    let usersA: UserAuthRepository
+    let userF: UserFireStoreRepository
     let readUserUC: ReadUserUC;
   
     beforeAll(() => {
-      usersA = new UsersAuthRepository();
-      userF = new UsersFireStoreRepository()
+      usersA = new UserAuthRepository();
+      userF = new UserFireStoreRepository()
       readUserUC = new ReadUserUC(usersA, userF)
     });
   
@@ -24,11 +24,11 @@ describe('UserRepository', () => {
       }
       const user = await readUserUC.execute(login)
       expect(user).toEqual({
-        valido: false, value: 404, erro: "Not Found"
+        val: false, erro: "Usuário não encontrado."
       })
     }, 100000);
     test('ReadUser(login) should return object user', async () => {
-      const ExistingEmail: string = 'jhons@trabalhos.com';
+      const ExistingEmail: string = 'dias44520@gmail.com';
       const correctPassword: string  = '123asd789'
       const login: IReadUserRequestDTO = {
         email: ExistingEmail,
@@ -36,6 +36,6 @@ describe('UserRepository', () => {
         
       }
       const user = await readUserUC.execute(login)
-  expect(user).toEqual({valido: true, value: 200, data: user.data})
+  expect(user).toEqual({val: true,  data: user.data})
     }, 50000)
   })

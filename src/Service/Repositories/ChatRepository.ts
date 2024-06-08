@@ -4,6 +4,7 @@ import { Chat } from "../Model/Chat";
 import { Message } from "../Model/Message";
 import { User, sendEmailVerification } from "@firebase/auth";
 import { Firestore } from "firebase-admin/firestore";
+import { IReturnAdapter } from "../../utils/Interfaces/IReturnAdapter";
 export class ChatRepository {
   private realtimedb: Database;
   private path;
@@ -14,24 +15,24 @@ export class ChatRepository {
   }
   async setChat(
     newChat: Chat
-  ): Promise<{ valido: boolean; value?: Chat; erro?: string }> {
+  ): Promise<IReturnAdapter> {
     const chatRef = this.path.child(newChat.chatid);
     try {
       const setChat = await chatRef.set(newChat);
-      return { valido: true, value: newChat };
+      return { val: true, data: newChat };
     } catch (error) {
       if (error instanceof Error) {
         const mensagemErro = error.message;
-        return { valido: false, erro: mensagemErro };
+        return { val: false, erro: mensagemErro };
       } else {
-        return { valido: false, erro: "Erro desconhecido ao criar o chat" };
+        return { val: false, erro: "Erro desconhecido ao criar o chat" };
       }
     }
   }
 
   async sendMessage(
     message: Message
-  ): Promise<{ valido: boolean; erro?: string; value?: string }> {
+  ): Promise<IReturnAdapter> {
     try{
     const chatRef = this.path.child(`${message.chatID}/messages`);
     const snapshot = await chatRef.once("value");
@@ -42,21 +43,21 @@ export class ChatRepository {
         const messages: Message[] = data  
         messages.push(message)       
         await chatRef.set(messages) 
-    return { valido: true, value: "Mensagem enviada com sucesso" };
+    return { val: true, data: "Mensagem enviada com sucesso" };
         }
       throw new Error('erro ao encontrar os dados do chat')
     }catch (error) {
     if (error instanceof Error) {
       const mensagemErro = error.message;
-      return { valido: false, erro: mensagemErro };
+      return { val: false, erro: mensagemErro };
     } else {
-      return { valido: false, erro: `Erro desconhecido ao ler as mensagens: ${error}` };
+      return { val: false, erro: `Erro desconhecido ao ler as mensagens: ${error}` };
     }
   }
 }
   async readMessages(
     chatid: string
-  ): Promise<{ valido: boolean; value?: Message[]; erro?: string }> {
+  ): Promise<IReturnAdapter> {
       try {
         const chatRef = this.path.child(`${chatid}/messages/`);
         const messages: Message[] = [];
@@ -80,13 +81,13 @@ export class ChatRepository {
           });
         }
     
-        return { valido: true, value: messages };
+        return { val: true, data: messages };
       } catch (error) {
         if (error instanceof Error) {
           const mensagemErro = error.message;
-          return { valido: false, erro: mensagemErro };
+          return { val: false, erro: mensagemErro };
         } else {
-          return { valido: false, erro: 'Erro desconhecido ao ler as mensagens' };
+          return { val: false, erro: 'Erro desconhecido ao ler as mensagens' };
         }
       }
     }
