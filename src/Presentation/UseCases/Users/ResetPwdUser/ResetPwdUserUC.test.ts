@@ -1,17 +1,15 @@
-import { UsersAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
-import { UsersFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
+import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
+import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
 import { IResetPwdUserRequestDTO } from "./ResetPwdUserDTO";
 import { ResetPwdUserUC } from "./ResetPwdUserUC";
 
 describe("UserRepository function getAllPosts to return a Array List of Posts from Firebase", () => {
-  let usersA: UsersAuthRepository;
-  let usersF: UsersFireStoreRepository;
+  let usersA: UserAuthRepository;
   let resetpwdUC: ResetPwdUserUC;
 
   beforeAll(() => {
-    usersA = new UsersAuthRepository();
-    usersF = new UsersFireStoreRepository();
-    resetpwdUC = new ResetPwdUserUC(usersA, usersF);
+    usersA = new UserAuthRepository();
+    resetpwdUC = new ResetPwdUserUC(usersA);
   });
   test("Trying to reset with a non existing email", async () => {
     const nonExistingEmail: IResetPwdUserRequestDTO = {

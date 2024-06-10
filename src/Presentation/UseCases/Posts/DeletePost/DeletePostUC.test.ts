@@ -14,7 +14,7 @@ describe('UserRepository function getAllPosts to return a Array List of Posts fr
     }, 100000);
     test('Delete  existing Post By ID returning error', async () => {
       const ExistingID = '2EFlzO3EXQwcfSBbSfSa'
-      const WantedPost = await postRepository.findByID(ExistingID)
+      const WantedPost = await postRepository.getPost(ExistingID)
       expect(WantedPost).not.toBeNull()
     }, 100000);
 })
