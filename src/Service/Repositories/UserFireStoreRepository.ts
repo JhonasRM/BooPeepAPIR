@@ -26,7 +26,6 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
       return { val: true, data: decryptedUser };
       }
       throw new Error("Usuário não encontrado");
-
     } catch (error) {
       if (error instanceof Error) {
         const mensagemErro = error.message;

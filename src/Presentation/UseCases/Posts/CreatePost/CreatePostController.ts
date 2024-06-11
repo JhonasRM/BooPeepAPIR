@@ -31,10 +31,12 @@ export class CreatePostController {
             if(error instanceof Error){
                 if(error.message === 'Usuário não encontrado'){
                     response.status(404).send(error.message)
-                }
+                } else if(error.message !== 'Usuário não encontrado'){
                     response.status(400).send(error.message)
-            }
+                }
+            } else {
             response.status(500).send(`Internal Server Error: ${error}`)
+        }
         }
     }
 }

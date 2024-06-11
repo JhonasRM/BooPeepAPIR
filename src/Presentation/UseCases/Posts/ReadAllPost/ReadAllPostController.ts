@@ -12,10 +12,10 @@ export class ReadAllPostController {
       const getAllPost = await this.readAllPostUC.execute()
       if(getAllPost.val === false){
         throw new Error(getAllPost.erro)
-      }
+      } else if(getAllPost.val === true){
       const posts: Post[] = getAllPost.data as Post[]
-     
       response.status(200).json(posts);
+    }
     } catch (error) {
     if(error instanceof Error){
       if(error.message === 'Nenhuma postagem encontrada'){
@@ -23,8 +23,8 @@ export class ReadAllPostController {
       } else if(error.message !== 'Nenhuma postagem encontrada'){
         response.status(400).send(`Erro de requisição: ${error.message}`)
       }
-    }
+    } else {
     response.status(500).send(`Erro interno do servidor: ${error}`)
-    }
+    }}
   }
 }

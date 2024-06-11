@@ -14,8 +14,7 @@ export class CreatePostUC {
         if(userAuth.val === false){
             throw new Error('Usuário não encontrado')
         }
-        const uid = userAuth.data?.uid as string
-        const NewPost: Post = new Post(data, uid)
+        const NewPost: Post = new Post(data, data.UserID)
         const createpost = await this.postRepository.createPost(NewPost)   
         if(createpost.val === false){
             throw new Error(createpost.erro)
