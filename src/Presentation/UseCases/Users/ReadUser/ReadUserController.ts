@@ -9,7 +9,6 @@ export class ReadUserController {
 
   async handle(request: Request, response: Response): Promise<void> {
     const { email, password } = request.query;
-    console.log(email, password)
     const data: IReadUserRequestDTO = {
       email: email as string,
       password: password as string
@@ -18,8 +17,7 @@ export class ReadUserController {
       const wantedUser = await this.readUserUC.execute(data)
       if(wantedUser.val === true){
         response.status(200).json(wantedUser.data)
-      }
-      if(wantedUser.val === false){
+      } else if(wantedUser.val === false){
         throw new Error(wantedUser.erro)
       }
     } catch (error: unknown) {
