@@ -1,4 +1,4 @@
-// // import { ReadAllPostUC } from './ReadAllPostUC';
+// import { ReadAllPostUC } from './ReadAllPostUC';
 // import { PostRepository } from '../../../../Service/Repositories/PostRepository';
 // import { IReturnAdapter } from '../../../../utils/Interfaces/IReturnAdapter';
 // import { Post } from '../../../../Service/Model/Post';
@@ -16,8 +16,8 @@
 
 //   test('should return an array of posts', async () => {
 //     const mockPosts: Post[] = [
-//       { id: '1', description: 'Post 1', local: 'Location 1', status: 1, UserID: 'user1' },
-//       { id: '2', description: 'Post 2', local: 'Location 2', status: 2, UserID: 'user2' },
+//       { description: 'Post 1', local: 'Location 1', status: 1, UserID: 'user1' },
+//       { description: 'Post 2', local: 'Location 2', status: 2, UserID: 'user2' },
 //     ];
 
 //     postRepository.getPosts.mockResolvedValue({
