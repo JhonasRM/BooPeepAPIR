@@ -144,7 +144,6 @@ export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collec
     uid: string,
     fieldToUpdate: string,
     newdata: any,
-    token?: string
   ): Promise<IReturnAdapter> {
       try {    
         switch (fieldToUpdate) {
@@ -157,8 +156,6 @@ export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collec
           case 'phoneNumber':
             await this.auth.updateUser(uid, { phoneNumber: newdata });
             break;
-          case 'password':
-            await confirmPasswordReset(this.Authapp, token as string, newdata)
           default:
             throw new Error('O campo mencionado para ser atualizado não existe');
         }

@@ -25,7 +25,7 @@ export class UpdateUserUC {
             const userData = userDataToUpdate.data as UserOnFirestore
             if(data.fieldToUpdate in user){
 
-                    const updatedUserAuth =  await this.userAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue, data.token)
+                    const updatedUserAuth =  await this.userAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
                     if(updatedUserAuth.val === false){
                         throw new Error(updatedUserAuth.erro)
                     }

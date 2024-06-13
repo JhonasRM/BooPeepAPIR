@@ -29,7 +29,7 @@ export class ReadUserUC {
         return { val: false, erro: 'Os dados do usuário não foram encontrados' };
       }
       const wantedData = wantedUserData.data as UserOnFirestore   
-      const userData = new UserOnFirestore(wantedData.uid, wantedData.postsID, wantedData.chatID)
+      const userData = new UserOnFirestore(wantedData.uid, wantedData.postsID, wantedData.chatID, wantedData.course, wantedData.shift, wantedData.description)
       const user: User = new User(userAuth,userData)
       return { val: true, data: user };
     } catch (error) {

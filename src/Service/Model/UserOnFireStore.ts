@@ -6,11 +6,17 @@ export class UserOnFirestore{
 
     public postsID!: string[];
     public chatID!: string;
+    public course!: string;
+    public shift!: string;
+    public description!: string
 
-    constructor(uid?: string, posts?: string[], chatID?: string){
-        this.postsID = []
-        this.uid = ''
-        this.chatID = ''
+    constructor(uid?: string, posts?: string[], chatID?: string, course?: string,shift?: string, description?: string){
+        this.postsID = [],
+        this.uid = '',
+        this.chatID = '',
+        this.course = '',
+        this.shift = '',
+        this.description = ''
         if(posts){
             this.postsID = posts
         }
@@ -19,6 +25,15 @@ export class UserOnFirestore{
         }
         if(uid){
             this.uid = uid
+        }
+        if(course){
+            this.course = course
+        }
+        if(shift){
+            this.shift = shift
+        }
+        if(description){
+            this.description = description
         }
     }
     static fromDocumentSnapshot(snapshot: DocumentSnapshot): UserOnFirestore {

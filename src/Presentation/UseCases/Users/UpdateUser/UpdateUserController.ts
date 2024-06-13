@@ -9,12 +9,11 @@ export class UpdateUserController {
 
   async handle(request: Request, response: Response): Promise<void> {
 
-       const { email, fieldToUpdate, newValue, token} = request.body
+       const { email, fieldToUpdate, newValue} = request.body
         const updateUser: IUpdateUserRequestDTO = {
           email: email, 
           fieldToUpdate: fieldToUpdate,
           newValue: newValue,
-          token: token
         }
     const updatedUser = await this.updateUserUC.execute(updateUser)
     if(updatedUser.val === true){
@@ -28,14 +27,12 @@ export class UpdateUserController {
     if (error instanceof Error) {
       if(error.message === 'Usuário não encontrado.'){
         response.status(404).send('Erro: ' + error.message);
-      } else if(error.message  === 'O campo mencionado para ser atualizado não existe'){
+      } else if(error.message  !== 'Usuário não encontrado.'){
         response.status(400).send('Erro: erro de requisiçao. ' + error.message);
-      } else if(error.message !== 'Usuário não encontrado.' || 'O campo mencionado para ser atualizado não existe'){
-        response.status(500).send('Erro: erro interno do servidor. ' + error.message);
       }
     } else {
       console.error(`Erro desconhecido: ${error}`);
-      response.status(503).send('Erro desconhecido');
+      response.status(500).send(`Erro interno do servidor: ${error}`);
     }
   }
 }
