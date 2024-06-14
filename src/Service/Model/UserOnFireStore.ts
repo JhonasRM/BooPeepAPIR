@@ -1,8 +1,10 @@
 import { DocumentSnapshot } from "firebase-admin/firestore";
-import { decrypt, encrypt } from "../../utils/encryption";
+import { decrypt, encrypt } from "../../utils/encryption/encryption";
+import { createUserFromDataEncryption } from "../../utils/Helpers/CreateUserHelper";
+import { IDataEncryption } from "../../utils/Interfaces/IDataEncryption";
 
-export class UserOnFirestore{
-    public readonly uid?: string 
+export class UserOnFirestore {
+    public readonly uid?: string
 
     public postsID!: string[];
     public chatID!: string;
@@ -10,29 +12,29 @@ export class UserOnFirestore{
     public shift!: string;
     public description!: string
 
-    constructor(uid?: string, posts?: string[], chatID?: string, course?: string,shift?: string, description?: string){
+    constructor(uid?: string, posts?: string[], chatID?: string, course?: string, shift?: string, description?: string) {
         this.postsID = [],
-        this.uid = '',
-        this.chatID = '',
-        this.course = '',
-        this.shift = '',
-        this.description = ''
-        if(posts){
+            this.uid = '',
+            this.chatID = '',
+            this.course = '',
+            this.shift = '',
+            this.description = ''
+        if (posts) {
             this.postsID = posts
         }
-        if(chatID){
+        if (chatID) {
             this.chatID = chatID
         }
-        if(uid){
+        if (uid) {
             this.uid = uid
         }
-        if(course){
+        if (course) {
             this.course = course
         }
-        if(shift){
+        if (shift) {
             this.shift = shift
         }
-        if(description){
+        if (description) {
             this.description = description
         }
     }
@@ -43,32 +45,49 @@ export class UserOnFirestore{
         return new UserOnFirestore(uid, postsID, chatID);
     }
 
-    encryptUser(uid: string, postID: string[], chatID?: string){
+    encryptUser(uid: string, postID: string[], chatID?: string, course?: string, shift?: string, description?: string) {
         const encryptedUID = encrypt(uid)
         const encryptedPostsID: string[] = []
         postID.forEach(ID => {
             const IDtoEncrypt = encrypt(ID)
             encryptedPostsID.push(IDtoEncrypt)
         });
-        if(chatID){
-        const encryptedChatID = encrypt(chatID)
-        return new UserOnFirestore(encryptedUID, encryptedPostsID, encryptedChatID)
-    }
-    return new UserOnFirestore(encryptedUID, encryptedPostsID)
+        const Data: IDataEncryption = {
+            uid: encryptedUID,
+            postID: encryptedPostsID
+        }
+        if (chatID) {
+            const encryptedChatID = encrypt(chatID)
+            Data.chatID = encryptedChatID
+        }
+        if (course) {
+            const encryptCourse = encrypt(course)
+            Data.course = encryptCourse
+        }
+        if (shift) {
+            const encryptShift = encrypt(shift)
+            Data.shift = encryptShift
+        }
+        if (description) {
+            const encryptDecription = encrypt(description)
+            Data.description = encryptDecription
+        }
+        const user = createUserFromDataEncryption(Data)
+        return user
     }
 
-    decryptUser(uid: string, postID: string[], chatID?: string){
+    decryptUser(uid: string, postID: string[], chatID?: string) {
         const UID = decrypt(uid)
         const PostsID: string[] = []
         postID.forEach(ID => {
             const IDtoDecrypt = decrypt(ID)
             PostsID.push(IDtoDecrypt)
         });
-        if(chatID){
-        const ChatID = decrypt(chatID)
-        return new UserOnFirestore(UID, PostsID,ChatID)
+        if (chatID) {
+            const ChatID = decrypt(chatID)
+            return new UserOnFirestore(UID, PostsID, ChatID)
+        }
+        return new UserOnFirestore(UID, PostsID)
     }
-    return new UserOnFirestore(UID, PostsID)
-    }
-    
+
 }

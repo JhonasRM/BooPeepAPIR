@@ -4,7 +4,7 @@ import { IReturnAdapter } from "../../utils/Interfaces/IReturnAdapter";
 import { Firestore } from "firebase-admin/firestore";
 import { IUserRepository } from "../../utils/Interfaces/IUserRepository";
 import dotenv from "dotenv";
-import { decrypt, encrypt } from "../../utils/encryption";
+import { decrypt, encrypt } from "../../utils/encryption/encryption";
 
 dotenv.config();
 export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
@@ -78,7 +78,10 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
       const NewUserEncrypted = NewUser.encryptUser(
         NewUser.uid as string,
         NewUser.postsID,
-        NewUser.chatID
+        NewUser.chatID,
+        NewUser.course,
+        NewUser.shift,
+        NewUser.description
       );
       const NewUserData: FirebaseFirestore.DocumentData = NewUserEncrypted;
       const data = { ...NewUserData };
