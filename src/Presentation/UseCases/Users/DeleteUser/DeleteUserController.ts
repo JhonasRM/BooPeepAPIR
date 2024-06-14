@@ -7,7 +7,7 @@ export class DeleteUserController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<void> {
-    const {email} = request.body;
+    const {email} = request.query;
     try {
       const deleteUser = await this.deleteUserUC.delete({email});
       if(deleteUser.val === true){
