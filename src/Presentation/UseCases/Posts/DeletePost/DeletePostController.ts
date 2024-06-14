@@ -4,7 +4,7 @@ export class DeletePostController{
     constructor(private deletePostUC: DeletePostUC){}
 
     async handle(request: Request, response: Response): Promise<void>{
-        const { postID } = request.quey;
+        const { postID } = request.query;
         try {
             const deletedPost = await this.deletePostUC.execute({postID})
             if(deletedPost.val === false){
