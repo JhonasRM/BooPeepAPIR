@@ -1,3 +1,4 @@
+import { DeletePostRequestDTO } from "./DeletePostDTO";
 import { DeletePostUC } from "./DeletePostUC";
 import { Request, Response } from "express";
 export class DeletePostController{
@@ -5,8 +6,11 @@ export class DeletePostController{
 
     async handle(request: Request, response: Response): Promise<void>{
         const { postID } = request.query;
+        const data: DeletePostRequestDTO = {
+            postID: postID as string
+        }
         try {
-            const deletedPost = await this.deletePostUC.execute({postID})
+            const deletedPost = await this.deletePostUC.execute(data)
             if(deletedPost.val === false){
                 throw new Error(deletedPost.erro)
             }

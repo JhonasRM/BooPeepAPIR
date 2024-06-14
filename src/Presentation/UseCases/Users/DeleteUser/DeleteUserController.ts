@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { DeleteUserUC } from './DeleteUserUC';
+import { IDeleteUserRequestDTO } from './DeleteUserDTO';
 
 export class DeleteUserController {
   constructor(
@@ -8,8 +9,11 @@ export class DeleteUserController {
 
   async handle(request: Request, response: Response): Promise<void> {
     const {email} = request.query;
+    const data: IDeleteUserRequestDTO = {
+      email: email as string
+    }
     try {
-      const deleteUser = await this.deleteUserUC.delete({email});
+      const deleteUser = await this.deleteUserUC.delete(data);
       if(deleteUser.val === true){
         response.status(200).send(deleteUser.data)
       }
