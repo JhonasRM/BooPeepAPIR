@@ -76,18 +76,35 @@ export class UserOnFirestore {
         return user
     }
 
-    decryptUser(uid: string, postID: string[], chatID?: string) {
+    decryptUser(uid: string, postID: string[], chatID?: string, course?: string, shift?: string, description?: string) {
         const UID = decrypt(uid)
         const PostsID: string[] = []
         postID.forEach(ID => {
             const IDtoDecrypt = decrypt(ID)
             PostsID.push(IDtoDecrypt)
         });
+        const Data: IDataEncryption = {
+            uid: UID,
+            postID: PostsID
+        }
         if (chatID) {
             const ChatID = decrypt(chatID)
-            return new UserOnFirestore(UID, PostsID, ChatID)
+            Data.chatID = ChatID
         }
-        return new UserOnFirestore(UID, PostsID)
+        if (course) {
+            const Course = decrypt(course)
+            Data.course = Course
+        }
+        if (shift) {
+            const Shift = decrypt(shift)
+            Data.shift = Shift
+        }
+        if (description) {
+            const Description = decrypt(description)
+            Data.description = Description
+        }
+        const user = createUserFromDataEncryption(Data)
+        return user
     }
 
 }

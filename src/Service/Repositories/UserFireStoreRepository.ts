@@ -21,8 +21,8 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
       const query = await collectionRef.doc(key).get()
       if (query.exists) {
         const user: UserOnFirestore = query.data() as UserOnFirestore;
-        const userForDecrypt = new UserOnFirestore(user.uid as string, user.postsID, user.chatID)
-      const decryptedUser = await userForDecrypt.decryptUser(userForDecrypt.uid as string, userForDecrypt.postsID, userForDecrypt.chatID)
+        const userForDecrypt = new UserOnFirestore(user.uid as string, user.postsID, user.chatID, user.course, user.shift, user.description)
+      const decryptedUser = await userForDecrypt.decryptUser(userForDecrypt.uid as string, userForDecrypt.postsID, userForDecrypt.chatID, userForDecrypt.course, userForDecrypt.shift, userForDecrypt.description)
       return { val: true, data: decryptedUser };
       }
       throw new Error("Usuário não encontrado");
@@ -125,13 +125,10 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
     newValue: any
   ): Promise<IReturnAdapter> {
     try {
+      console.log(uid)
       const userRef = this.db.collection(this.collectionPath).doc(uid);
       const userSnapshot = await userRef.get();
-
-      if (!userSnapshot.exists) {
-        throw new Error("Usuário não encontrado.");
-      }
-
+      console.log(userSnapshot.data())
       const userData = userSnapshot.data();
       if (!userData || !userData.hasOwnProperty(fieldToUpdate)) {
         throw new Error('O campo mencionado para ser atualizado não existe');

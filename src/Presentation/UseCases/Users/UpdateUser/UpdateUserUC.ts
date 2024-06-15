@@ -26,12 +26,12 @@ export class UpdateUserUC {
             const userData = userDataToUpdate.data as UserOnFirestore
             if (data.fieldToUpdate === "displayName" || data.fieldToUpdate === "email" ) {
                 console.log('é no auth')
-                const updatedUserAuth = await this.userAuthRepository.update(userData.uid as string, data.fieldToUpdate, data.newValue)
+                const updatedUserAuth = await this.userAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
                 if (updatedUserAuth.val === false) {
                     throw new Error(updatedUserAuth.erro)
                 }
             }  
-                const updatedUserData = await this.userFireStoreRepository.update(userData.uid as string, data.fieldToUpdate, data.newValue)
+                const updatedUserData = await this.userFireStoreRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
                 if (updatedUserData.val === false) {
                     throw new Error(updatedUserData.erro)
                 } else{

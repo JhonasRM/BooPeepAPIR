@@ -19,8 +19,6 @@ export class ReadAllUsersUC {
               console.log(wantedUsersData.erro)
               throw new Error(wantedUsersData.erro)
             }
-            console.log('Data encontrada')
-            console.log('Usuários encontrados')
             const ArrayUsers = wantedUsers.data as UserOnAuth[]
             const ArrayUsersData = wantedUsersData.data as UserOnFirestore[]
             const users: User[] = []
