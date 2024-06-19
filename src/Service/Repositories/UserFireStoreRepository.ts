@@ -18,35 +18,58 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
   async getUser(key: string): Promise<IReturnAdapter> {
     try {
       const collectionRef = this.db.collection(this.collectionPath);
-      const query = await collectionRef.doc(key).get()
-      if (query.exists) {
-        const user: UserOnFirestore = query.data() as UserOnFirestore;
-        const userForDecrypt = new UserOnFirestore(user.uid as string, user.postsID, user.chatID, user.course, user.shift, user.description)
-      const decryptedUser = await userForDecrypt.decryptUser(userForDecrypt.uid as string, userForDecrypt.postsID, userForDecrypt.chatID, userForDecrypt.course, userForDecrypt.shift, userForDecrypt.description)
-      return { val: true, data: decryptedUser };
+      const query = await collectionRef.doc(key).get();
+      if (!query.exists) {
+        throw new Error("Usuário não encontrado");
       }
-      throw new Error("Usuário não encontrado");
+      const user: UserOnFirestore = query.data() as UserOnFirestore;
+      const userForDecrypt = new UserOnFirestore(
+        user.uid as string,
+        user.postsID,
+        user.chatID,
+        user.course,
+        user.shift,
+        user.description
+      );
+      console.log(userForDecrypt)
+      const decryptedUser = await userForDecrypt.decryptUser(
+        userForDecrypt.uid as string,
+        userForDecrypt.postsID,
+        userForDecrypt.chatID,
+        userForDecrypt.course,
+        userForDecrypt.shift,
+        userForDecrypt.description
+      );
+      console.log(decryptedUser)
+      return { val: true, data: decryptedUser };
     } catch (error) {
       if (error instanceof Error) {
         const mensagemErro = error.message;
         return { val: false, erro: mensagemErro };
       } else {
-        return { val: false, erro: `Erro desconhecido ao validar o texto: ${error}`  };
+        return {
+          val: false,
+          erro: `Erro desconhecido ao validar o texto: ${error}`,
+        };
       }
     }
   }
 
   async getUsers(): Promise<IReturnAdapter> {
-    console.log('Buscando data dos usuários...')
+    console.log("Buscando data dos usuários...");
     try {
       const collectionRef = this.db.collection(this.collectionPath);
       const querySnapshot = await collectionRef.get();
-      console.log('Usuários encontrados')
+      console.log("Usuários encontrados");
       const users: UserOnFirestore[] = [];
       querySnapshot.forEach((doc) => {
-        console.log('Decriptando usuários...')
+        console.log("Decriptando usuários...");
         const userData = doc.data() as UserOnFirestore;
-        const userDataForDecrypt = new UserOnFirestore(userData.uid as string, userData.postsID, userData.chatID)
+        const userDataForDecrypt = new UserOnFirestore(
+          userData.uid as string,
+          userData.postsID,
+          userData.chatID
+        );
         const decryptedData = userDataForDecrypt.decryptUser(
           userDataForDecrypt.uid as string,
           userDataForDecrypt.postsID,
@@ -55,9 +78,8 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
         users.push(decryptedData);
       });
       if (users[1] instanceof UserOnFirestore) {
-      return { val: true, data: users as UserOnFirestore[] };
-
-      }  
+        return { val: true, data: users as UserOnFirestore[] };
+      }
       throw new Error("Nenhum usuário encontrado");
     } catch (error) {
       if (error instanceof Error) {
@@ -103,9 +125,9 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
       const userQuerySnapshot = await this.db
         .collection(this.collectionPath)
         .doc(uid)
-        .get()
+        .get();
       if (userQuerySnapshot.exists) {
-          await userQuerySnapshot.ref.delete()
+        await userQuerySnapshot.ref.delete();
         return { val: true, data: "Usuário deletado com sucesso" };
       }
       throw new Error("Nenhum usuário encontrado");
@@ -125,13 +147,12 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
     newValue: any
   ): Promise<IReturnAdapter> {
     try {
-      console.log(uid)
       const userRef = this.db.collection(this.collectionPath).doc(uid);
       const userSnapshot = await userRef.get();
-      console.log(userSnapshot.data())
+      console.log(userSnapshot.data());
       const userData = userSnapshot.data();
       if (!userData || !userData.hasOwnProperty(fieldToUpdate)) {
-        throw new Error('O campo mencionado para ser atualizado não existe');
+        throw new Error("O campo mencionado para ser atualizado não existe");
       }
 
       const previousValue = userData[fieldToUpdate];

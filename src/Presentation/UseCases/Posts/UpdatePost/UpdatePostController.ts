@@ -32,8 +32,9 @@ export class UpdatePostController {
                    response.status(400).send('Erro de requisição: verifique os campos e valores preenchidos')
                 }
                     response.status(400).send(error.message)
-            }
+            } else {
             response.status(500).send(`Internal Server Error: ${error}`)
+        }
         }
     }
 }

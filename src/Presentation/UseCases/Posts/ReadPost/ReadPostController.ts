@@ -21,8 +21,9 @@ export class ReadPostController {
                 } else if(error.message !== 'Postagem não encontrada' ){
                     response.status(400).send(`Erro de requisição: ${error.message}`)
                 }
-            }
+            } else {
             response.status(500).send(`Erro interno do servidor: ${error}`)
+        }
           }
     }
 }

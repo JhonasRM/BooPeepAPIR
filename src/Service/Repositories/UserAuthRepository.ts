@@ -1,4 +1,4 @@
-import { confirmPasswordReset, getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
 import { Auth } from "firebase-admin/lib/auth/auth";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { UserOnAuth } from "../Model/UserOnAuth";
@@ -6,7 +6,6 @@ import { AppWeb } from "../../Data Access/DAO/AppWeb/appWeb";
 import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 import { IUserRepository } from "../../utils/Interfaces/IUserRepository";
 import { IReturnAdapter } from "../../utils/Interfaces/IReturnAdapter";
-import { UserOnFirestore } from "../Model/UserOnFireStore";
 
 export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collectionPath'>{
    auth: Auth;
@@ -76,6 +75,23 @@ export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collec
         return { val: false, erro: "Erro desconhecido ao validar o texto" };
       }
     }
+  }
+
+  async sendVerification(uid: string): Promise<IReturnAdapter>{
+    try {
+      const userRecord = await this.auth.getUserByEmail(uid);
+      const user = userRecord.toJSON() as User;
+      const emailVerified = await sendEmailVerification(user)
+      return{val: true, data: "Email de verificação enviado com sucesso"}
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { val: false, erro: mensagemErro };
+      } else {
+        return { val: false, erro: "Erro desconhecido ao validar o texto" };
+      }
+    }
+   
   }
   
   async loginOnAuth(

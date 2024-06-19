@@ -22,8 +22,9 @@ export class DeletePostController{
                 } else if(error.message !== 'Postagem não encontrada' ){
                     response.status(400).send(`Erro: Erro de requisição: ${error.message}`)
                 }
-            }
+            } else {
             response.status(500).send(`Erro interno do servidor: ${error}`)
+        }
           }
     }
 }

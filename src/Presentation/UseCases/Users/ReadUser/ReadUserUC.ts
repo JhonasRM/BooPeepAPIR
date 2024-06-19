@@ -24,10 +24,13 @@ export class ReadUserUC {
         foundUserAuth.disabled,
         foundUserAuth.uid
       )
+      console.log(userAuth)
       const wantedUserData = await this.userFireStoreRepository.getUser(userAuth.uid as string)
       if (wantedUserData.val === false) {
+        console.log(wantedUserData.erro)
         return { val: false, erro: 'Os dados do usuário não foram encontrados' };
       }
+      console.log(wantedUserData)
       const wantedData = wantedUserData.data as UserOnFirestore   
       const userData = new UserOnFirestore(wantedData.uid, wantedData.postsID, wantedData.chatID, wantedData.course, wantedData.shift, wantedData.description)
       const user: User = new User(userAuth,userData)

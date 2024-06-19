@@ -33,8 +33,9 @@ export class ReadMessageController {
         } else {
           response.status(400).send(`Erro de requisição: ${error.message}`);
         }
-      }
+      } else {
       response.status(500).send(`Erro interno do servidor: ${String(error)}`);
+    }
     }
   }
 }

@@ -24,20 +24,21 @@ export class UpdateUserUC {
                 throw new Error('Usuário não encontrado.')
             }
             const userData = userDataToUpdate.data as UserOnFirestore
-            if (data.fieldToUpdate === "displayName" || data.fieldToUpdate === "email" ) {
+            if (data.fieldToUpdate === "displayName" || data.fieldToUpdate === "email") {
                 console.log('é no auth')
                 const updatedUserAuth = await this.userAuthRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
                 if (updatedUserAuth.val === false) {
                     throw new Error(updatedUserAuth.erro)
                 }
-            }  
+            }  else if(data.fieldToUpdate !== "displayName" && data.fieldToUpdate !== "email"){
                 const updatedUserData = await this.userFireStoreRepository.update(user.uid as string, data.fieldToUpdate, data.newValue)
                 if (updatedUserData.val === false) {
                     throw new Error(updatedUserData.erro)
-                } else{
-                return { val: true, data: 'Usuário alterado com sucesso.' };
+                }
             }
+                return { val: true, data: 'Usuário alterado com sucesso.' };
             
+               
         } catch (error) {
             console.log(error)
             if (error instanceof Error) {

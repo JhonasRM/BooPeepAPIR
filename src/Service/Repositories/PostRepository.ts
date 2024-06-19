@@ -3,6 +3,7 @@ import { AppAdmin } from "../../Data Access/DAO/AppAdmin/appAdmin";
 import { IPostRepository } from "../../utils/Interfaces/IPostRepository";
 import { IReturnAdapter } from "../../utils/Interfaces/IReturnAdapter";
 import { Firestore } from "firebase-admin/firestore";
+import { User } from "../Entities/User";
 export class PostRepository implements IPostRepository {
   db: Firestore;
   collectionPath: string;
@@ -84,11 +85,11 @@ export class PostRepository implements IPostRepository {
       const userRef = this.db.collection("users").doc(post.UserID);
       const userDoc = await userRef.get();
       if (userDoc.exists) {
-        const userData = userDoc.data();
-        if (userData && Array.isArray(userData.posts)) {
-          userData.posts.push(postId);
-          await userRef.update({ posts: userData.posts });
-          await userRef.update({ posts: [postId] });
+        const userData = userDoc.data() as User;
+        if (userData && Array.isArray(userData.postsID)) {
+          userData.postsID.push(postId);
+          await userRef.update({ postsID: userData.postsID });
+          await userRef.update({ postsID: [postId] });
         }
       } else {
         throw new Error(`Usuário com ID ${post.UserID} não encontrado.`);

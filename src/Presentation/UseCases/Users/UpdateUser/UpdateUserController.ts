@@ -8,7 +8,7 @@ export class UpdateUserController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<void> {
-
+    try{
        const { email, fieldToUpdate, newValue} = request.body
         const updateUser: IUpdateUserRequestDTO = {
           email: email, 
@@ -23,7 +23,8 @@ export class UpdateUserController {
       console.log(updatedUser.erro)
       throw new Error(updatedUser.erro)
     }
-  } catch (error: unknown) {
+  
+  } catch(error) {
     if (error instanceof Error) {
       if(error.message === 'Usuário não encontrado.'){
         response.status(404).send('Erro: ' + error.message);
@@ -35,4 +36,5 @@ export class UpdateUserController {
       response.status(500).send(`Erro interno do servidor: ${error}`);
     }
   }
+}
 }

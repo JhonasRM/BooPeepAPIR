@@ -25,6 +25,10 @@ export class CreateUserUC {
         if(createdUserAuth.val === false){
             throw new Error('Erro ao cadastrar usuário no auth.')
         }
+        const verifyEmail = await await this.usersAuthRepository.sendVerification(createUserData.data as string)
+        if(verifyEmail.val === false){
+            console.log(verifyEmail.erro)
+        }
         return { val: true, data: 'Usuário Cadatrado com sucesso'}   
         } catch (error) {
             if(error instanceof Error){
