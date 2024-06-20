@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { CreateComentUC } from './CreateComentUC';
 import { ICreateComentRequestDTO } from './CreateComentDTO';
 
-export class CreatePostController {
+export class CreateComentController {
     constructor(
         private createComentUC: CreateComentUC,
     ) { }

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { DeleteComentRequestDTO } from "./DeleteComentDTO";
 import { DeleteComentUC } from "./DeleteComentUC";
-export class DeletePostController{
+export class DeleteComentController{
     constructor(private deleteComentUC: DeleteComentUC){}
 
     async handle(request: Request, response: Response): Promise<void>{
