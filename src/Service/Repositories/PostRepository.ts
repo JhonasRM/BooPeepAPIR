@@ -82,18 +82,6 @@ export class PostRepository implements IPostRepository {
       const docRef = await this.db.collection(this.collectionPath).doc();
       const postId = docRef.id;
       await docRef.set({ ...NewPost, postId });
-      const userRef = this.db.collection("users").doc(post.UserID);
-      const userDoc = await userRef.get();
-      if (userDoc.exists) {
-        const userData = userDoc.data() as User;
-        if (userData && Array.isArray(userData.postsID)) {
-          userData.postsID.push(postId);
-          await userRef.update({ postsID: userData.postsID });
-          await userRef.update({ postsID: [postId] });
-        }
-      } else {
-        throw new Error(`Usuário com ID ${post.UserID} não encontrado.`);
-      }
       return { val: true, data: post.postId };
     } catch (error) {
       if (error instanceof Error) {

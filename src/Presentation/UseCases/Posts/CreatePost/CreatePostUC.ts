@@ -19,6 +19,10 @@ export class CreatePostUC {
         if(createpost.val === false){
             throw new Error(createpost.erro)
         } 
+        const updateUser = await this.usersFireStoreRepository.update(NewPost.UserID, 'postsID', createpost.data)
+        if(updateUser.val === false){
+            throw new Error(updateUser.erro)
+        }
         return { val: true, data: createpost.data }
         } catch (error) {
             if(error instanceof Error){

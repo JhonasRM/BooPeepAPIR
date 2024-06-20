@@ -5,6 +5,7 @@ import { Firestore } from "firebase-admin/firestore";
 import { IUserRepository } from "../../utils/Interfaces/IUserRepository";
 import dotenv from "dotenv";
 import { decrypt, encrypt } from "../../utils/encryption/encryption";
+import { User } from "../Entities/User";
 
 dotenv.config();
 export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
@@ -31,7 +32,6 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
         user.shift,
         user.description
       );
-      console.log(userForDecrypt)
       const decryptedUser = await userForDecrypt.decryptUser(
         userForDecrypt.uid as string,
         userForDecrypt.postsID,
@@ -60,10 +60,8 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
     try {
       const collectionRef = this.db.collection(this.collectionPath);
       const querySnapshot = await collectionRef.get();
-      console.log("Usuários encontrados");
       const users: UserOnFirestore[] = [];
       querySnapshot.forEach((doc) => {
-        console.log("Decriptando usuários...");
         const userData = doc.data() as UserOnFirestore;
         const userDataForDecrypt = new UserOnFirestore(
           userData.uid as string,
@@ -150,22 +148,25 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
       const userRef = this.db.collection(this.collectionPath).doc(uid);
       const userSnapshot = await userRef.get();
       console.log(userSnapshot.data());
-      const userData = userSnapshot.data();
+      const userData = userSnapshot.data() as User;
       if (!userData || !userData.hasOwnProperty(fieldToUpdate)) {
         throw new Error("O campo mencionado para ser atualizado não existe");
       }
 
-      const previousValue = userData[fieldToUpdate];
+      const previousValue = userData[fieldToUpdate as keyof User];
       if (typeof previousValue !== typeof newValue) {
         throw new Error(
           `O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`
         );
       }
       const encryptedNewValue = encrypt(newValue);
-
+      if(fieldToUpdate === 'postsID'){
+        userData.postsID.push(encryptedNewValue)
+        await userRef.update({ postsID: userData.postsID });
+      } else{
       await userRef.update({
         [fieldToUpdate]: encryptedNewValue,
-      });
+      });}
       return { val: true, data: "Usuário atualizado com sucesso" };
     } catch (error) {
       if (error instanceof Error) {

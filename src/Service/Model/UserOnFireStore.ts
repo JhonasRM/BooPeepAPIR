@@ -2,6 +2,7 @@ import { DocumentSnapshot } from "firebase-admin/firestore";
 import { decrypt, encrypt } from "../../utils/encryption/encryption";
 import { createUserFromDataEncryption } from "../../utils/Helpers/CreateUserHelper";
 import { IDataEncryption } from "../../utils/Interfaces/IDataEncryption";
+import { isIdentifier } from "typescript";
 
 export class UserOnFirestore {
     public readonly uid?: string
@@ -77,31 +78,41 @@ export class UserOnFirestore {
     }
 
     decryptUser(uid: string, postID: string[], chatID?: string, course?: string, shift?: string, description?: string) {
+        // console.log(uid, postID, chatID, course, shift, description)
         const UID = decrypt(uid)
+        console.log(`UID: ${UID}`)
         const PostsID: string[] = []
-        postID.forEach(ID => {
-            const IDtoDecrypt = decrypt(ID)
-            PostsID.push(IDtoDecrypt)
+        postID.forEach(postID => {
+            const postIDtoDecrypt = decrypt(postID)
+            PostsID.push(postIDtoDecrypt)
         });
         const Data: IDataEncryption = {
             uid: UID,
             postID: PostsID
         }
+        console.log(Data)
         if (chatID) {
             const ChatID = decrypt(chatID)
             Data.chatID = ChatID
+            console.log(Data)
         }
         if (course) {
             const Course = decrypt(course)
             Data.course = Course
+            console.log(Data)
+
         }
         if (shift) {
             const Shift = decrypt(shift)
             Data.shift = Shift
+            console.log(Data)
+
         }
         if (description) {
             const Description = decrypt(description)
             Data.description = Description
+            console.log(Data)
+
         }
         const user = createUserFromDataEncryption(Data)
         return user
