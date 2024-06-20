@@ -34,7 +34,7 @@ const deleteComentUC: DeleteComentUC = new DeleteComentUC(postRepository, coment
 const deleteComentController: DeleteComentController = new DeleteComentController(deleteComentUC)
 
 router
-    .route("/coment")
+    .route("/coments")
     .post((req: Request ,res: Response) => createComentController.handle(req, res))
     .get((req: Request, res: Response) => readComentController.handle(req, res))
     .put((req: Request, res: Response)=> updateComentController.handle(req,res))

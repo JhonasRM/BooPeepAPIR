@@ -77,7 +77,7 @@ export class ComentRepository implements IComentRepository {
       await comentRef.update({
         text: newValue,
       });
-      return { val: true, data: "Comentário atualizada com sucesso" };
+      return { val: true, data: "Comentário atualizado com sucesso" };
     } catch (error) {
       if (error instanceof Error) {
         return { val: false, erro: error.message };
@@ -93,15 +93,15 @@ export class ComentRepository implements IComentRepository {
       const comentSnapshot = await comentRef.get();
 
       if (!comentSnapshot.exists) {
-        throw new Error("Comentário não encontrada");
+        throw new Error("Comentário não encontrado");
       }
 
       await comentRef.delete();
-      return { val: true, data: "Comentário deletada com sucesso" };
+      return { val: true, data: "Comentário deletado com sucesso" };
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message === "Comentário não encontrada") {
-          return { val: false, erro: "Comentário não encontrada" };
+        if (error.message === "Comentário não encontrado") {
+          return { val: false, erro: "Comentário não encontrado" };
         } else {
           return { val: false, erro: error.message };
         }

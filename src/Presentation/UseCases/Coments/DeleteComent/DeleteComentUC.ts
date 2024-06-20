@@ -16,7 +16,7 @@ export class DeleteComentUC{
             if(deleteComent.val === false){
                 throw new Error(deleteComent.erro)
             }
-            return { val: false, data: deleteComent.data}
+            return { val: true, data: deleteComent.data}
         } catch (error) {
             if(error instanceof Error){
                 return { val: false, erro: error.message}
