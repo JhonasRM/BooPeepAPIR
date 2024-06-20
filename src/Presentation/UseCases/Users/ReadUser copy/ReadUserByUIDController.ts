@@ -1,20 +1,19 @@
 import { Request, Response } from 'express';
-import { ReadUserUC } from './ReadUserUC';
-import { IReadUserRequestDTO } from './ReadUserDTO';
+import { ReadUserByUIDUC } from './ReadUserUIDUC';
+import { IReadUserByUIDRequestDTO } from './ReadUserByUIDDTO';
 
 export class ReadUserController {
   constructor(
-    private readUserUC: ReadUserUC,
+    private readUserByUID: ReadUserByUIDUC,
   ) {}
 
   async handle(request: Request, response: Response): Promise<void> {
-    const { email, password } = request.query;
-    const data: IReadUserRequestDTO = {
-      email: email as string,
-      password: password as string
-    }z
+    const { uid } = request.query;
+    const data: IReadUserByUIDRequestDTO = {
+      uid: uid as string
+    }
     try {
-      const wantedUser = await this.readUserUC.execute(data)
+      const wantedUser = await this.readUserByUID.execute(data)
       if(wantedUser.val === true){
         response.status(200).json(wantedUser.data)
       } else if(wantedUser.val === false){
