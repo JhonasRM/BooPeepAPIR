@@ -53,7 +53,7 @@ export class ComentRepository implements IComentRepository {
       const comentRef = await this.db.collection(this.collectionPath).doc(coment.postID).collection('coments').doc();
       const comentID = comentRef.id;
       await comentRef.set({ ...NewComent, comentID });
-      return { val: true, data: coment.postID };
+      return { val: true, data: 'Comentário criado com sucesso.' };
     } catch (error) {
       if (error instanceof Error) {
         return { val: false, erro: error.message };
