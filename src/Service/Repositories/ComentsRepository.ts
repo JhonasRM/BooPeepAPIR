@@ -17,9 +17,9 @@ export class ComentRepository implements IComentRepository {
   async getComents(postID:string): Promise<IReturnAdapter> {
     try {
       const collectionRef = this.db.collection(this.collectionPath).doc(postID).collection('coments');
-      const querySnapshot = await collectionRef.get();
+      const comentSnapshot = await collectionRef.get();
       const coments: Coment[] = [];
-      querySnapshot.forEach((doc) => {
+      comentSnapshot.forEach((doc) => {
         const comentsData = doc.data() as Coment;
         const coment: Coment = new Coment(
           comentsData.postID,
@@ -42,7 +42,7 @@ export class ComentRepository implements IComentRepository {
     }
   }
 
-  async createPost(coment: Coment): Promise<IReturnAdapter> {
+  async createComent(coment: Coment): Promise<IReturnAdapter> {
     const NewComent: FirebaseFirestore.DocumentData = {
       postID: coment.postID,
       uid: coment.uid,
@@ -50,9 +50,9 @@ export class ComentRepository implements IComentRepository {
       createdAt: coment.createdAt
     }
     try {
-      const docRef = await this.db.collection(this.collectionPath).doc(coment.postID).collection('coments').doc();
-      const comentID = docRef.id;
-      await docRef.set({ ...NewComent, comentID });
+      const comentRef = await this.db.collection(this.collectionPath).doc(coment.postID).collection('coments').doc();
+      const comentID = comentRef.id;
+      await comentRef.set({ ...NewComent, comentID });
       return { val: true, data: coment.postID };
     } catch (error) {
       if (error instanceof Error) {
@@ -62,22 +62,22 @@ export class ComentRepository implements IComentRepository {
     }
   }
 
-  async updatePostField(
+  async updateComent(
     postID: string,
     comentID: string,
     newValue: any
   ): Promise<IReturnAdapter> {
     try {
-      const docRef = await this.db.collection(this.collectionPath).doc(postID).collection('coments').doc(comentID);
-      const comentSnapshot = await docRef.get();
+      const comentRef = await this.db.collection(this.collectionPath).doc(postID).collection('coments').doc(comentID);
+      const comentSnapshot = await comentRef.get();
 
       if (!comentSnapshot.exists) {
         throw new Error("Comentário não encontrado.");
       }
-      await docRef.update({
+      await comentRef.update({
         text: newValue,
       });
-      return { val: true, data: "Postagem atualizada com sucesso" };
+      return { val: true, data: "Comentário atualizada com sucesso" };
     } catch (error) {
       if (error instanceof Error) {
         return { val: false, erro: error.message };
@@ -86,22 +86,22 @@ export class ComentRepository implements IComentRepository {
       return { val: false, erro: "Internal Server Error" };
     }
   }
-  async deletePost(postId: string): Promise<IReturnAdapter> {
+  async deleteComent(postId: string, comentID: string): Promise<IReturnAdapter> {
     try {
-      const postRef = this.db.collection(this.collectionPath).doc(postId);
+      const comentRef = this.db.collection(this.collectionPath).doc(postId).collection('coments').doc(comentID);
 
-      const postSnapshot = await postRef.get();
+      const comentSnapshot = await comentRef.get();
 
-      if (!postSnapshot.exists) {
-        throw new Error("Postagem não encontrada");
+      if (!comentSnapshot.exists) {
+        throw new Error("Comentário não encontrada");
       }
 
-      await postRef.delete();
-      return { val: true, data: "Postagem deletada com sucesso" };
+      await comentRef.delete();
+      return { val: true, data: "Comentário deletada com sucesso" };
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message === "Postagem não encontrada") {
-          return { val: false, erro: "Postagem não encontrada" };
+        if (error.message === "Comentário não encontrada") {
+          return { val: false, erro: "Comentário não encontrada" };
         } else {
           return { val: false, erro: error.message };
         }
