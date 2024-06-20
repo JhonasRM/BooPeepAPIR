@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ReadUserByUIDUC } from './ReadUserUIDUC';
-import { IReadUserByUIDRequestDTO } from './ReadUserByUIDDTO';
+import { IReadUserByUIDRequestDTO } from './ReadUserUIDDTO';
 
 export class ReadUserController {
   constructor(

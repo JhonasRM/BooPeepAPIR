@@ -4,7 +4,7 @@ import { UserOnAuth } from "../../../../Service/Model/UserOnAuth";
 import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
 import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
 import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
-import { IReadUserByUIDRequestDTO } from "./ReadUserByUIDDTO";
+import { IReadUserByUIDRequestDTO } from "./ReadUserUIDDTO";
 
 export class ReadUserByUIDUC {
   constructor(private userAuthRepository: UserAuthRepository, private userFireStoreRepository: UserFireStoreRepository) {}

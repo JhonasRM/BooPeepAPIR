@@ -1,7 +1,7 @@
 import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
 import { UserFireStoreRepository } from "../../../../Service/Repositories/UserFireStoreRepository";
-import { IReadUserRequestDTO } from "./ReadUserByUIDDTO";
-import { ReadUserUC } from "./ReadUserUIDUC";
+import { IReadUserRequestDTO } from "../ReadUser/ReadUserDTO";
+import { ReadUserUC } from "../ReadUser/ReadUserUC";
 
 describe('UserRepository', () => {
     let usersA: UserAuthRepository
