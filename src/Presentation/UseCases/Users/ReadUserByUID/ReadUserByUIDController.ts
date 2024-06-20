@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import { ReadUserByUIDUC } from './ReadUserUIDUC';
 import { IReadUserByUIDRequestDTO } from './ReadUserUIDDTO';
 
-export class ReadUserController {
+export class ReadUserByUIDController {
   constructor(
     private readUserByUID: ReadUserByUIDUC,
   ) {}
 
   async handle(request: Request, response: Response): Promise<void> {
-    const { uid } = request.query;
+    const uid = request.params.uid;
     const data: IReadUserByUIDRequestDTO = {
       uid: uid as string
     }

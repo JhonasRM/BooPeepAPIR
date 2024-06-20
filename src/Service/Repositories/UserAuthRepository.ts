@@ -35,10 +35,11 @@ export class UserAuthRepository implements  Omit<IUserRepository, 'db' | 'collec
     key: string
   ): Promise<IReturnAdapter> {
     try {
-      const userRecord = await this.auth.getUser(key);
-      const user = userRecord.toJSON();
-      return { val: true, data: user as UserOnAuth, erro: undefined };
+      const userRecord = await this.auth.getUser(key)
+      const user = userRecord.toJSON()
+      return { val: true, data: user as UserOnAuth };
     } catch (error) {
+      console.log(error)
       if (error instanceof Error) {
         const mensagemErro = error.message;
         return { val: false, erro: mensagemErro };

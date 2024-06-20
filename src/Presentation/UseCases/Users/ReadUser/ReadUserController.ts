@@ -11,8 +11,8 @@ export class ReadUserController {
     const { email, password } = request.query;
     const data: IReadUserRequestDTO = {
       email: email as string,
-      password: password as string
-    }z
+      password: password as string,
+    }
     try {
       const wantedUser = await this.readUserUC.execute(data)
       if(wantedUser.val === true){
