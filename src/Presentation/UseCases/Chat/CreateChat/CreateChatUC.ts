@@ -16,10 +16,15 @@ export class CreateChatUC {
           const userData = user.data as UserOnFirestore
           const uid = userData.uid
           const field = 'chatID'
-          if(field in userData){
-           throw new Error ("O chat já existe")
+          let NewChat: Chat
+          if(userData.chatID !== ""){
+          const findChat = await this.chatRepository.readMessages(userData.chatID)
+          if(findChat.val === false){
+            throw new Error(findChat.erro)
+          }
+          NewChat = new Chat(uid as string, findChat.data, userData.chatID)
         }
-          const NewChat: Chat = new Chat( uid as string)
+          NewChat = new Chat( uid as string)
           console.log('Criando Novo Chat...')
           const setchat = await this.chatRepository.setChat(NewChat)
           if(setchat.val === false){

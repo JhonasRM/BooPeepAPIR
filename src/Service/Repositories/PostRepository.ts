@@ -82,7 +82,7 @@ export class PostRepository implements IPostRepository {
       const docRef = await this.db.collection(this.collectionPath).doc();
       const postId = docRef.id;
       await docRef.set({ ...NewPost, postId });
-      return { val: true, data: post.postId };
+      return { val: true, data: postId };
     } catch (error) {
       if (error instanceof Error) {
         return { val: false, erro: error.message };
