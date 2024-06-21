@@ -147,22 +147,17 @@ export class UserFireStoreRepository implements Omit<IUserRepository, "auth"> {
     try {
       const userRef = this.db.collection(this.collectionPath).doc(uid);
       const userSnapshot = await userRef.get();
-      console.log(userSnapshot.data());
       const userData = userSnapshot.data() as User;
       if (!userData || !userData.hasOwnProperty(fieldToUpdate)) {
         throw new Error("O campo mencionado para ser atualizado não existe");
       }
-
-      const previousValue = userData[fieldToUpdate as keyof User];
-      if (typeof previousValue !== typeof newValue) {
-        throw new Error(
-          `O tipo do valor anterior ${previousValue} não corresponde ao tipo do novo valor ${newValue}.`
-        );
-      }
+      
       const encryptedNewValue = encrypt(newValue);
       if(fieldToUpdate === 'postsID'){
-        userData.postsID.push(encryptedNewValue)
-        await userRef.update({ postsID: userData.postsID });
+        const postsID: string[] = userData.postsID
+        postsID.push(encryptedNewValue)
+        console.log(postsID)
+        await userRef.update({ postsID: postsID });
       } else{
       await userRef.update({
         [fieldToUpdate]: encryptedNewValue,

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ReadPostUC } from './ReadPostUC';
+import { IReadPostRequestDTO } from './ReadPostDTO';
 
 export class ReadPostController {
     constructor(
@@ -7,9 +8,12 @@ export class ReadPostController {
     ) { }
 
     async handle(request: Request, response: Response): Promise<void> {
-        const { postId } = request.params;
+        const postId  = request.query.postId;
+        const data: IReadPostRequestDTO = {
+            postId: postId as unknown as string
+        }
         try {
-            const wantedPost = await this.readPostUC.execute({postId})
+            const wantedPost = await this.readPostUC.execute(data)
             if(wantedPost.val === false){
                 throw new Error(wantedPost.erro as string)
             }

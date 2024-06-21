@@ -6,8 +6,9 @@ import { IReadPostRequestDTO } from "./ReadPostDTO"
 export class ReadPostUC {
     constructor(private postRepository: PostRepository){ }
     async execute(data: IReadPostRequestDTO): Promise<IReturnAdapter> { 
+        console.log(data)
         try {
-            const wantedpost = await this.postRepository.getPost(data.postId)
+            const wantedpost = await this.postRepository.getPost(data.postId as string)
         if(wantedpost.val === false){
             throw new Error(wantedpost.erro)
         }
