@@ -4,7 +4,7 @@ const jestConfig: JestConfigWithTsJest = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testPathIgnorePatterns: [
-    'src/Presentation/UseCases/Posts/CreatePost/CreatePostUC.test.ts',
+    // 'src/Presentation/UseCases/Posts/CreatePost/CreatePostUC.test.ts',
     'src/Presentation/UseCases/Posts/DeletePost/DeletePostUC.test.ts',
     'src/Presentation/UseCases/Posts/ReadAllPost/ReadAllPostUC.test.ts',
     'src/Presentation/UseCases/Posts/ReadPost/ReadPostUC.test.ts',
