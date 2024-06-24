@@ -7,7 +7,8 @@ import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { ICreateChatRequestDTO } from "./CreateChatDTO";
 export class CreateChatUC {
      constructor(private chatRepository: ChatRepository, private usersFireStoreRepository: UserFireStoreRepository) { }
-     async execute(data: ICreateChatRequestDTO): Promise<IReturnAdapter> {
+     async execute(data: ICreateChatRequestDTO): Promise<IReturnAdapter> 
+  
       try {
         const user = await this.usersFireStoreRepository.getUser(data.uid)
         if (user.val === false) {

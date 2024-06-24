@@ -16,20 +16,11 @@ export class LoginUserUC {
       if (wantedUser.val === false) {
         throw new Error('Usuário não encontrado.')
       }
-      const userAuth = wantedUser.data as UserOnAuth
-      const wantedUserData = await this.userFireStoreRepository.getUser(userAuth.uid as string)
-      if(wantedUserData.val === false){
-        throw new Error('Usuário não encontrado.')
-      }
       const loginUserAuth = await this.userAuthRepository.loginOnAuth(data.email, data.password)
       if ( loginUserAuth.val === false) {
         throw new Error('Login não autorizado.')
       }
-      const userOnAuth = loginUserAuth.data as UserOnAuth
-      const userOnFirestore = wantedUserData.data as UserOnFirestore
-      const user: User = new User(userOnAuth, userOnFirestore)
-      console.log(user)
-      return { val: true, data: user};
+      return { val: true, data: "Usuário Autorizado"};
     } catch (error) {
       if(error instanceof Error){
         return { val: false, erro: error.message}

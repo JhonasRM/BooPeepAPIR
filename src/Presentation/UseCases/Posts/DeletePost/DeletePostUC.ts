@@ -11,7 +11,7 @@ export class DeletePostUC{
             if(deletePost.val === false){
                 throw new Error(deletePost.erro)
             }
-            return { val: false, data: deletePost.data}
+            return { val: true, data: deletePost.data}
         } catch (error) {
             if(error instanceof Error){
                 return { val: false, erro: error.message}

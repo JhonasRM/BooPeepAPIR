@@ -9,6 +9,7 @@ export interface IUserRepository{
     collectionPath: string
 
     getUser(key: string): Promise<IReturnAdapter>
+    getUserByUID?(key: string): Promise<IReturnAdapter>
     getUsers(): Promise<IReturnAdapter>
     create(user: UserOnFirestore | UserOnAuth): Promise<IReturnAdapter>
     update(postId: string, fieldToUpdate: string, newValue: string): Promise<IReturnAdapter>

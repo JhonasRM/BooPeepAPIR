@@ -15,6 +15,8 @@ import { ResetPwdUserUC } from '../UseCases/Users/ResetPwdUser/ResetPwdUserUC';
 import { ResetPwdUserController } from '../UseCases/Users/ResetPwdUser/ResetPwdUserController';
 import { UserFireStoreRepository } from '../../Service/Repositories/UserFireStoreRepository';
 import { UserAuthRepository } from '../../Service/Repositories/UserAuthRepository';
+import { ReadUserByUIDUC } from '../UseCases/Users/ReadUserByUID/ReadUserUIDUC';
+import { ReadUserByUIDController } from '../UseCases/Users/ReadUserByUID/ReadUserByUIDController';
 
 const router: Router= Router();
 const userARep = new UserAuthRepository()
@@ -73,3 +75,11 @@ router
     .route("/resetpwd")
     .post((req: Request, res: Response) => resetpwdController.handle(req, res))
     module.exports = router;
+
+    //Read User By UID
+const readByUIDUserUC: ReadUserByUIDUC = new ReadUserByUIDUC(userARep, userFRep)
+const readUserByUIDController: ReadUserByUIDController = new ReadUserByUIDController(readByUIDUserUC)
+
+router
+    .route('/user/:uid')
+    .get((req: Request, res: Response) => readUserByUIDController.handle(req, res))
