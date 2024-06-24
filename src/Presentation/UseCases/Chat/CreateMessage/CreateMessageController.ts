@@ -10,7 +10,7 @@ export class CreateMessageController {
     async handle(request: Request, response: Response): Promise<void> {
         const {
             chatID,
-            UserID,
+            uid,
             // photoURL
             displayName,
             lastmsg,
@@ -19,7 +19,7 @@ export class CreateMessageController {
        // const UserID = ''
         const MessageData: ICreateMessageRequestDTO = {
             chatID: chatID,
-            uid:  UserID,
+            uid:  uid,
             // photoURL
             displayName: displayName,
             lastmsg: lastmsg,

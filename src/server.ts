@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import { NextFunction } from 'express-serve-static-core';
 dotenv.config();
 
-const port = 3000
+const port = 3100
 
 const cors = require("cors");
 const corsOptions = {

@@ -12,7 +12,6 @@ export class ReadMessageController {
       console.log(request.query)
       const chatID= request.query.chatID;
       if (!chatID) {
-        response.status(400).send("O chatID é obrigatório");
         return;
       }
       const readDTO: IReadMessageRequestDTO = {

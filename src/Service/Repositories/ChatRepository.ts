@@ -33,40 +33,53 @@ export class ChatRepository {
   async sendMessage(
     message: Message
   ): Promise<IReturnAdapter> {
-    try{
-    const chatRef = this.path.child(`${message.chatID}/messages`);
-    const snapshot = await chatRef.once("value");
-    const data = snapshot.val();
-    console.log('Entrou no chat')
-    if (data) {
-        console.log('chat encontrado')
-        const messages: Message[] = data  
-        messages.push(message)       
-        await chatRef.set(messages) 
-    return { val: true, data: "Mensagem enviada com sucesso" };
-        }
-      throw new Error('erro ao encontrar os dados do chat')
-    }catch (error) {
-    if (error instanceof Error) {
-      const mensagemErro = error.message;
-      return { val: false, erro: mensagemErro };
-    } else {
-      return { val: false, erro: `Erro desconhecido ao ler as mensagens: ${error}` };
+    try {
+      const chatRef = this.path.child(`${message.chatID}/`);
+      const snapshot = await chatRef.once("value");
+      const data = snapshot.val();
+      
+      console.log('Entrou no chat');
+      
+      if (data) {
+        console.log('chat encontrado');
+        
+        // Verifica se a array messages existe, caso contrário, cria uma nova
+        const messages: Message[] = data.messages ? data.messages : [];
+        messages.push(message);
+  
+        // Atualiza o chat com a nova array de mensagens
+        await chatRef.update({ messages });
+        
+        return { val: true, data: "Mensagem enviada com sucesso" };
+      } else {
+        // Se não houver dados, cria uma nova entrada com a array messages
+        const messages: Message[] = [message];
+        await chatRef.set({ messages });
+  
+        return { val: true, data: "Mensagem enviada com sucesso" };
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        const mensagemErro = error.message;
+        return { val: false, erro: mensagemErro };
+      } else {
+        return { val: false, erro: `Erro desconhecido ao ler as mensagens: ${error}` };
+      }
     }
   }
-}
+  
   async readMessages(
     chatid: string
   ): Promise<IReturnAdapter> {
       try {
+        console.log(chatid)
         const chatRef = this.path.child(`${chatid}/messages/`);
         const messages: Message[] = [];
         const snapshot = await chatRef.once('value');
         const data = snapshot.val();
-    
+        console.log(data)
         if (data) {
           Object.values(data).forEach((item) => {
-            // Verifica se o item é um objeto Message
             if (
               typeof item === 'object' &&
               item !== null &&
@@ -80,7 +93,6 @@ export class ChatRepository {
             }
           });
         }
-    
         return { val: true, data: messages };
       } catch (error) {
         if (error instanceof Error) {
