@@ -1,4 +1,4 @@
-import { bucket } from '../firebase';
+import { bucket } from "../../Data Access/DAO/StorageApp/StorageAppConfig";
 
 export const uploadImage = async (file: Express.Multer.File): Promise<string> => {
     const blob = bucket.file(file.originalname);

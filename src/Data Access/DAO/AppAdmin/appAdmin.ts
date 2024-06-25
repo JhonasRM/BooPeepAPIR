@@ -5,7 +5,8 @@ import { serviceAccount } from "./serviceAccountKey";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: process.env.FIREBASE_CONFIG_WEB_DATABASEURL
+  databaseURL: process.env.FIREBASE_CONFIG_WEB_DATABASEURL,
+  storageBucket: process.env.FIREBASE_CONFIG_WEB_STORAGEBUCKET
 });
 
 const app = admin;

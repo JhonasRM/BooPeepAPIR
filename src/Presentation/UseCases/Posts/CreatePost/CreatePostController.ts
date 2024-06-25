@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { CreatePostUC } from './CreatePostUC';
 import { ICreatePostRequestDTO } from './CreatePostDTO';
-import { uploadImage } from '../services/uploadService';
+import { uploadImage } from '../../../../utils/Helpers/uploadFileHelper';
 
 export class CreatePostController {
     constructor(private createPostUC: CreatePostUC) {}

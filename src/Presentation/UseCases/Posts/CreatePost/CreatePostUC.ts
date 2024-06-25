@@ -1,7 +1,6 @@
 
 import { IReturnAdapter } from "../../../../utils/Interfaces/IReturnAdapter";
 import { Post } from "../../../../Service/Model/Post";
-import { UserOnFirestore } from "../../../../Service/Model/UserOnFireStore";
 import { PostRepository } from "../../../../Service/Repositories/PostRepository";
 import { ICreatePostRequestDTO } from "./CreatePostDTO";
 import { UserAuthRepository } from "../../../../Service/Repositories/UserAuthRepository";
